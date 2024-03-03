@@ -1,5 +1,6 @@
 package com.my.bob.user.entity;
 
+import com.my.bob.user.enumeration.Authority;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -22,4 +23,7 @@ public class BobUser {
 
     @Column(nullable = false)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
 }
