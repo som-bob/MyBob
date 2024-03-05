@@ -1,6 +1,6 @@
-package com.my.bob.config.provider;
+package com.my.bob.provider;
 
-import com.my.bob.config.dto.TokenDto;
+import com.my.bob.dto.TokenDto;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class TokenProvider {
     @Value("${jwt.expire}")
     private static long ACCESS_TOKEN_EXPIRE_TIME;   // 30분
     @Value("${jwt.refresh.expire}")
-    private static long REFRECH_TOKEN_EXPITE_TIME;  // 7일
+    private static long REFRESH_TOKEN_EXPIRE_TIME;  // 7일
     @Value("${jwt.secret}")
     private static String secretKey;
 

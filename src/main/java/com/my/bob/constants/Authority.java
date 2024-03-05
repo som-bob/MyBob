@@ -1,4 +1,4 @@
-package com.my.bob.user.enumeration;
+package com.my.bob.constants;
 
 public enum Authority {
     // 로그인한 유저 권한

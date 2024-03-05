@@ -1,7 +1,8 @@
-package com.my.bob.user.entity;
+package com.my.bob.entity;
 
-import com.my.bob.user.enumeration.Authority;
+import com.my.bob.constants.Authority;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Entity
@@ -26,4 +27,12 @@ public class BobUser {
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    @Builder
+    public BobUser(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
+
+
