@@ -20,13 +20,11 @@ public class TokenProvider {
     private static long ACCESS_TOKEN_EXPIRE_TIME;   // 30분
     @Value("${jwt.refresh.expire}")
     private static long REFRESH_TOKEN_EXPIRE_TIME;  // 7일
-    @Value("${jwt.secret}")
-    private static String secretKey;
 
     private final Key key;
 
 
-    public TokenProvider() {
+    public TokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
