@@ -2,12 +2,16 @@ package com.my.bob.entity;
 
 import com.my.bob.constants.Authority;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "BOB_USER")
+@NoArgsConstructor
+@AllArgsConstructor
 public class BobUser {
     // setter 사용하지 않는 방향으로 개발 진행 -> update 어떻게 대체할지 찾아볼 것
 

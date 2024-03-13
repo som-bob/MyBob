@@ -23,7 +23,6 @@ public class JoinService {
         }
 
         // 회원 가입
-        // TODO ModelMapper 셋팅할 것
         String encodedPassword = passwordEncoder.encode(joinUserDto.getPassword());
         BobUser bobUser = BobUser.builder()
                 .email(email)
