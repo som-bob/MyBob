@@ -3,7 +3,6 @@ package com.my.bob.controller;
 import com.my.bob.dto.CommonResponse;
 import com.my.bob.dto.JoinUserDto;
 import com.my.bob.exception.DuplicateUserException;
-import com.my.bob.service.BobUserService;
 import com.my.bob.service.JoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ public class BobUserController {
     private final JoinService joinService;
 
     @PostMapping("/join")
-    public CommonResponse joinMember(@RequestBody JoinUserDto dto){
+    public CommonResponse joinMember(@RequestBody final JoinUserDto dto){
         CommonResponse commonResponse = new CommonResponse();
 
         try {

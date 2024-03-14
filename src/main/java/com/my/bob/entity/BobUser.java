@@ -2,7 +2,6 @@ package com.my.bob.entity;
 
 import com.my.bob.constants.Authority;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "BOB_USER")
 @NoArgsConstructor
-@AllArgsConstructor
 public class BobUser {
     // setter 사용하지 않는 방향으로 개발 진행 -> update 어떻게 대체할지 찾아볼 것
 
@@ -36,6 +34,11 @@ public class BobUser {
     public BobUser(String email, String password) {
         this.email = email;
         this.password = password;
+        this.authority = Authority.ROLE_USER;
+    }
+
+    public void updateNickName(String nickName) {
+        this.nickName = nickName;
     }
 }
 
