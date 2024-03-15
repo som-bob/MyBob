@@ -34,6 +34,7 @@ public class BobUser {
     public BobUser(String email, String password) {
         this.email = email;
         this.password = password;
+        this.nickName = email;      // TODO 랜덤 번호로 변경
         this.authority = Authority.ROLE_USER;
     }
 
