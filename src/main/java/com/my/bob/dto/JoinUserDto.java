@@ -10,9 +10,7 @@ import lombok.Data;
 @Data
 public class JoinUserDto {
 
-    @Email
-    @NotBlank(message = ErrorMessage.EMAIL_INVALID + ": ${email}")
-    @Pattern(regexp = RegexType.EMAIL, message = ErrorMessage.EMAIL_INVALID + ": ${email}")
+    @Email(message = ErrorMessage.EMAIL_INVALID)
     private String email;
 
     @NotBlank(message = ErrorMessage.PASSWORD_INVALID)

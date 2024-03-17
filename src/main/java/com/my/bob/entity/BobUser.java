@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "BOB_USER")
 @NoArgsConstructor
-public class BobUser {
+public class BobUser extends BaseTimeEntity{
     // setter 사용하지 않는 방향으로 개발 진행 -> update 어떻게 대체할지 찾아볼 것
 
     @Id
@@ -34,7 +34,7 @@ public class BobUser {
     public BobUser(String email, String password) {
         this.email = email;
         this.password = password;
-        this.nickName = email;      // TODO 랜덤 번호로 변경
+        this.nickName = email;      // TODO 차후 랜덤 번호로 변경
         this.authority = Authority.ROLE_USER;
     }
 

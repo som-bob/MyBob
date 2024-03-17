@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -35,4 +38,17 @@ public class CommonResponse {
         setStatus(httpStatus.value());
         setMessage(respMessageType.getTitle());
     }
+
+    public void setError(HttpStatus httpStatus, List<FieldError> fieldErrors) {
+        setResult("ERROR");
+        setStatus(httpStatus.value());
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (FieldError fieldError : fieldErrors) {
+            stringBuilder.append(fieldError.getField()).append("-").append(fieldError.getDefaultMessage());
+        }
+
+        setMessage(stringBuilder.toString());
+    }
+
 }
