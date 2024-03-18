@@ -2,6 +2,7 @@ package com.my.bob.controller;
 
 import com.my.bob.dto.CommonResponse;
 import com.my.bob.dto.JoinUserDto;
+import com.my.bob.dto.LoginDto;
 import com.my.bob.exception.DuplicateUserException;
 import com.my.bob.service.JoinService;
 import jakarta.validation.Valid;
@@ -30,5 +31,13 @@ public class BobUserController {
         }
 
         return commonResponse;
+    }
+
+    @PostMapping("/login")
+    public CommonResponse login(@Valid @RequestBody final LoginDto dto) {
+
+        // check
+
+        return new CommonResponse();
     }
 }

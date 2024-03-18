@@ -17,7 +17,7 @@ public class JoinService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public void joinMember(JoinUserDto joinUserDto) throws DuplicateUserException {
+    public void joinMember(final JoinUserDto joinUserDto) throws DuplicateUserException {
         String email = joinUserDto.getEmail();
         if(bobUserService.existByEmail(email)) {
             throw new DuplicateUserException("이미 가입한 회원입니다.");
@@ -28,6 +28,7 @@ public class JoinService {
         BobUser bobUser = BobUser.builder()
                 .email(email)
                 .password(encodedPassword)
+                .nickName(joinUserDto.getNickName())
                 .build();
         bobUserService.save(bobUser);
     }

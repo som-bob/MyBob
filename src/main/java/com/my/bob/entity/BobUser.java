@@ -1,10 +1,14 @@
 package com.my.bob.entity;
 
 import com.my.bob.constants.Authority;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.my.bob.util.RandomUtil.createRandomAlphabet;
+import static com.my.bob.util.RandomUtil.createRandomNumeric;
 
 @Entity
 @Getter
@@ -31,10 +35,14 @@ public class BobUser extends BaseTimeEntity{
     private Authority authority;
 
     @Builder
-    public BobUser(String email, String password) {
+    public BobUser(String email, String password, String nickName) {
         this.email = email;
         this.password = password;
-        this.nickName = email;      // TODO 차후 랜덤 번호로 변경
+        if(StringUtils.isBlank(nickName)) {
+            this.nickName = createRandomAlphabet(5) + createRandomNumeric(3) + createRandomAlphabet(2);
+        } else {
+            this.nickName = nickName;
+        }
         this.authority = Authority.ROLE_USER;
     }
 
