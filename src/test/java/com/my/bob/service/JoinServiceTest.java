@@ -46,4 +46,11 @@ class JoinServiceTest {
         Assertions.assertTrue(bobUserService.existByEmail(testEmail));
     }
 
+    @Test
+    @Transactional
+    @DisplayName("회원 가입 실패 - 중복 이메일 확인")
+    public void joinUserFail(){
+        // TODO
+    }
+
 }

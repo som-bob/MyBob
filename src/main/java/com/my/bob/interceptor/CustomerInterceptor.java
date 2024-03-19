@@ -1,4 +1,4 @@
-package com.my.bob.handler;
+package com.my.bob.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 @Component
 public class CustomerInterceptor implements HandlerInterceptor {
+    // DispatcherServlet --> Interceptor --> Controller
+
 
     @Override
     public boolean preHandle(HttpServletRequest request,
