@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final static String[] PERMIT_ALL = {
+            "/test/**",
             "/user/join",
             "/user/login"
     };
@@ -37,7 +38,6 @@ public class SecurityConfig {
                 // 권한 없이 접근할 api
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(PERMIT_ALL).permitAll().anyRequest().authenticated())
-
         ;
 
 
