@@ -31,7 +31,7 @@ public class LoginService {
             throw new BadCredentialsException("비밀번호를 확인해주세요.");
         }
 
-        return jwtTokenUtil.generateTokenDto(email);
+        return jwtTokenUtil.generateTokenDto(email, user.getAuthority());
         // TODO 마지막 로그인 일시 업데이트
     }
 }
