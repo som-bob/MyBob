@@ -11,4 +11,6 @@ public interface BobRepository extends JpaRepository<BobUser, Long> {
     
     Optional<BobUser> findByEmail(String email);
     boolean existsByEmail(String email);
+    Optional<BobUser> findOneByEmailAndPassword(String email, String password);
+
 }

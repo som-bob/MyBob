@@ -23,14 +23,21 @@ public class SecurityConfig {
     };
 
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)                  // csrf 보안 disable
                 .formLogin(AbstractHttpConfigurer::disable)             // formLogin disable
+                .httpBasic(AbstractHttpConfigurer::disable)             // BasicHttp disable
+
                 // 토큰을 통한 로그인. 사용 X session stateless
                 .sessionManagement((sessionManager) ->
                         sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 로그인 관련
+
+
 
                 // 로그아웃 관련
 
@@ -38,6 +45,7 @@ public class SecurityConfig {
                 // 권한 없이 접근할 api
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(PERMIT_ALL).permitAll().anyRequest().authenticated())
+
         ;
 
 
@@ -50,6 +58,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
 
 }
