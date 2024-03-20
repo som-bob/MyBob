@@ -3,8 +3,11 @@ package com.my.bob.controller;
 import com.my.bob.dto.CommonResponse;
 import com.my.bob.dto.JoinUserDto;
 import com.my.bob.dto.LoginDto;
+import com.my.bob.dto.TokenDto;
 import com.my.bob.exception.DuplicateUserException;
+import com.my.bob.exception.NonExistentUserException;
 import com.my.bob.service.JoinService;
+import com.my.bob.service.LoginService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BobUserController {
 
     private final JoinService joinService;
+    private final LoginService loginService;
 
     @PostMapping("/join")
     public CommonResponse joinMember(@Valid @RequestBody final JoinUserDto dto){
@@ -34,10 +38,12 @@ public class BobUserController {
     }
 
     @PostMapping("/login")
-    public CommonResponse login(@Valid @RequestBody final LoginDto dto) {
+    public CommonResponse login(@Valid @RequestBody final LoginDto dto) throws NonExistentUserException {
+        CommonResponse commonResponse = new CommonResponse();
 
-        // check
+        TokenDto tokenDto = loginService.login(dto);
+        commonResponse.setData(tokenDto);
 
-        return new CommonResponse();
+        return commonResponse;
     }
 }

@@ -1,6 +1,7 @@
 package com.my.bob.handler;
 
 import com.my.bob.dto.CommonResponse;
+import com.my.bob.exception.NonExistentUserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +16,14 @@ public class GlobalExceptionHandler {
     public CommonResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e, WebRequest request) {
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setError(HttpStatus.BAD_REQUEST, e.getFieldErrors());
+        return commonResponse;
+    }
+
+    // LoginService
+    @ExceptionHandler(value = {NonExistentUserException.class})
+    public CommonResponse handleNonExistentUserException(NonExistentUserException e, WebRequest request) {
+        CommonResponse commonResponse = new CommonResponse();
+        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
         return commonResponse;
     }
 

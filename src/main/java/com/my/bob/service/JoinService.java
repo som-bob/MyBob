@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class JoinService {
 
     private final BobUserService bobUserService;
-
     private final PasswordEncoder passwordEncoder;
 
     public void joinMember(final JoinUserDto joinUserDto) throws DuplicateUserException {
