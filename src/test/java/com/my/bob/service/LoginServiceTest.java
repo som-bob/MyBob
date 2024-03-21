@@ -14,5 +14,4 @@ class LoginServiceTest {
         // TODO Mock 통한 login 테스트
     }
 
-
 }

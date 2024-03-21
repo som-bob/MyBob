@@ -1,5 +1,9 @@
 package com.my.bob.config;
 
+import com.my.bob.filter.JwtAuthenticationFilter;
+import com.my.bob.service.BobUserService;
+import com.my.bob.util.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,19 +14,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @ComponentScan(basePackages = "com.my.bob")
 public class SecurityConfig {
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final BobUserService bobUserService;
 
     private final static String[] PERMIT_ALL = {
             "/test/**",
             "/user/join",
             "/user/login"
     };
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,16 +42,17 @@ public class SecurityConfig {
                 .sessionManagement((sessionManager) ->
                         sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 로그인 관련
-
-
-
                 // 로그아웃 관련
 
 
                 // 권한 없이 접근할 api
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(PERMIT_ALL).permitAll().anyRequest().authenticated())
+
+                // 로그인 관련
+                // UsernamePasswordAuthenticationFilter 전에 jwt Token 관련 Filter 진행
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, bobUserService), UsernamePasswordAuthenticationFilter.class)
+                // TODO refresh, Cookie 관련 filter 추가
 
         ;
 

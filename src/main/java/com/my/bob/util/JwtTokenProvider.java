@@ -4,6 +4,7 @@ import com.my.bob.constants.AuthConstant;
 import com.my.bob.constants.Authority;
 import com.my.bob.dto.TokenDto;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +23,7 @@ import java.security.Key;
 import java.util.*;
 
 @Component
-public class JwtTokenUtil {
+public class JwtTokenProvider {
 
     @Value("${jwt.expire}")
     private int ACCESS_TOKEN_EXPIRE_TIME;   // 30분
@@ -32,7 +34,7 @@ public class JwtTokenUtil {
 
     private static final String TOKEN_AUTH_KEY = "auth";
 
-    public JwtTokenUtil(@Value("${jwt.secret}") String secretKey) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -46,30 +48,29 @@ public class JwtTokenUtil {
         return TokenDto.builder()
                 .grantType(AuthConstant.TOKEN_TYPE)
                 .accessToken(accessToken)
-                .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME)
+                .accessTokenExpiresMs(ACCESS_TOKEN_EXPIRE_TIME)
                 .refreshToken(refreshToken)
                 .build();
     }
 
     // TODO test
     public Authentication getAuthentication(String accessToken) {
-        // token expire time 지났을 경우, ExpiredJwtException 반환 // TODO 예외 처리
+        // token expire time 지났을 경우, ExpiredJwtException 반환 된다 // TODO 예외 처리
         Claims claims = getClaims(accessToken);
 
         // 권한 체크
         String authority = claims.get(TOKEN_AUTH_KEY).toString();
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(simpleGrantedAuthority);
+        Collection<? extends GrantedAuthority> authorities = List.of(simpleGrantedAuthority);
 
-
+        // refresh Token rotation?
         UserDetails principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
     /* private method */
     private String getToken(String subject, Authority authority, Date now, int expireTime) {
-        Date expireDate = DateUtils.addSeconds(now, expireTime);
+        Date expireDate = DateUtils.addMilliseconds(now, expireTime);
         Claims claims = Jwts.claims();
         claims.setIssuedAt(now);
         claims.put("auth", authority.name());

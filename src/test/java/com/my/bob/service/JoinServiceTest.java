@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @Slf4j
 @SpringBootTest
 class JoinServiceTest {
@@ -39,11 +41,11 @@ class JoinServiceTest {
             joinService.joinMember(joinUserDto);
         } catch (DuplicateUserException e) {
             log.error("another email needs.");
-            Assertions.fail();
+            fail();
         }
 
 //        Then - 테스트 결과 검증(그 메서드를 실행함으로서 기대 되는 결과)
-        Assertions.assertTrue(bobUserService.existByEmail(testEmail));
+        assertTrue(bobUserService.existByEmail(testEmail));
     }
 
     @Test
