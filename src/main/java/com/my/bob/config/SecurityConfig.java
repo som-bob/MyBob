@@ -1,6 +1,7 @@
 package com.my.bob.config;
 
 import com.my.bob.filter.JwtAuthenticationFilter;
+import com.my.bob.handler.CustomerAccessDeniedHandler;
 import com.my.bob.service.CustomerUserDetailService;
 import com.my.bob.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -49,11 +50,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(PERMIT_ALL).permitAll().anyRequest().authenticated())
 
+
                 // 로그인 관련
                 // UsernamePasswordAuthenticationFilter 전에 jwt Token 관련 Filter 진행
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider, customerUserDetailService),
                         UsernamePasswordAuthenticationFilter.class)
+
+
                 // TODO refresh, Cookie 관련 filter 추가
 
         ;

@@ -3,6 +3,8 @@ package com.my.bob.handler;
 import com.my.bob.dto.CommonResponse;
 import com.my.bob.exception.NonExistentUserException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,8 +21,10 @@ public class GlobalExceptionHandler {
         return commonResponse;
     }
 
-    // LoginService
-    @ExceptionHandler(value = {NonExistentUserException.class})
+    // LoginService, UserDetailService
+    @ExceptionHandler(value = {
+            NonExistentUserException.class,
+            UsernameNotFoundException.class})
     public CommonResponse handleNonExistentUserException(NonExistentUserException e, WebRequest request) {
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
