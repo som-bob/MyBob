@@ -1,7 +1,6 @@
 package com.my.bob.filter;
 
 import com.my.bob.constants.AuthConstant;
-import com.my.bob.service.BobUserService;
 import com.my.bob.util.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.micrometer.common.util.StringUtils;
@@ -11,10 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 해당 filter의 경우 api/a가 끝난후 api/b로 리다이렉트 될 경우 Filter가 두번 호출되거나 하는 것을 막을 수 있다
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final BobUserService bobUserService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -41,8 +41,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 String userEmail = userDetails.getUsername();
 
-                if(bobUserService.existByEmail(userEmail)) {
-                    // 로그인 (다음 filter 에서 인증을 위한)
+                // 인증 객체의 email로 실제 유저인지 조회해본 다음에 SecutiryContextHolder에 셋팅한다
+                if(userDetailsService.loadUserByUsername(userEmail) != null) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (ExpiredJwtException e) {

@@ -1,7 +1,7 @@
 package com.my.bob.config;
 
 import com.my.bob.filter.JwtAuthenticationFilter;
-import com.my.bob.service.BobUserService;
+import com.my.bob.service.CustomerUserDetailService;
 import com.my.bob.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final BobUserService bobUserService;
+    private final CustomerUserDetailService customerUserDetailService;
 
     private final static String[] PERMIT_ALL = {
             "/test/**",
@@ -51,7 +51,9 @@ public class SecurityConfig {
 
                 // 로그인 관련
                 // UsernamePasswordAuthenticationFilter 전에 jwt Token 관련 Filter 진행
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, bobUserService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtTokenProvider, customerUserDetailService),
+                        UsernamePasswordAuthenticationFilter.class)
                 // TODO refresh, Cookie 관련 filter 추가
 
         ;

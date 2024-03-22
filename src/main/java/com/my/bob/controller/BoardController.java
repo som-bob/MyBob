@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 @Slf4j
 @RestController
 @RequestMapping("/board")
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BoardController {
 
     @GetMapping("/list")
-    public CommonResponse getBoardList(){
+    public CommonResponse getBoardList(Principal principal){
         CommonResponse commonResponse = new CommonResponse();
 
         commonResponse.setData("ok");

@@ -4,7 +4,6 @@ import com.my.bob.constants.AuthConstant;
 import com.my.bob.constants.Authority;
 import com.my.bob.dto.TokenDto;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -55,7 +54,7 @@ public class JwtTokenProvider {
 
     // TODO test
     public Authentication getAuthentication(String accessToken) {
-        // token expire time 지났을 경우, ExpiredJwtException 반환 된다 // TODO 예외 처리
+        // token expire time 지났을 경우, ExpiredJwtException 반환 된다
         Claims claims = getClaims(accessToken);
 
         // 권한 체크
@@ -63,7 +62,7 @@ public class JwtTokenProvider {
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
         Collection<? extends GrantedAuthority> authorities = List.of(simpleGrantedAuthority);
 
-        // refresh Token rotation?
+        // TODO? refresh Token rotation?
         UserDetails principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
