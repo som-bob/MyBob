@@ -46,4 +46,11 @@ public class BobUserController {
 
         return commonResponse;
     }
+
+    @PostMapping("/reissue")
+    public CommonResponse reissue(){
+        // TODO Cookie 통한 재발급
+
+        return null;
+    }
 }
