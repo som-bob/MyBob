@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class LoginService {
 
     private final BobUserService bobUserService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public TokenDto login(LoginDto dto) throws NonExistentUserException {
         String email = dto.getEmail();
         if(! bobUserService.existByEmail(email)) {
