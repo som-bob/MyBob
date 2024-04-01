@@ -31,6 +31,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'															// jwt
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'								// ModelMapper
 	implementation 'org.springframework.boot:spring-boot-starter-validation'									// dto validate
+	/* flyway */
+	implementation group: 'org.flywaydb', name: 'flyway-core', version: '10.10.0'
+	implementation group: 'org.flywaydb', name: 'flyway-mysql', version: '10.10.0'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
