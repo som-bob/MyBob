@@ -29,6 +29,10 @@ public class CustomerUserDetailService implements UserDetailsService {
         Collection<? extends GrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority(user.getAuthority().name()));
 
+        // 마지막 로그인 일시 업데이트
+        user.updateLastLoginDate();
+        bobUserService.save(user);
+
         return new User(userEmail, user.getPassword(), authorities);
     }
 }

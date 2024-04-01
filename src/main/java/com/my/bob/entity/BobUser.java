@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static com.my.bob.util.RandomUtil.createRandomAlphabet;
 import static com.my.bob.util.RandomUtil.createRandomNumeric;
 
@@ -34,6 +36,8 @@ public class BobUser extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    private LocalDateTime lastLoginDate;
+
     @Builder
     public BobUser(String email, String password, String nickName) {
         this.email = email;
@@ -48,6 +52,10 @@ public class BobUser extends BaseTimeEntity{
 
     public void updateNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public void updateLastLoginDate() {
+        this.lastLoginDate = LocalDateTime.now();
     }
 }
 
