@@ -27,11 +27,14 @@ public class LoginService {
         }
 
         BobUser user = bobUserService.getByEmail(email);
-        if(passwordEncoder.matches(user.getPassword(), dto.getPassword())) {
+        if(! passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("비밀번호를 확인해주세요.");
         }
 
+        // 마지막 로그인 일시 업데이트
+        user.updateLastLoginDate();
+        bobUserService.save(user);
+
         return jwtTokenProvider.generateTokenDto(email, user.getAuthority());
-        // TODO 마지막 로그인 일시 업데이트
     }
 }

@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class JoinUserDto {
 
+    @NotBlank(message = ErrorMessage.INVALID_EMAIL)
     @Email(message = ErrorMessage.INVALID_EMAIL)
     private String email;
 
