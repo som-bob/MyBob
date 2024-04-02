@@ -1,7 +1,6 @@
 package com.my.bob.config;
 
 import com.my.bob.filter.JwtAuthenticationFilter;
-import com.my.bob.handler.CustomerAccessDeniedHandler;
 import com.my.bob.service.CustomerUserDetailService;
 import com.my.bob.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,8 @@ public class SecurityConfig {
     private final static String[] PERMIT_ALL = {
             "/test/**",
             "/user/join",
-            "/user/login"
+            "/user/login",
+            "/user/reissue"
     };
 
     @Bean
@@ -53,9 +53,7 @@ public class SecurityConfig {
 
                 // 로그인 관련
                 // UsernamePasswordAuthenticationFilter 전에 jwt Token 관련 Filter 진행
-                .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtTokenProvider, customerUserDetailService),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customerUserDetailService), UsernamePasswordAuthenticationFilter.class)
 
 
                 // TODO refresh, Cookie 관련 filter 추가

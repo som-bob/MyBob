@@ -1,11 +1,15 @@
 package com.my.bob.service;
 
+import com.my.bob.constants.AuthConstant;
 import com.my.bob.dto.LoginDto;
 import com.my.bob.dto.TokenDto;
 import com.my.bob.entity.BobUser;
+import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.NonExistentUserException;
 import com.my.bob.util.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +39,19 @@ public class LoginService {
         user.updateLastLoginDate();
         bobUserService.save(user);
 
+        // TODO refreshToken insert
+
         return jwtTokenProvider.generateTokenDto(email, user.getAuthority());
+    }
+
+    @Transactional
+    public TokenDto reissue(HttpServletRequest request) throws BadRequestException {
+        String requestHeader = request.getHeader(AuthConstant.AUTH_HEADER);
+        if(StringUtils.isEmpty(requestHeader)) {
+            throw new BadRequestException("잘못된 요청입니다.");
+        }
+
+
+        return null;
     }
 }
