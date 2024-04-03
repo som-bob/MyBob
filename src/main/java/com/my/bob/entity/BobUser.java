@@ -22,7 +22,7 @@ public class BobUser extends BaseTimeEntity{
     @Id
     @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB에게 ID 생성을 맡김
-    private long userId;
+    private int userId;
 
     @Column(nullable = false)
     private String password;

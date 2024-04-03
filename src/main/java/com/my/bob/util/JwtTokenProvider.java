@@ -52,7 +52,6 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    // TODO test
     public Authentication getAuthentication(String accessToken) {
         // token expire time 지났을 경우, ExpiredJwtException 반환 된다
         Claims claims = getClaims(accessToken);
@@ -62,10 +61,14 @@ public class JwtTokenProvider {
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
         Collection<? extends GrantedAuthority> authorities = List.of(simpleGrantedAuthority);
 
-        // TODO? refresh Token rotation?
         UserDetails principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
+
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
 
     /* private method */
     private String getToken(String subject, Authority authority, Date now, int expireTime) {
@@ -82,10 +85,6 @@ public class JwtTokenProvider {
                 .setExpiration(expireDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    private Claims getClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
 }

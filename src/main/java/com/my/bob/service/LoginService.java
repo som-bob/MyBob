@@ -20,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoginService {
 
     private final BobUserService bobUserService;
+    private final BobUserRefreshTokenService bobUserRefreshTokenService;
+
     private final PasswordEncoder passwordEncoder;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
@@ -39,9 +42,12 @@ public class LoginService {
         user.updateLastLoginDate();
         bobUserService.save(user);
 
-        // TODO refreshToken insert
+        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(email, user.getAuthority());
 
-        return jwtTokenProvider.generateTokenDto(email, user.getAuthority());
+        // TODO 토큰 저장 만들기
+
+
+        return tokenDto;
     }
 
     @Transactional
