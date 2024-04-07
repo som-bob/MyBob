@@ -55,9 +55,6 @@ public class SecurityConfig {
                 // UsernamePasswordAuthenticationFilter 전에 jwt Token 관련 Filter 진행
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customerUserDetailService), UsernamePasswordAuthenticationFilter.class)
 
-
-                // TODO refresh, Cookie 관련 filter 추가
-
         ;
 
 

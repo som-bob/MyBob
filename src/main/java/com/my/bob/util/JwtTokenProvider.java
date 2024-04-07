@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Component
@@ -41,14 +43,26 @@ public class JwtTokenProvider {
     public TokenDto generateTokenDto(String email, Authority authority) {
         // TODO check 여러 개의 권한을 받는 것으로 변경?
         Date now = Calendar.getInstance().getTime();
-        String accessToken = getToken(email, authority, now, ACCESS_TOKEN_EXPIRE_TIME);
-        String refreshToken = getToken(email, authority, now, REFRESH_TOKEN_EXPIRE_TIME);
+
+        Date accessTokenExpireDate = DateUtils.addMilliseconds(now, ACCESS_TOKEN_EXPIRE_TIME);
+        Date refreshTokenExpireDate = DateUtils.addMilliseconds(now, REFRESH_TOKEN_EXPIRE_TIME);
+        String accessToken = getToken(email, authority, accessTokenExpireDate);
+        String refreshToken = getToken(email, authority, refreshTokenExpireDate);
+
+        LocalDateTime accessTokenExpire = accessTokenExpireDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        LocalDateTime refreshTokenExpire = refreshTokenExpireDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
 
         return TokenDto.builder()
                 .grantType(AuthConstant.TOKEN_TYPE)
                 .accessToken(accessToken)
-                .accessTokenExpiresMs(ACCESS_TOKEN_EXPIRE_TIME)
+                .accessTokenExpire(accessTokenExpire)
                 .refreshToken(refreshToken)
+                .refreshTokenExpire(refreshTokenExpire)
                 .build();
     }
 
@@ -71,17 +85,16 @@ public class JwtTokenProvider {
 
 
     /* private method */
-    private String getToken(String subject, Authority authority, Date now, int expireTime) {
-        Date expireDate = DateUtils.addMilliseconds(now, expireTime);
+    private String getToken(String subject, Authority authority, Date expireDate) {
         Claims claims = Jwts.claims();
-        claims.setIssuedAt(now);
+        claims.setIssuedAt(expireDate);
         claims.put("auth", authority.name());
         claims.setExpiration(expireDate);
         claims.setSubject(subject);
 
         return Jwts.builder()
                 .addClaims(claims)
-                .setIssuedAt(now)
+                .setIssuedAt(expireDate)
                 .setExpiration(expireDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();

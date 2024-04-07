@@ -3,6 +3,8 @@ package com.my.bob.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class TokenDto {
@@ -11,7 +13,9 @@ public class TokenDto {
 
     private String accessToken;
 
-    private long accessTokenExpiresMs;
+    private LocalDateTime accessTokenExpire;
 
     private String refreshToken;
+
+    private LocalDateTime refreshTokenExpire;
 }

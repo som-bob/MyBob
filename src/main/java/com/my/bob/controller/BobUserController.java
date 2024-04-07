@@ -56,4 +56,11 @@ public class BobUserController {
         } catch (BadRequestException e) {/* do nothing, handler global Handler */}
         return new CommonResponse(tokenDto);
     }
+
+    // TODO
+    @PostMapping("/logout")
+    public CommonResponse logout() {
+
+        return null;
+    }
 }

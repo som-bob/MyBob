@@ -42,10 +42,9 @@ public class LoginService {
         user.updateLastLoginDate();
         bobUserService.save(user);
 
+        // refreshToken 추가
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(email, user.getAuthority());
-
-        // TODO 토큰 저장 만들기
-
+        bobUserRefreshTokenService.saveTokenByTokenDto(user.getUserId(), tokenDto);
 
         return tokenDto;
     }
@@ -60,4 +59,6 @@ public class LoginService {
 
         return null;
     }
+
+
 }
