@@ -1,5 +1,6 @@
 package com.my.bob.service;
 
+import com.my.bob.constants.ErrorMessage;
 import com.my.bob.entity.BobUser;
 import com.my.bob.repository.BobRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,14 @@ public class BobUserService {
         return bobRepository.existsByEmail(email);
     }
 
+    public BobUser getById(long userId) {
+        return bobRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.USER_CANNOT_BE_FOUND));
+    }
+
     public BobUser getByEmail(String email) {
         return bobRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.USER_CANNOT_BE_FOUND));
     }
 
     @Transactional
@@ -30,7 +36,4 @@ public class BobUserService {
         bobRepository.save(bobUser);
     }
 
-    public Optional<BobUser> getByEmailAndPassword(String email, String password) {
-        return bobRepository.findOneByEmailAndPassword(email, password);
-    }
 }

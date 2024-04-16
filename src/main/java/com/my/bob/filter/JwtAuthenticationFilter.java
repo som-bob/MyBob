@@ -2,6 +2,7 @@ package com.my.bob.filter;
 
 import com.my.bob.constants.AuthConstant;
 import com.my.bob.util.JwtTokenProvider;
+import com.my.bob.util.TokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -33,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(AuthConstant.AUTH_HEADER);
-        String token = parsingToken(authHeader);
+        String token = TokenUtil.parsingToken(authHeader);
         if(! StringUtils.isEmpty(token)) {
             try {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
@@ -50,13 +51,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    /* private method */
-    private String parsingToken(String authHeader){
-        if(StringUtils.isEmpty(authHeader) || ! authHeader.startsWith(AuthConstant.TOKEN_TYPE)) return Strings.EMPTY;
-        // String form is 'Bearer jwtTokenValue'
-        String[] tokenSplit = authHeader.split(" ");
-        return tokenSplit[1];
     }
 }

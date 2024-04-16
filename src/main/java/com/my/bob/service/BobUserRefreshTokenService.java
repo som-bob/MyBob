@@ -39,5 +39,8 @@ public class BobUserRefreshTokenService {
         bobUserRefreshTokenRepository.save(userRefreshToken);
     }
 
-    // TODO 로그아웃 할 때 그 계정의 리프레쉬 토큰을 지워주는 것을 추가
+    @Transactional
+    public void deleteByToken(String refreshToken) {
+        bobUserRefreshTokenRepository.deleteByRefreshToken(refreshToken);
+    }
 }
