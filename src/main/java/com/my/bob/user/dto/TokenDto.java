@@ -1,4 +1,4 @@
-package com.my.bob.dto;
+package com.my.bob.user.dto;
 
 import lombok.Builder;
 import lombok.Data;

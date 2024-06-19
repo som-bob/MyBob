@@ -1,7 +1,7 @@
 package com.my.bob.util;
 
 import com.my.bob.constants.Authority;
-import com.my.bob.dto.TokenDto;
+import com.my.bob.user.dto.TokenDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

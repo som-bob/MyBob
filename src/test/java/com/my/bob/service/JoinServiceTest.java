@@ -1,10 +1,10 @@
 package com.my.bob.service;
 
-import com.my.bob.dto.JoinUserDto;
+import com.my.bob.user.dto.JoinUserDto;
 import com.my.bob.exception.DuplicateUserException;
-import io.jsonwebtoken.lang.Assert;
+import com.my.bob.user.service.BobUserService;
+import com.my.bob.user.service.JoinService;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

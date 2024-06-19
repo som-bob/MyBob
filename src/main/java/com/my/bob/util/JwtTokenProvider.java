@@ -2,7 +2,7 @@ package com.my.bob.util;
 
 import com.my.bob.constants.AuthConstant;
 import com.my.bob.constants.Authority;
-import com.my.bob.dto.TokenDto;
+import com.my.bob.user.dto.TokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

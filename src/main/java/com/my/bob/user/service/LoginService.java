@@ -1,11 +1,11 @@
-package com.my.bob.service;
+package com.my.bob.user.service;
 
 import com.my.bob.constants.AuthConstant;
 import com.my.bob.constants.ErrorMessage;
-import com.my.bob.dto.LoginDto;
-import com.my.bob.dto.TokenDto;
-import com.my.bob.entity.BobUser;
-import com.my.bob.entity.BobUserRefreshToken;
+import com.my.bob.user.dto.LoginDto;
+import com.my.bob.user.dto.TokenDto;
+import com.my.bob.user.entity.BobUser;
+import com.my.bob.user.entity.BobUserRefreshToken;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.NonExistentUserException;
 import com.my.bob.util.JwtTokenProvider;

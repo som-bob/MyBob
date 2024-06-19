@@ -1,4 +1,4 @@
-package com.my.bob.entity;
+package com.my.bob.user.entity;
 
 import com.my.bob.constants.Authority;
 import io.micrometer.common.util.StringUtils;

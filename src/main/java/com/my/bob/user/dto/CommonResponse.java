@@ -1,4 +1,4 @@
-package com.my.bob.dto;
+package com.my.bob.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.my.bob.constants.RespMessageType;

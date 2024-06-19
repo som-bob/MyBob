@@ -1,6 +1,6 @@
-package com.my.bob.controller;
+package com.my.bob.user.controller;
 
-import com.my.bob.dto.CommonResponse;
+import com.my.bob.user.dto.CommonResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

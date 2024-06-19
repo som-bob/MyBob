@@ -1,7 +1,7 @@
 package com.my.bob.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.bob.dto.CommonResponse;
+import com.my.bob.user.dto.CommonResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

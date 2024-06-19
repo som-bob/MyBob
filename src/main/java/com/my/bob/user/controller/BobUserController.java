@@ -1,18 +1,17 @@
-package com.my.bob.controller;
+package com.my.bob.user.controller;
 
-import com.my.bob.dto.CommonResponse;
-import com.my.bob.dto.JoinUserDto;
-import com.my.bob.dto.LoginDto;
-import com.my.bob.dto.TokenDto;
+import com.my.bob.user.dto.CommonResponse;
+import com.my.bob.user.dto.JoinUserDto;
+import com.my.bob.user.dto.LoginDto;
+import com.my.bob.user.dto.TokenDto;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.DuplicateUserException;
 import com.my.bob.exception.NonExistentUserException;
-import com.my.bob.service.JoinService;
-import com.my.bob.service.LoginService;
+import com.my.bob.user.service.JoinService;
+import com.my.bob.user.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

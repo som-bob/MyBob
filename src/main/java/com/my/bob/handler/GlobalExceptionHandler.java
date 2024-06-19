@@ -1,6 +1,6 @@
 package com.my.bob.handler;
 
-import com.my.bob.dto.CommonResponse;
+import com.my.bob.user.dto.CommonResponse;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.NonExistentUserException;
 import org.springframework.http.HttpStatus;

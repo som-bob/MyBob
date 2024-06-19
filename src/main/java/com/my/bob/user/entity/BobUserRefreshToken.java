@@ -1,4 +1,4 @@
-package com.my.bob.entity;
+package com.my.bob.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;

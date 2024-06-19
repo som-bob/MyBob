@@ -1,14 +1,12 @@
-package com.my.bob.service;
+package com.my.bob.user.service;
 
 import com.my.bob.constants.ErrorMessage;
-import com.my.bob.entity.BobUser;
-import com.my.bob.repository.BobRepository;
+import com.my.bob.user.entity.BobUser;
+import com.my.bob.user.repository.BobRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
