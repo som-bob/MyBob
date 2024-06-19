@@ -1,14 +1,14 @@
-package com.my.bob.user.controller;
+package com.my.bob.member.controller;
 
-import com.my.bob.user.dto.CommonResponse;
-import com.my.bob.user.dto.JoinUserDto;
-import com.my.bob.user.dto.LoginDto;
-import com.my.bob.user.dto.TokenDto;
+import com.my.bob.member.dto.CommonResponse;
+import com.my.bob.member.dto.JoinUserDto;
+import com.my.bob.member.dto.LoginDto;
+import com.my.bob.member.dto.TokenDto;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.DuplicateUserException;
 import com.my.bob.exception.NonExistentUserException;
-import com.my.bob.user.service.JoinService;
-import com.my.bob.user.service.LoginService;
+import com.my.bob.member.service.JoinService;
+import com.my.bob.member.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/member")
 public class BobUserController {
 
     private final JoinService joinService;

@@ -1,9 +1,9 @@
 package com.my.bob.service;
 
-import com.my.bob.user.dto.JoinUserDto;
+import com.my.bob.member.dto.JoinUserDto;
 import com.my.bob.exception.DuplicateUserException;
-import com.my.bob.user.service.BobUserService;
-import com.my.bob.user.service.JoinService;
+import com.my.bob.member.service.BobUserService;
+import com.my.bob.member.service.JoinService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

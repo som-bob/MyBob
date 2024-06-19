@@ -1,7 +1,7 @@
 package com.my.bob.config;
 
 import com.my.bob.filter.JwtAuthenticationFilter;
-import com.my.bob.user.service.CustomerUserDetailService;
+import com.my.bob.member.service.CustomerUserDetailService;
 import com.my.bob.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,9 +27,9 @@ public class SecurityConfig {
 
     private final static String[] PERMIT_ALL = {
             "/test/**",
-            "/user/join",
-            "/user/login",
-            "/user/reissue"
+            "/member/join",
+            "/member/login",
+            "/member/reissue"
     };
 
     @Bean

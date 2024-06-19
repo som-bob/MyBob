@@ -1,4 +1,4 @@
-package com.my.bob.user.dto;
+package com.my.bob.member.dto;
 
 import com.my.bob.constants.ErrorMessage;
 import jakarta.validation.constraints.Email;

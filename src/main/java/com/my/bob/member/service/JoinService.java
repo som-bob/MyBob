@@ -1,7 +1,7 @@
-package com.my.bob.user.service;
+package com.my.bob.member.service;
 
-import com.my.bob.user.dto.JoinUserDto;
-import com.my.bob.user.entity.BobUser;
+import com.my.bob.member.dto.JoinUserDto;
+import com.my.bob.member.entity.BobUser;
 import com.my.bob.exception.DuplicateUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

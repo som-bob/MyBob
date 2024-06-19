@@ -1,8 +1,8 @@
-package com.my.bob.user.service;
+package com.my.bob.member.service;
 
-import com.my.bob.user.dto.TokenDto;
-import com.my.bob.user.entity.BobUserRefreshToken;
-import com.my.bob.user.repository.BobUserRefreshTokenRepository;
+import com.my.bob.member.dto.TokenDto;
+import com.my.bob.member.entity.BobUserRefreshToken;
+import com.my.bob.member.repository.BobUserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
