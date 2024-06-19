@@ -1,7 +1,7 @@
 package com.my.bob.config;
 
 import com.my.bob.filter.JwtAuthenticationFilter;
-import com.my.bob.member.service.CustomerUserDetailService;
+import com.my.bob.common.service.CustomerUserDetailService;
 import com.my.bob.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

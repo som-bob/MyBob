@@ -1,7 +1,7 @@
 package com.my.bob.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.bob.member.dto.CommonResponse;
+import com.my.bob.common.dto.CommonResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,8 +18,7 @@ public class CustomerAccessDeniedHandler extends AccessDeniedHandlerImpl {
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
-                       AccessDeniedException accessDeniedException)
-            throws IOException, ServletException {
+                       AccessDeniedException accessDeniedException) throws IOException {
         // 우선 forbidden 준다
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
 

@@ -1,4 +1,4 @@
-package com.my.bob.member.entity;
+package com.my.bob.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

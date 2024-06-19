@@ -1,6 +1,6 @@
-package com.my.bob.member.controller;
+package com.my.bob.board.controller;
 
-import com.my.bob.member.dto.CommonResponse;
+import com.my.bob.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

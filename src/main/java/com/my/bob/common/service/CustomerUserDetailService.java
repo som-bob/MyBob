@@ -1,6 +1,7 @@
-package com.my.bob.member.service;
+package com.my.bob.common.service;
 
 import com.my.bob.member.entity.BobUser;
+import com.my.bob.member.service.BobUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

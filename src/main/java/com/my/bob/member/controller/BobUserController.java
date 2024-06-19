@@ -1,6 +1,6 @@
 package com.my.bob.member.controller;
 
-import com.my.bob.member.dto.CommonResponse;
+import com.my.bob.common.dto.CommonResponse;
 import com.my.bob.member.dto.JoinUserDto;
 import com.my.bob.member.dto.LoginDto;
 import com.my.bob.member.dto.TokenDto;
