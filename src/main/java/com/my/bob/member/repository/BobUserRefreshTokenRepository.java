@@ -11,6 +11,10 @@ public interface BobUserRefreshTokenRepository extends JpaRepository<BobUserRefr
 
     boolean existsByRefreshToken(String refreshToken);
 
+    boolean existsByUserId(int userId);
+
+    void deleteByUserId(int userId);
+
     Optional<BobUserRefreshToken> findOneByRefreshToken(String refreshToken);
 
     void deleteByRefreshToken(String refreshToken);
