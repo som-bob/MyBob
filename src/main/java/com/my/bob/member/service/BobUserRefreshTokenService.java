@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,5 +43,14 @@ public class BobUserRefreshTokenService {
     @Transactional
     public void deleteByToken(String refreshToken) {
         bobUserRefreshTokenRepository.deleteByRefreshToken(refreshToken);
+    }
+
+    public List<BobUserRefreshToken> getAllAlreadyExpired(){
+        return bobUserRefreshTokenRepository.findAllByExpiryDateBefore(LocalDateTime.now());
+    }
+
+    @Transactional
+    public void deleteAll(List<BobUserRefreshToken> refreshTokens) {
+        bobUserRefreshTokenRepository.deleteAll(refreshTokens);
     }
 }
