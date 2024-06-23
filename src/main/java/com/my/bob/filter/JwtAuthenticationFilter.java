@@ -3,14 +3,12 @@ package com.my.bob.filter;
 import com.my.bob.constants.AuthConstant;
 import com.my.bob.util.JwtTokenProvider;
 import com.my.bob.util.TokenUtil;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,17 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(AuthConstant.AUTH_HEADER);
         String token = TokenUtil.parsingToken(authHeader);
         if(! StringUtils.isEmpty(token)) {
-            try {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                String userEmail = userDetails.getUsername();
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String userEmail = userDetails.getUsername();
 
-                // 인증 객체의 email로 실제 유저인지 조회해본 다음에 SecutiryContextHolder에 셋팅한다
-                if(userDetailsService.loadUserByUsername(userEmail) != null) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            } catch (ExpiredJwtException e) {
-                // do nothing
+            // 인증 객체의 email로 실제 유저인지 조회해본 다음에 SecutiryContextHolder에 셋팅한다
+            if(userDetailsService.loadUserByUsername(userEmail) != null) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 

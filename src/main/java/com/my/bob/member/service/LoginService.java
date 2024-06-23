@@ -2,12 +2,12 @@ package com.my.bob.member.service;
 
 import com.my.bob.constants.AuthConstant;
 import com.my.bob.constants.ErrorMessage;
+import com.my.bob.exception.BadRequestException;
+import com.my.bob.exception.NonExistentUserException;
 import com.my.bob.member.dto.LoginDto;
 import com.my.bob.member.dto.TokenDto;
 import com.my.bob.member.entity.BobUser;
 import com.my.bob.member.entity.BobUserRefreshToken;
-import com.my.bob.exception.BadRequestException;
-import com.my.bob.exception.NonExistentUserException;
 import com.my.bob.util.JwtTokenProvider;
 import com.my.bob.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;

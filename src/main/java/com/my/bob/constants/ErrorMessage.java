@@ -15,4 +15,10 @@ public class ErrorMessage {
     // 유저 관련
     public static final String USER_CANNOT_BE_FOUND = "해당 유저를 찾을 수 없습니다.";
 
+    // 게시판 관련
+    public static final String NON_EXISTENT_POST = "존재하지 않는 게시글입니다.";
+
+    // 수정, 삭제 권한 관련
+    public static final String DO_NOT_HAVE_PERMISSION = "권한이 없습니다.";
+
 }

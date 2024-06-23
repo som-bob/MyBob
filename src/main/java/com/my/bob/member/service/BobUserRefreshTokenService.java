@@ -29,11 +29,6 @@ public class BobUserRefreshTokenService {
 
     @Transactional
     public void saveTokenByTokenDto(int userId, TokenDto tokenDto) {
-        // 이미 리프레쉬 토큰이 있다면 삭제 후 재저장
-        if(bobUserRefreshTokenRepository.existsByUserId(userId)) {
-            bobUserRefreshTokenRepository.deleteByUserId(userId);
-        }
-
         String refreshToken = tokenDto.getRefreshToken();
         LocalDateTime refreshTokenExpire = tokenDto.getRefreshTokenExpire();
 
