@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class JwtTokenProviderTest {
@@ -35,13 +35,4 @@ class JwtTokenProviderTest {
         String getEmail = authentication.getName();
         assertEquals(testEmail, getEmail);
     }
-
-    @Test
-    @DisplayName("Jwt Token 유효성 검증")
-    public void validateToken(){
-
-    }
-
-
-
 }

@@ -1,7 +1,9 @@
 package com.my.bob.board.controller;
 
 import com.my.bob.board.dto.BoardCreateDto;
+import com.my.bob.board.dto.BoardDto;
 import com.my.bob.board.dto.BoardUpdateDto;
+import com.my.bob.board.service.BoardConvertService;
 import com.my.bob.board.service.BoardSaveService;
 import com.my.bob.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.security.Principal;
 public class BoardController {
 
     private final BoardSaveService boardSaveService;
+    private final BoardConvertService boardConvertService;
 
     @PostMapping
     public CommonResponse createBoard(@RequestBody BoardCreateDto dto) {
@@ -24,7 +27,6 @@ public class BoardController {
 
         return new CommonResponse(boardId);
     }
-
 
     @PutMapping("/{boardId}")
     public CommonResponse updateBoard(@PathVariable long boardId,
@@ -34,6 +36,14 @@ public class BoardController {
 
         return new CommonResponse();
     }
+
+    @GetMapping("/{boardId}")
+    public CommonResponse getBoard(@PathVariable long boardId) {
+        BoardDto dto = boardConvertService.convertBoardDto(boardId);
+
+        return new CommonResponse(dto);
+    }
+
 
 
     @GetMapping("/list")

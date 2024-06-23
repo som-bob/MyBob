@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,13 +27,16 @@ public class Board extends BaseRegEntity {
 
     private String boardContent;
 
-    @LastModifiedBy
-    @Column(nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
+    List<BoardComment> comments;
+
+    @LastModifiedDate
     private LocalDateTime modDate;
 
     public Board(String title, String content) {
         this.boardTitle = title;
         this.boardContent = content;
+        this.comments = new ArrayList<>();
     }
 
     public void updateBoard(String title, String content) {
