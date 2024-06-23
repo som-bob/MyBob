@@ -2,6 +2,7 @@ package com.my.bob.board.service;
 
 import com.my.bob.board.entity.BoardComment;
 import com.my.bob.board.repository.BoardCommentRepository;
+import com.my.bob.constants.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,5 +19,10 @@ public class BoardCommentService {
     @Transactional
     public void save(BoardComment boardComment) {
         boardCommentRepository.save(boardComment);
+    }
+
+    public BoardComment getById(long commentId) {
+        return boardCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalStateException(ErrorMessage.INVALID_REQUEST));
     }
 }

@@ -2,13 +2,17 @@ package com.my.bob.board.entity;
 
 import com.my.bob.common.entity.BaseRegEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "BOB_BOARD_COMMENT")
 public class BoardComment extends BaseRegEntity {
 
@@ -31,4 +35,12 @@ public class BoardComment extends BaseRegEntity {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime modDate;
+
+    public BoardComment(Board board, BoardComment parentComment, String content) {
+        this.board = board;
+        if(parentComment != null) {
+            this.parentComment = parentComment;
+        }
+        this.commentContent = content;
+    }
 }

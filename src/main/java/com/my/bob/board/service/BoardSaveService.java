@@ -1,8 +1,10 @@
 package com.my.bob.board.service;
 
+import com.my.bob.board.dto.BoardCommentCreateDto;
 import com.my.bob.board.dto.BoardCreateDto;
 import com.my.bob.board.dto.BoardUpdateDto;
 import com.my.bob.board.entity.Board;
+import com.my.bob.board.entity.BoardComment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import static com.my.bob.constants.ErrorMessage.DO_NOT_HAVE_PERMISSION;
 public class BoardSaveService {
 
     private final BoardService boardService;
+    private final BoardCommentService boardCommentService;
 
     @Transactional
     public long saveNewBoard(BoardCreateDto dto){
@@ -40,5 +43,19 @@ public class BoardSaveService {
 
         board.updateBoard(dto.getTitle(), dto.getContent());
         boardService.save(board);
+    }
+
+    @Transactional
+    public void saveNewComment(long bordId, BoardCommentCreateDto dto) {
+        Board board = boardService.getById(bordId);
+
+        Long parentCommentId = dto.getParentCommentId();
+        BoardComment parentComment = null;
+        if(parentCommentId != null) {
+            parentComment = boardCommentService.getById(parentCommentId);
+        }
+
+        BoardComment boardComment = new BoardComment(board, parentComment, dto.getComment());
+        boardCommentService.save(boardComment);
     }
 }

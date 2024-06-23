@@ -1,5 +1,6 @@
 package com.my.bob.board.controller;
 
+import com.my.bob.board.dto.BoardCommentCreateDto;
 import com.my.bob.board.dto.BoardCreateDto;
 import com.my.bob.board.dto.BoardDto;
 import com.my.bob.board.dto.BoardUpdateDto;
@@ -22,7 +23,7 @@ public class BoardController {
     private final BoardConvertService boardConvertService;
 
     @PostMapping
-    public CommonResponse createBoard(@RequestBody BoardCreateDto dto) {
+    public CommonResponse addBoard(@RequestBody BoardCreateDto dto) {
         long boardId = boardSaveService.saveNewBoard(dto);
 
         return new CommonResponse(boardId);
@@ -40,12 +41,12 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public CommonResponse getBoard(@PathVariable long boardId) {
         BoardDto dto = boardConvertService.convertBoardDto(boardId);
+        // TODO 코멘트도 할 것
 
         return new CommonResponse(dto);
     }
 
-
-
+    // TODO 조회 조건까지 해서 추가
     @GetMapping("/list")
     public CommonResponse getBoardList(Principal principal){
         CommonResponse commonResponse = new CommonResponse();
@@ -53,6 +54,15 @@ public class BoardController {
         commonResponse.setData("ok");
 
         return commonResponse;
+    }
+
+    /* 댓글 */
+    @PostMapping("/{boardId}/comment")
+    public CommonResponse addComment(@PathVariable long boardId,
+                                     @RequestBody BoardCommentCreateDto dto) {
+        boardSaveService.saveNewComment(boardId, dto);
+
+        return new CommonResponse();
     }
 
 }
