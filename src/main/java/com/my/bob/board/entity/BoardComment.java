@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,9 +26,13 @@ public class BoardComment extends BaseRegEntity {
     @JoinColumn(name = "BOARD_ID",  nullable = false)
     private Board board;
 
+    // self reference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private BoardComment parentComment;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentComment")
+    private List<BoardComment> childComments;
 
     @Column(name = "comment_content", nullable = false, length = 1000)
     private String commentContent;

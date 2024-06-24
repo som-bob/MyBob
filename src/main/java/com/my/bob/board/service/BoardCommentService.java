@@ -28,4 +28,8 @@ public class BoardCommentService {
         return boardCommentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalStateException(ErrorMessage.INVALID_REQUEST));
     }
+
+    public List<BoardComment> getRootCommentBy(Board board) {
+        return boardCommentRepository.findAllByBoardAndParentCommentIsNullOrderByRegDateAsc(board);
+    }
 }

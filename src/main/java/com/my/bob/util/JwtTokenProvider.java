@@ -9,6 +9,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,6 +29,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -88,6 +90,7 @@ public class JwtTokenProvider {
         try{
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (Exception e) {
+            log.error("getClaims Error: {}",  e.getClass().getName());
             throw new AccessDeniedException(ErrorMessage.INVALID_REQUEST);  // ExpiredJwtException 초함
         }
     }
