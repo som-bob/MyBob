@@ -27,6 +27,9 @@ public class Board extends BaseRegEntity {
 
     private String boardContent;
 
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
+    private boolean isDelete;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
     List<BoardComment> comments;
 
@@ -37,11 +40,33 @@ public class Board extends BaseRegEntity {
         this.boardTitle = title;
         this.boardContent = content;
         this.comments = new ArrayList<>();
+        this.isDelete = false;
+    }
+
+    public String getBoardTitle() {
+        if(isDelete) {
+            return "삭제된 글입니다.";
+        }
+        return boardTitle;
+    }
+
+    public String getBoardContent() {
+        if(isDelete) {
+            return "삭제된 글입니다.";
+        }
+        return boardContent;
     }
 
     public void updateBoard(String title, String content) {
         this.boardTitle = title;
         this.boardContent = content;
+    }
 
+    public void deleteBoard(){
+        this.isDelete = true;
+    }
+
+    public boolean isRegistrant(String requestUser) {
+        return this.getRegId().equals(requestUser);
     }
 }

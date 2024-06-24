@@ -21,6 +21,9 @@ public class BoardConvertService {
         BoardDto dto = new BoardDto();
         dto.setTitle(board.getBoardTitle());
         dto.setContent(board.getBoardContent());
+        dto.setDelete(board.isDelete());
+
+        // TODO 코멘트도 추가 할 것
         return dto;
     }
 }

@@ -1,10 +1,8 @@
 package com.my.bob.board.controller;
 
-import com.my.bob.board.dto.BoardCommentCreateDto;
-import com.my.bob.board.dto.BoardCreateDto;
-import com.my.bob.board.dto.BoardDto;
-import com.my.bob.board.dto.BoardUpdateDto;
+import com.my.bob.board.dto.*;
 import com.my.bob.board.service.BoardConvertService;
+import com.my.bob.board.service.BoardDeleteService;
 import com.my.bob.board.service.BoardSaveService;
 import com.my.bob.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +19,7 @@ public class BoardController {
 
     private final BoardSaveService boardSaveService;
     private final BoardConvertService boardConvertService;
+    private final BoardDeleteService boardDeleteService;
 
     @PostMapping
     public CommonResponse addBoard(@RequestBody BoardCreateDto dto) {
@@ -29,21 +28,28 @@ public class BoardController {
         return new CommonResponse(boardId);
     }
 
+    @GetMapping("/{boardId}")
+    public CommonResponse getBoard(@PathVariable long boardId) {
+        BoardDto dto = boardConvertService.convertBoardDto(boardId);
+
+        return new CommonResponse(dto);
+    }
+
     @PutMapping("/{boardId}")
     public CommonResponse updateBoard(@PathVariable long boardId,
                                       @RequestBody BoardUpdateDto dto, Principal principal) {
-        String userName = principal.getName();
-        boardSaveService.updateBoard(boardId, userName, dto);
+        String requestUser = principal.getName();
+        boardSaveService.updateBoard(boardId, requestUser, dto);
 
         return new CommonResponse();
     }
 
-    @GetMapping("/{boardId}")
-    public CommonResponse getBoard(@PathVariable long boardId) {
-        BoardDto dto = boardConvertService.convertBoardDto(boardId);
-        // TODO 코멘트도 할 것
+    @DeleteMapping("/{boardId}")
+    public CommonResponse deleteBoard(@PathVariable long boardId, Principal principal) {
+        String requestUser = principal.getName();
+        boardDeleteService.deleteBoard(boardId, requestUser);
 
-        return new CommonResponse(dto);
+        return new CommonResponse();
     }
 
     // TODO 조회 조건까지 해서 추가
@@ -61,6 +67,23 @@ public class BoardController {
     public CommonResponse addComment(@PathVariable long boardId,
                                      @RequestBody BoardCommentCreateDto dto) {
         boardSaveService.saveNewComment(boardId, dto);
+
+        return new CommonResponse();
+    }
+
+    @PutMapping("/comment/{commentId}")
+    public CommonResponse updateComment(@PathVariable long commentId,
+                                        @RequestBody BoardCommentUpdateDto dto, Principal principal) {
+        String requestUser = principal.getName();
+        boardSaveService.updateComment(commentId, requestUser, dto);
+
+        return new CommonResponse();
+    }
+
+    @DeleteMapping("/comment/{commentId}")
+    public CommonResponse deleteComment(@PathVariable long commentId, Principal principal) {
+        String requestUser = principal.getName();
+        boardDeleteService.deleteComment(commentId, requestUser);
 
         return new CommonResponse();
     }

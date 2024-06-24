@@ -23,4 +23,5 @@ public class BoardService {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalStateException(ErrorMessage.NON_EXISTENT_POST));
     }
+
 }

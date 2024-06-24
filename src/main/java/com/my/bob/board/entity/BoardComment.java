@@ -32,6 +32,9 @@ public class BoardComment extends BaseRegEntity {
     @Column(name = "comment_content", nullable = false, length = 1000)
     private String commentContent;
 
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
+    private boolean isDelete;
+
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime modDate;
@@ -42,5 +45,26 @@ public class BoardComment extends BaseRegEntity {
             this.parentComment = parentComment;
         }
         this.commentContent = content;
+        this.isDelete = false;
     }
+
+    public String getCommentContent() {
+        if(isDelete) {
+            return "삭제된 댓글입니다.";
+        }
+        return commentContent;
+    }
+
+    public void updateComment(String context) {
+        this.commentContent = context;
+    }
+
+    public void deleteComment(){
+        this.isDelete = true;
+    }
+
+    public boolean isRegistrant(String requestUser) {
+        return this.getRegId().equals(requestUser);
+    }
+
 }
