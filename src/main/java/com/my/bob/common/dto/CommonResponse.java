@@ -27,6 +27,10 @@ public class CommonResponse {
         setData(data);
     }
 
+    public CommonResponse(HttpStatus httpStatus) {
+        this.status = httpStatus.value();
+    }
+
     public void setError(HttpStatus httpStatus, String message) {
         setResult("ERROR");
         setStatus(httpStatus.value());

@@ -7,6 +7,7 @@ import com.my.bob.board.service.BoardSaveService;
 import com.my.bob.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -25,7 +26,9 @@ public class BoardController {
     public CommonResponse addBoard(@RequestBody BoardCreateDto dto) {
         long boardId = boardSaveService.saveNewBoard(dto);
 
-        return new CommonResponse(boardId);
+        CommonResponse commonResponse = new CommonResponse(HttpStatus.CREATED.value());
+        commonResponse.setData(boardId);
+        return commonResponse;
     }
 
     @GetMapping("/{boardId}")
@@ -38,10 +41,10 @@ public class BoardController {
     @PutMapping("/{boardId}")
     public CommonResponse updateBoard(@PathVariable long boardId,
                                       @RequestBody BoardUpdateDto dto, Principal principal) {
-        String requestUser = principal.getName();
-        boardSaveService.updateBoard(boardId, requestUser, dto);
+        String userName = principal.getName();
+        boardSaveService.updateBoard(boardId, userName, dto);
 
-        return new CommonResponse();
+        return new CommonResponse(HttpStatus.NO_CONTENT.value());
     }
 
     @DeleteMapping("/{boardId}")
@@ -49,7 +52,7 @@ public class BoardController {
         String requestUser = principal.getName();
         boardDeleteService.deleteBoard(boardId, requestUser);
 
-        return new CommonResponse();
+        return new CommonResponse(HttpStatus.NO_CONTENT.value());
     }
 
     // TODO 조회 조건까지 해서 추가
@@ -68,7 +71,7 @@ public class BoardController {
                                      @RequestBody BoardCommentCreateDto dto) {
         boardSaveService.saveNewComment(boardId, dto);
 
-        return new CommonResponse();
+        return new CommonResponse(HttpStatus.NO_CONTENT.value());
     }
 
     @PutMapping("/comment/{commentId}")
@@ -77,7 +80,7 @@ public class BoardController {
         String requestUser = principal.getName();
         boardSaveService.updateComment(commentId, requestUser, dto);
 
-        return new CommonResponse();
+        return new CommonResponse(HttpStatus.NO_CONTENT.value());
     }
 
     @DeleteMapping("/comment/{commentId}")
@@ -85,7 +88,7 @@ public class BoardController {
         String requestUser = principal.getName();
         boardDeleteService.deleteComment(commentId, requestUser);
 
-        return new CommonResponse();
+        return new CommonResponse(HttpStatus.NO_CONTENT.value());
     }
 
 }
