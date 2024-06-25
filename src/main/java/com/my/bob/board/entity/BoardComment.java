@@ -2,7 +2,6 @@ package com.my.bob.board.entity;
 
 import com.my.bob.common.entity.BaseRegEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "BOB_BOARD_COMMENT")
 public class BoardComment extends BaseRegEntity {
 
