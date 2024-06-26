@@ -10,5 +10,7 @@ public class BoardCommentDto {
     private long commentId;
     private String content;
 
+    private boolean isDelete;
+
     private List<BoardCommentDto> subComments;
 }

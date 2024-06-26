@@ -54,6 +54,7 @@ public class BoardConvertService {
         BoardCommentDto commentDto = new BoardCommentDto();
         commentDto.setCommentId(commentId);
         commentDto.setContent(boardComment.getCommentContent());
+        commentDto.setDelete(boardComment.isDelete());
         commentIdSet.add(commentId);
 
         List<BoardComment> childComment = boardComment.getChildComments();      // N + 1 문제?
