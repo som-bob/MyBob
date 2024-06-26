@@ -1,7 +1,5 @@
 package com.my.bob.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.bob.common.dto.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -10,7 +8,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 public class CustomerAccessDeniedHandler extends AccessDeniedHandlerImpl {
@@ -20,18 +17,16 @@ public class CustomerAccessDeniedHandler extends AccessDeniedHandlerImpl {
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
-        // 우선 forbidden 준다
+        // CommonResponse 말고 UNAUTHORIZED 준다
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);      // JSON 타입 반환
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());   // 한국어 허용
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.UNAUTHORIZED, accessDeniedException.getMessage());
-
-        PrintWriter responseWriter = response.getWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        responseWriter.write(objectMapper.writeValueAsString(commonResponse));
-        responseWriter.flush();
-        responseWriter.close();
+//        CommonResponse commonResponse = new CommonResponse(HttpStatus.UNAUTHORIZED);
+//        PrintWriter responseWriter = response.getWriter();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        responseWriter.write(objectMapper.writeValueAsString(commonResponse));
+//        responseWriter.flush();
+//        responseWriter.close();
     }
 }
