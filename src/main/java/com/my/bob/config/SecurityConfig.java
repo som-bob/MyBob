@@ -18,8 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration
-@EnableWebSecurity
+@Configuration          // Spring의 설정 클래스임을 나타내는 어노테이션
+@EnableWebSecurity      // Spring Security를 활성화하는 어노테이션
 @RequiredArgsConstructor
 @ComponentScan(basePackages = "com.my.bob")
 public class SecurityConfig {
