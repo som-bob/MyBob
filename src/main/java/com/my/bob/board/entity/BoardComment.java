@@ -2,6 +2,7 @@ package com.my.bob.board.entity;
 
 import com.my.bob.common.entity.BaseRegEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,8 +12,8 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
 @Table(name = "BOB_BOARD_COMMENT")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // protected 생성자 허용
 public class BoardComment extends BaseRegEntity {
 
     @Id
