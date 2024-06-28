@@ -1,8 +1,8 @@
 package com.my.bob.filter;
 
 import com.my.bob.constants.AuthConstant;
-import com.my.bob.util.JwtTokenProvider;
-import com.my.bob.util.TokenUtil;
+import com.my.bob.jwt.JwtTokenProvider;
+import com.my.bob.jwt.TokenUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

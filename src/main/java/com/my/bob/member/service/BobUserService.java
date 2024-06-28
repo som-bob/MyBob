@@ -25,7 +25,7 @@ public class BobUserService {
     }
 
     public BobUser getByEmail(String email) {
-        return bobRepository.findByEmail(email)
+        return bobRepository.findOneByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.USER_CANNOT_BE_FOUND));
     }
 

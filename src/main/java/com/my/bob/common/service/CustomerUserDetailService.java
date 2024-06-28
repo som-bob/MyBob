@@ -27,8 +27,9 @@ public class CustomerUserDetailService implements UserDetailsService {
         }
 
         BobUser user = bobUserService.getByEmail(userEmail);
+        String authority = user.getAuthority();
         Collection<? extends GrantedAuthority> authorities =
-                List.of(new SimpleGrantedAuthority(user.getAuthority().name()));
+                List.of(new SimpleGrantedAuthority(authority));
 
         return new User(userEmail, user.getPassword(), authorities);
     }

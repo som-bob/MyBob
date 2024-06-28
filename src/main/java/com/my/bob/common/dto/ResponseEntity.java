@@ -1,7 +1,6 @@
 package com.my.bob.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.my.bob.constants.RespMessageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

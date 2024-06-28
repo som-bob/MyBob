@@ -34,13 +34,13 @@ public class BobUser extends BaseTimeEntity {
     @Column(nullable = false)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private String authority;
 
     private LocalDateTime lastLoginDate;
 
     @Builder
     public BobUser(String email, String password, String nickName) {
+        // 일반 유저 회원가입
         this.email = email;
         this.password = password;
         if(StringUtils.isBlank(nickName)) {
@@ -48,7 +48,7 @@ public class BobUser extends BaseTimeEntity {
         } else {
             this.nickName = nickName;
         }
-        this.authority = Authority.ROLE_USER;
+        this.authority = Authority.ROLE_USER.name();
     }
 
     public void updateNickName(String nickName) {

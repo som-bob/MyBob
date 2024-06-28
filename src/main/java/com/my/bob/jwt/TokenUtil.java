@@ -1,4 +1,4 @@
-package com.my.bob.util;
+package com.my.bob.jwt;
 
 import com.my.bob.constants.AuthConstant;
 import io.micrometer.common.util.StringUtils;

@@ -1,7 +1,6 @@
-package com.my.bob.util;
+package com.my.bob.jwt;
 
 import com.my.bob.constants.AuthConstant;
-import com.my.bob.constants.Authority;
 import com.my.bob.constants.ErrorMessage;
 import com.my.bob.member.dto.TokenDto;
 import io.jsonwebtoken.Claims;
@@ -47,7 +46,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto generateTokenDto(String email, Authority authority) {
+    public TokenDto generateTokenDto(String email, String authority) {
         // TODO check 여러 개의 권한을 받는 것으로 변경?
         Date now = Calendar.getInstance().getTime();
 
@@ -97,10 +96,10 @@ public class JwtTokenProvider {
 
 
     /* private method */
-    private String getToken(String subject, Authority authority, Date expireDate) {
+    private String getToken(String subject, String authority, Date expireDate) {
         Claims claims = Jwts.claims();
         claims.setIssuedAt(expireDate);
-        claims.put("auth", authority.name());
+        claims.put("auth", authority);
         claims.setExpiration(expireDate);
         claims.setSubject(subject);
 
