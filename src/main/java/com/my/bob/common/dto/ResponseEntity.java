@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommonResponse {
+public class ResponseEntity {
 
     private String result;
     private int status = HttpStatus.OK.value();
@@ -23,12 +23,8 @@ public class CommonResponse {
     private Object paging;
     private Object data;
 
-    public CommonResponse(Object data) {
+    public ResponseEntity(Object data) {
         setData(data);
-    }
-
-    public CommonResponse(HttpStatus httpStatus) {
-        this.status = httpStatus.value();
     }
 
     public void setError(HttpStatus httpStatus, String message) {
@@ -37,11 +33,6 @@ public class CommonResponse {
         setMessage(message);
     }
 
-    public void setError(HttpStatus httpStatus, RespMessageType respMessageType) {
-        setResult("ERROR");
-        setStatus(httpStatus.value());
-        setMessage(respMessageType.getTitle());
-    }
 
     public void setError(HttpStatus httpStatus, List<FieldError> fieldErrors) {
         setResult("ERROR");

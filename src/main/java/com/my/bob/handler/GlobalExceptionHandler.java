@@ -1,6 +1,6 @@
 package com.my.bob.handler;
 
-import com.my.bob.common.dto.CommonResponse;
+import com.my.bob.common.dto.ResponseEntity;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.NonExistentUserException;
 import io.micrometer.common.util.StringUtils;
@@ -19,12 +19,12 @@ public class GlobalExceptionHandler {
 
     // Dto validate handler
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public CommonResponse handle(MethodArgumentNotValidException e, WebRequest request) {
+    public ResponseEntity handle(MethodArgumentNotValidException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getFieldErrors());
-        return commonResponse;
+        ResponseEntity responseEntity = new ResponseEntity();
+        responseEntity.setError(HttpStatus.BAD_REQUEST, e.getFieldErrors());
+        return responseEntity;
     }
 
     // LoginService, UserDetailService
@@ -33,12 +33,12 @@ public class GlobalExceptionHandler {
             BadRequestException.class,
             NonExistentUserException.class,
             UsernameNotFoundException.class})
-    public CommonResponse handle(BadCredentialsException e, WebRequest request) {
+    public ResponseEntity handle(BadCredentialsException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
-        return commonResponse;
+        ResponseEntity responseEntity = new ResponseEntity();
+        responseEntity.setError(HttpStatus.BAD_REQUEST, e.getMessage());
+        return responseEntity;
     }
 
     // 모든 exception 발생시, 로깅

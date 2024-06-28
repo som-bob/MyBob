@@ -4,7 +4,7 @@ import com.my.bob.board.dto.*;
 import com.my.bob.board.service.BoardConvertService;
 import com.my.bob.board.service.BoardDeleteService;
 import com.my.bob.board.service.BoardSaveService;
-import com.my.bob.common.dto.CommonResponse;
+import com.my.bob.common.dto.ResponseEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,72 +23,72 @@ public class BoardController {
     private final BoardDeleteService boardDeleteService;
 
     @PostMapping
-    public CommonResponse addBoard(@RequestBody BoardCreateDto dto) {
+    public ResponseEntity addBoard(@RequestBody BoardCreateDto dto) {
         long boardId = boardSaveService.saveNewBoard(dto);
 
-        CommonResponse commonResponse = new CommonResponse(HttpStatus.CREATED.value());
-        commonResponse.setData(boardId);
-        return commonResponse;
+        ResponseEntity responseEntity = new ResponseEntity(HttpStatus.CREATED.value());
+        responseEntity.setData(boardId);
+        return responseEntity;
     }
 
     @GetMapping("/{boardId}")
-    public CommonResponse getBoard(@PathVariable long boardId) {
+    public ResponseEntity getBoard(@PathVariable long boardId) {
         BoardDto dto = boardConvertService.convertBoardDto(boardId);
 
-        return new CommonResponse(dto);
+        return new ResponseEntity(dto);
     }
 
     @PutMapping("/{boardId}")
-    public CommonResponse updateBoard(@PathVariable long boardId,
+    public ResponseEntity updateBoard(@PathVariable long boardId,
                                       @RequestBody BoardUpdateDto dto, Principal principal) {
         String userName = principal.getName();
         boardSaveService.updateBoard(boardId, userName, dto);
 
-        return new CommonResponse(HttpStatus.NO_CONTENT.value());
+        return new ResponseEntity(HttpStatus.NO_CONTENT.value());
     }
 
     @DeleteMapping("/{boardId}")
-    public CommonResponse deleteBoard(@PathVariable long boardId, Principal principal) {
+    public ResponseEntity deleteBoard(@PathVariable long boardId, Principal principal) {
         String requestUser = principal.getName();
         boardDeleteService.deleteBoard(boardId, requestUser);
 
-        return new CommonResponse(HttpStatus.NO_CONTENT.value());
+        return new ResponseEntity(HttpStatus.NO_CONTENT.value());
     }
 
     // TODO 조회 조건까지 해서 추가
     @GetMapping("/list")
-    public CommonResponse getBoardList(Principal principal){
-        CommonResponse commonResponse = new CommonResponse();
+    public ResponseEntity getBoardList(Principal principal){
+        ResponseEntity responseEntity = new ResponseEntity();
 
-        commonResponse.setData("ok");
+        responseEntity.setData("ok");
 
-        return commonResponse;
+        return responseEntity;
     }
 
     /* 댓글 */
     @PostMapping("/{boardId}/comment")
-    public CommonResponse addComment(@PathVariable long boardId,
+    public ResponseEntity addComment(@PathVariable long boardId,
                                      @RequestBody BoardCommentCreateDto dto) {
         boardSaveService.saveNewComment(boardId, dto);
 
-        return new CommonResponse(HttpStatus.NO_CONTENT.value());
+        return new ResponseEntity(HttpStatus.NO_CONTENT.value());
     }
 
     @PutMapping("/comment/{commentId}")
-    public CommonResponse updateComment(@PathVariable long commentId,
+    public ResponseEntity updateComment(@PathVariable long commentId,
                                         @RequestBody BoardCommentUpdateDto dto, Principal principal) {
         String requestUser = principal.getName();
         boardSaveService.updateComment(commentId, requestUser, dto);
 
-        return new CommonResponse(HttpStatus.NO_CONTENT.value());
+        return new ResponseEntity(HttpStatus.NO_CONTENT.value());
     }
 
     @DeleteMapping("/comment/{commentId}")
-    public CommonResponse deleteComment(@PathVariable long commentId, Principal principal) {
+    public ResponseEntity deleteComment(@PathVariable long commentId, Principal principal) {
         String requestUser = principal.getName();
         boardDeleteService.deleteComment(commentId, requestUser);
 
-        return new CommonResponse(HttpStatus.NO_CONTENT.value());
+        return new ResponseEntity(HttpStatus.NO_CONTENT.value());
     }
 
 }
