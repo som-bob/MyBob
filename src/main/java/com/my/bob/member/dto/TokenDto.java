@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 @Builder
 public class TokenDto {
 
-    private String grantType;
+    private String grantType;                   // JWT 토큰의 인증 방법
 
-    private String accessToken;
+    private String accessToken;                 // accessToken 값
 
-    private LocalDateTime accessTokenExpire;
+    private LocalDateTime accessTokenExpire;    // accessToken 인증 만료 시간
 
-    private String refreshToken;
+    private String refreshToken;                // refreshToken 값
 
-    private LocalDateTime refreshTokenExpire;
+    private LocalDateTime refreshTokenExpire;   // refreshToken 인증 만료 시간
 }

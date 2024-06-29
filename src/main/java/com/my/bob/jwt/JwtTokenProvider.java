@@ -41,27 +41,34 @@ public class JwtTokenProvider {
 
     private static final String TOKEN_AUTH_KEY = "auth";
 
+    // 컴포넌트 스캔을 통한 싱글톤 등록시 secretKey 값을 Base64로 디코딩하여 key[]로 세팅한다
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * JWT 토큰 발급
+     * @param email 유저 이메일. 차후 스프링 컨텍스트의 Authentication 안에 userName 값에 세팅된다
+     * @param authority 유저 권한
+     * @return TokenDto
+     */
     public TokenDto generateTokenDto(String email, String authority) {
-        // TODO check 여러 개의 권한을 받는 것으로 변경?
         Date now = Calendar.getInstance().getTime();
 
+        // access token
         Date accessTokenExpireDate = DateUtils.addMilliseconds(now, ACCESS_TOKEN_EXPIRE_TIME);
-        Date refreshTokenExpireDate = DateUtils.addMilliseconds(now, REFRESH_TOKEN_EXPIRE_TIME);
         String accessToken = getToken(email, authority, accessTokenExpireDate);
-        String refreshToken = getToken(email, authority, refreshTokenExpireDate);
-
         LocalDateTime accessTokenExpire = accessTokenExpireDate.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
+
+        // refresh token
+        Date refreshTokenExpireDate = DateUtils.addMilliseconds(now, REFRESH_TOKEN_EXPIRE_TIME);
+        String refreshToken = getToken(email, authority, refreshTokenExpireDate);
         LocalDateTime refreshTokenExpire = refreshTokenExpireDate.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
-
 
         return TokenDto.builder()
                 .grantType(AuthConstant.TOKEN_TYPE)
@@ -73,7 +80,6 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
-        // token expire time 지났을 경우, ExpiredJwtException 반환 된다
         Claims claims = getClaims(accessToken);
 
         // 권한 체크
@@ -87,15 +93,15 @@ public class JwtTokenProvider {
 
     public Claims getClaims(String token) {
         try{
+            // token expire time 지났을 경우, ExpiredJwtException 반환
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (Exception e) {
             log.error("getClaims Error: {}",  e.getClass().getName());
-            throw new AccessDeniedException(ErrorMessage.INVALID_REQUEST);  // ExpiredJwtException 초함
+            throw new AccessDeniedException(ErrorMessage.INVALID_REQUEST);  // ExpiredJwtException 포함
         }
     }
 
 
-    /* private method */
     private String getToken(String subject, String authority, Date expireDate) {
         Claims claims = Jwts.claims();
         claims.setIssuedAt(expireDate);

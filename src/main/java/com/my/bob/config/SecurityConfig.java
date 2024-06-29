@@ -23,11 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @ComponentScan(basePackages = "com.my.bob")
 public class SecurityConfig {
+
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomerUserDetailService customerUserDetailService;
 
     private final static String[] PERMIT_ALL = {
-            "/test/**",
+//            "/test/**",
             "/member/join",
             "/member/login",
             "/member/reissue"
@@ -56,8 +57,8 @@ public class SecurityConfig {
 
                 // 인증, 인가와 관련된 예어 처리 추가
                 .exceptionHandling(exceptionHandling  -> exceptionHandling
-                        .accessDeniedHandler(new CustomerAccessDeniedHandler())  // AccessDeniedHandler 설정
-                        .authenticationEntryPoint(new CustomerAuthenticationEntryPoint())  // AuthenticationEntryPoint 설정
+                        .accessDeniedHandler(new CustomerAccessDeniedHandler())             // AccessDeniedHandler 설정
+                        .authenticationEntryPoint(new CustomerAuthenticationEntryPoint())   // AuthenticationEntryPoint 설정
                 )
         ;
         return http.build();
