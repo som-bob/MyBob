@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseEntity {
+public class CommonResponse {
 
     private String result;
     private int status = HttpStatus.OK.value();
@@ -22,7 +22,7 @@ public class ResponseEntity {
     private Object paging;
     private Object data;
 
-    public ResponseEntity(Object data) {
+    public CommonResponse(Object data) {
         setData(data);
     }
 

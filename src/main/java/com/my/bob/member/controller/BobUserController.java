@@ -1,6 +1,6 @@
 package com.my.bob.member.controller;
 
-import com.my.bob.common.dto.ResponseEntity;
+import com.my.bob.common.dto.CommonResponse;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.DuplicateUserException;
 import com.my.bob.exception.NonExistentUserException;
@@ -27,38 +27,38 @@ public class BobUserController {
     private final LoginService loginService;
 
     @PostMapping("/join")
-    public ResponseEntity joinMember(@Valid @RequestBody final JoinUserDto dto){
-        ResponseEntity responseEntity = new ResponseEntity();
+    public CommonResponse joinMember(@Valid @RequestBody final JoinUserDto dto){
+        CommonResponse commonResponse = new CommonResponse();
 
         try {
             joinService.joinMember(dto);
         } catch (DuplicateUserException e) {
-            responseEntity.setError(HttpStatus.BAD_REQUEST, e.getMessage());
+            commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
-        return responseEntity;
+        return commonResponse;
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody final LoginDto dto) throws NonExistentUserException {
+    public CommonResponse login(@Valid @RequestBody final LoginDto dto) throws NonExistentUserException {
 
         TokenDto tokenDto = loginService.login(dto);
-        return new ResponseEntity(tokenDto);
+        return new CommonResponse(tokenDto);
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity reissue(HttpServletRequest request){
+    public CommonResponse reissue(HttpServletRequest request){
 
         TokenDto tokenDto = null;
         try {
             tokenDto = loginService.reissue(request);
         } catch (BadRequestException e) {/* do nothing, handler global Handler */}
-        return new ResponseEntity(tokenDto);
+        return new CommonResponse(tokenDto);
     }
 
     // TODO
     @PostMapping("/logout")
-    public ResponseEntity logout() {
+    public CommonResponse logout() {
 
         return null;
     }

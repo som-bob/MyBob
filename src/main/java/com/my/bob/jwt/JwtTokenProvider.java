@@ -41,34 +41,27 @@ public class JwtTokenProvider {
 
     private static final String TOKEN_AUTH_KEY = "auth";
 
-    // 컴포넌트 스캔을 통한 싱글톤 등록시 secretKey 값을 Base64로 디코딩하여 key[]로 세팅한다
+    // 컴포넌트 스캔을 통한 싱글톤 등록시 secretKey 값을 Bb
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    /**
-     * JWT 토큰 발급
-     * @param email 유저 이메일. 차후 스프링 컨텍스트의 Authentication 안에 userName 값에 세팅된다
-     * @param authority 유저 권한
-     * @return TokenDto
-     */
     public TokenDto generateTokenDto(String email, String authority) {
         Date now = Calendar.getInstance().getTime();
 
-        // access token
         Date accessTokenExpireDate = DateUtils.addMilliseconds(now, ACCESS_TOKEN_EXPIRE_TIME);
+        Date refreshTokenExpireDate = DateUtils.addMilliseconds(now, REFRESH_TOKEN_EXPIRE_TIME);
         String accessToken = getToken(email, authority, accessTokenExpireDate);
+        String refreshToken = getToken(email, authority, refreshTokenExpireDate);
+
         LocalDateTime accessTokenExpire = accessTokenExpireDate.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
-
-        // refresh token
-        Date refreshTokenExpireDate = DateUtils.addMilliseconds(now, REFRESH_TOKEN_EXPIRE_TIME);
-        String refreshToken = getToken(email, authority, refreshTokenExpireDate);
         LocalDateTime refreshTokenExpire = refreshTokenExpireDate.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
+
 
         return TokenDto.builder()
                 .grantType(AuthConstant.TOKEN_TYPE)
