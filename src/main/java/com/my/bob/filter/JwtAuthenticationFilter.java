@@ -11,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -25,7 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 해당 filter의 경우 api/a가 끝난후 api/b로 리다이렉트 될 경우 Filter가 두번 호출되거나 하는 것을 막을 수 있다
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,13 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = TokenUtil.parsingToken(authHeader);
         if(! StringUtils.isEmpty(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-
-            // 인증 객체의 email로 실제 유저인지 조회해본 다음에 SecutiryContextHolder에 셋팅한다
-            if(userDetailsService.loadUserByUsername(userEmail) != null) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);

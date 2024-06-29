@@ -17,6 +17,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CustomerUserDetailService implements UserDetailsService {
+    // 현재는 로그인시에 BobUseService 사용한다.
+    // 또한 email을 통한 유저 정보 조회 후, 이메일, 권한 정도만 세팅해서 UserDetails 값으로 전해주기 때문에, 현재로서 사용처는 없다.
+    // 만약에 CustomerUserDetail을 만들어 이메일, 권한, 사진 같은 정보를 더 세팅해 줘야 할 경우, 해당 서비스를 LoginService에서 사용하도록 한다.
 
     private final BobUserService bobUserService;
 

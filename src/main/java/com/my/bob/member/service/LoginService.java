@@ -34,7 +34,7 @@ public class LoginService {
     @Transactional
     public TokenDto login(LoginDto dto) throws NonExistentUserException {
         String email = dto.getEmail();
-        if(! bobUserService.existByEmail(email)) {      // 이메일로 유저가 검색되지 않을 경우
+        if(! bobUserService.existByEmail(email)) {
             throw new NonExistentUserException("로그인 정보를 확인해주세요.");
         }
 
@@ -45,6 +45,7 @@ public class LoginService {
 
         // 마지막 로그인 일시 업데이트
         user.updateLastLoginDate();
+        bobUserService.save(user);
 
         // refreshToken 추가
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(email, user.getAuthority());
