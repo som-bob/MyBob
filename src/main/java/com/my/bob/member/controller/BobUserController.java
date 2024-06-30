@@ -47,12 +47,9 @@ public class BobUserController {
     }
 
     @PostMapping("/reissue")
-    public CommonResponse reissue(HttpServletRequest request){
+    public CommonResponse reissue(HttpServletRequest request) throws BadRequestException {
 
-        TokenDto tokenDto = null;
-        try {
-            tokenDto = loginService.reissue(request);
-        } catch (BadRequestException e) {/* do nothing, handler global Handler */}
+        TokenDto tokenDto = loginService.reissue(request);
         return new CommonResponse(tokenDto);
     }
 
