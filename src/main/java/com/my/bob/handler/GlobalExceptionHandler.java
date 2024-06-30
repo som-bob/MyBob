@@ -1,6 +1,7 @@
 package com.my.bob.handler;
 
 import com.my.bob.common.dto.CommonResponse;
+import com.my.bob.constants.ErrorMessage;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.UserLoginException;
 import io.micrometer.common.util.StringUtils;
@@ -87,7 +88,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    /* 구분되지 않은 모든 Exception 발생시 - 서버 Error return */
+    /** ExceptionHandler 정의되지 않은 모든 Exception 발생시 - 서버 Error return */
     @ExceptionHandler(value = {
             Exception.class
     })
@@ -95,7 +96,7 @@ public class GlobalExceptionHandler {
         exceptionLogging(e, request);
 
         CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        commonResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessage.CONTACT_ADMINISTRATOR);
         return commonResponse;
     }
 

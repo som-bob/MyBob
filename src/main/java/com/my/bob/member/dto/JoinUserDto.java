@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 public class JoinUserDto {
 
-    @NotBlank(message = ErrorMessage.INVALID_EMAIL)
+    @NotBlank(message = ErrorMessage.EMPTY_EMAIL)
     @Email(message = ErrorMessage.INVALID_EMAIL)
     private String email;
 
-    @NotBlank(message = ErrorMessage.INVALID_PASSWORD)
+    @NotBlank(message = ErrorMessage.EMPTY_PASSWORD)
     @Pattern(regexp = RegexType.PASSWORD, message = ErrorMessage.INVALID_PASSWORD)
     private String password;
 

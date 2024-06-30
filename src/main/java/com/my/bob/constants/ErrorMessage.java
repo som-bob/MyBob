@@ -2,11 +2,11 @@ package com.my.bob.constants;
 
 public class ErrorMessage {
 
-    // 회원 가입
+    // 회원
     public static final String INVALID_EMAIL = "올바르지 않은 이메일 형식입니다.";
     public static final String INVALID_PASSWORD = "올바르지 않은 패스워드를 형식입니다.";
 
-    // 로그인
+    public static final String EMPTY_EMAIL = "이메일을 입력해주세요.";
     public static final String EMPTY_PASSWORD = "비밀번호를 입력해주세요.";
 
     // Common
@@ -20,5 +20,10 @@ public class ErrorMessage {
 
     // 수정, 삭제 권한 관련
     public static final String DO_NOT_HAVE_PERMISSION = "권한이 없습니다.";
+
+
+    // 관리자 문의
+    public static final String CONTACT_ADMINISTRATOR = "관리자에게 문의하세요.";
+
 
 }
