@@ -16,7 +16,7 @@ public class BobUserRefreshToken {
     @Id
     @Column(name = "TOKEN_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tokenId;
+    private long tokenId;
 
     private long userId;
 
