@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BobUserRefreshTokenRepository extends JpaRepository<BobUserRefreshToken, Integer> {
+public interface BobUserRefreshTokenRepository extends JpaRepository<BobUserRefreshToken, Long> {
 
     boolean existsByRefreshToken(String refreshToken);
 
