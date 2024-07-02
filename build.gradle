@@ -35,7 +35,9 @@ dependencies {
 	/* flyway */
 	implementation group: 'org.flywaydb', name: 'flyway-core', version: '10.10.0'
 	implementation group: 'org.flywaydb', name: 'flyway-mysql', version: '10.10.0'
-
+	/* QueryDsl */
+	implementation 'com.querydsl:querydsl-jpa:5.1.0'
+	implementation 'com.querydsl:querydsl-apt:5.1.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
