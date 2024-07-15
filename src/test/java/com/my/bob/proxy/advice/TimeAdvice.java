@@ -1,4 +1,4 @@
-package com.my.bob.proxy.common.advice;
+package com.my.bob.proxy.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
