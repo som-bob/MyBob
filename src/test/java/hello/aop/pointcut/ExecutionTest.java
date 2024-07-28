@@ -71,4 +71,58 @@ public class ExecutionTest {
         assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
     }
 
+    /*
+    3. 메서드 이름 매칭 관련 포인트컷
+     */
+    @Test
+    void nameMatch(){
+        pointcut.setExpression("execution(* hello(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+    @Test
+    void nameMatchStar1(){
+        pointcut.setExpression("execution(* hel*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+    @Test
+    void nameMatcherFalse(){
+        pointcut.setExpression("execution(* nono(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isFalse();
+    }
+
+    /*
+    4. 패키지 매칭 관련 포인트컷
+     */
+    @Test
+    void packageExactMatch1(){
+        pointcut.setExpression("execution(* hello.aop.member.MemberServiceImpl.hello(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+    @Test
+    void packageExactMatch2(){
+        pointcut.setExpression("execution(* hello.aop.member.*.*(..))");
+        // hello.aop.member.*(1).*(2)
+        // (1): 타입
+        // (2): 메서드 이름
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+    @Test
+    void packageExactMatchFalse(){
+        pointcut.setExpression("execution(* hello.aop.*.*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isFalse();
+    }
+    @Test
+    void packageMatchSubPackage1(){
+        pointcut.setExpression("execution(* hello.aop.member..*.*(..))");
+        // 패키지에서 . , .. 의 차이를 이해해야 한다.
+        // . : 정확하게 해당 위치의 패키지
+        // .. : 해당 위치의 패키지와 그 하위 패키지도 포함
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+    @Test
+    void packageMatchSubPackage2(){
+        pointcut.setExpression("execution(* hello.aop..*.*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
 }
