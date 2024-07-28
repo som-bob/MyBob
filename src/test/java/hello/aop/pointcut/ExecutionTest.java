@@ -33,7 +33,7 @@ public class ExecutionTest {
      * execution(modifiers-pattern?
      *          ret-type-pattern
      *          declaring-type-pattern?name-pattern(param-pattern)
-     *          throws-pattern?)
+     *          throws-pattern?) <br/>
      * execution(접근제어자? 반환타입 선언타입?메서드이름(파라미터) 예외?) <br/>
      *      메소드 실행 조인 포인트를 매칭한다.
      *      ?는 생략할 수 있다.
@@ -160,6 +160,16 @@ public class ExecutionTest {
     /*
     파라미터 매칭
      */
+    /**
+     * execution 파라미터 매칭 규칙은 다음과 같다.<br/>
+     * (String) : 정확하게 String 타입 파라미터<br/>
+     * () : 파라미터가 없어야 한다.<br/>
+     * (*) : 정확히 하나의 파라미터, 단 모든 타입을 허용한다.<br/>
+     * (*, *) : 정확히 두 개의 파라미터, 단 모든 타입을 허용한다.<br/>
+     * (..) : 숫자와 무관하게 모든 파라미터, 모든 타입을 허용한다. 참고로 파라미터가 없어도 된다. 0..* 로 이해하면 된다.<br/>
+     * (String, ..) : String 타입으로 시작해야 한다. 숫자와 무관하게 모든 파라미터, 모든 타입을 허용한다.<br/>
+     * 예) (String) , (String, Xxx) , (String, Xxx, Xxx) 허용<br/>
+     */
     // String 타입의 파라미터 허용
     // (String)
     @Test
@@ -199,4 +209,5 @@ public class ExecutionTest {
         pointcut.setExpression("execution(* *(String, ..))");
         assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
     }
+
 }
