@@ -158,8 +158,45 @@ public class ExecutionTest {
     }
 
     /*
-    파라미턴 매칭
+    파라미터 매칭
      */
+    // String 타입의 파라미터 허용
+    // (String)
+    @Test
+    void argsMatch(){
+        pointcut.setExpression("execution(* *(String))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
 
+    // 파라미터가 없어야함
+    // ()
+    @Test
+    void argsMatchNoArgs(){
+        pointcut.setExpression("execution(* *())");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isFalse();
+    }
 
+    // 정확히 하나의 파라미터 허용, 모든 타입 허용
+    // (Xxx)
+    @Test
+    void argsMatchStart(){
+        pointcut.setExpression("execution(* *(*))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    // 숫자와 무관하게 모든 파라미터, 모든 타입 허용
+    // 파라미터가 없어도 됨
+    // (), (Xxx), (Xxx, Xxx)
+    @Test
+    void argsMatchAll(){
+        pointcut.setExpression("execution(* *(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    // String 타입으로 시작, 숫자와 무관하게 모든 파라미터, 모든 타입 허용
+    @Test
+    void argsMatchComplex(){
+        pointcut.setExpression("execution(* *(String, ..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
 }
