@@ -22,6 +22,14 @@ public class BoardController {
     private final BoardConvertService boardConvertService;
     private final BoardDeleteService boardDeleteService;
 
+    @GetMapping
+    public CommonResponse getBoardList(@ModelAttribute BoardSearchDto dto){
+        CommonResponse commonResponse = new CommonResponse();
+
+        commonResponse.setData("ok");
+
+        return commonResponse;
+    }
     @PostMapping
     public CommonResponse addBoard(@RequestBody BoardCreateDto dto) {
         long boardId = boardSaveService.saveNewBoard(dto);
@@ -55,15 +63,7 @@ public class BoardController {
         return new CommonResponse(HttpStatus.NO_CONTENT.value());
     }
 
-    // TODO 조회 조건까지 해서 추가
-    @GetMapping("/list")
-    public CommonResponse getBoardList(Principal principal){
-        CommonResponse commonResponse = new CommonResponse();
 
-        commonResponse.setData("ok");
-
-        return commonResponse;
-    }
 
     /* 댓글 */
     @PostMapping("/{boardId}/comment")

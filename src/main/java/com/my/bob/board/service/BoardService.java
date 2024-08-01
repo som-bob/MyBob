@@ -1,6 +1,7 @@
 package com.my.bob.board.service;
 
 import com.my.bob.board.entity.Board;
+import com.my.bob.board.repository.BoardQueryRepository;
 import com.my.bob.board.repository.BoardRepository;
 import com.my.bob.constants.ErrorMessage;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final BoardQueryRepository boardQueryRepository;
 
     @Transactional
     public void save(Board board) {

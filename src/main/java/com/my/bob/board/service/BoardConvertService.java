@@ -24,6 +24,8 @@ public class BoardConvertService {
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
 
+
+
     public BoardDto convertBoardDto(long boardId) {
         Board board = boardService.getById(boardId);
 
@@ -47,6 +49,7 @@ public class BoardConvertService {
         return dto;
     }
 
+    /* private */
     private BoardCommentDto convertCommentDto(BoardComment boardComment, Set<Long> commentIdSet){
         long commentId = boardComment.getCommentId();
         if(commentIdSet.contains(commentId)) return null;

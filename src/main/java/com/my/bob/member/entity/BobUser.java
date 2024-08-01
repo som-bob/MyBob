@@ -4,6 +4,7 @@ import com.my.bob.common.entity.BaseTimeEntity;
 import com.my.bob.constants.Authority;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
+    import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +17,8 @@ import static com.my.bob.util.RandomUtil.createRandomNumeric;
 @Entity
 @Getter
 @Table(name = "BOB_USER")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // protected 생성자 허용
 public class BobUser extends BaseTimeEntity {
-    // setter 사용하지 않는 방향으로 개발 진행 -> update 어떻게 대체할지 찾아볼 것
 
     @Id
     @Column(name = "USER_ID")
