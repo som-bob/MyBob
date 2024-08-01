@@ -2,20 +2,24 @@ package com.my.bob.board.repository;
 
 import com.my.bob.board.dto.BoardSearchDto;
 import com.my.bob.board.entity.Board;
+import com.my.bob.util.DateConvertUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.type.descriptor.DateTimeUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.my.bob.board.entity.QBoard.board;
+import static com.my.bob.util.DateConvertUtil.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -41,15 +45,21 @@ public class BoardQueryRepository {
     private JPAQuery<Board> selectBoardBySearchDto(BoardSearchDto dto) {
         return jpaQueryFactory.select(board)
                 .from(board)
-                .where(titleExpression(dto))
-                .where(contentExpression(dto));
+                .where(
+                        titleExpression(dto),
+                        contentExpression(dto),
+                        betweenRegDate(dto)
+                );
     }
 
     private Long getBoardCountBySearchDto(BoardSearchDto dto) {
         Long total = jpaQueryFactory.select(board.count())
                 .from(board)
-                .where(titleExpression(dto))
-                .where(contentExpression(dto))
+                .where(
+                        titleExpression(dto),
+                        contentExpression(dto),
+                        betweenRegDate(dto)
+                )
                 .fetchOne();
         return total == null ? 0 : total;
     }
@@ -74,20 +84,28 @@ public class BoardQueryRepository {
     }
 
     private BooleanExpression betweenRegDate(BoardSearchDto dto){
-        String regDateStart = dto.getRegDateStart();
-        String regDateEnd = dto.getRegDateEnd();
+        String regDateStartStr = dto.getRegDateStart();
+        String regDateEndStr = dto.getRegDateEnd();
 
-        if(StringUtils.isEmpty(regDateStart) && StringUtils.isEmpty(regDateEnd)) {
+        // 날짜 정보 없음
+        if(StringUtils.isEmpty(regDateStartStr) && StringUtils.isEmpty(regDateEndStr)) {
             return null;
-        } else if(StringUtils.isEmpty(regDateEnd)) {
-            return null;
+        }
 
-        } else if(StringUtils.isEmpty(regDateStart)) {
-            return null;
+        // 날짜 존재. 비교
+        LocalDateTime regDateStart = convertStringToDate(regDateStartStr, DateTimeUtils.FORMAT_STRING_DATE);
+        LocalDateTime regDateEnd = convertStringToDate(regDateEndStr, DateTimeUtils.FORMAT_STRING_DATE);
 
+        if(regDateEnd == null) {
+            return board.regDate.goe(regDateStart);     // goe: regDate >= regDateStart
+        }
+
+        // regDateEnd 는 다음날 00:00:00로 세팅해서 비교
+        regDateEnd = regDateEnd.plusDays(1);
+        if(regDateStart == null) {
+            return board.regDate.lt(regDateEnd);        // lt: regDate < regDateEnd (같거나로 하려면 loe)
         } else {
-            return null;
-
+            return board.regDate.between(regDateStart, regDateEnd);
         }
     }
 
