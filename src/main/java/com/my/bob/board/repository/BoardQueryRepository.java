@@ -73,4 +73,22 @@ public class BoardQueryRepository {
         return board.boardContent.containsIgnoreCase(boardContent);
     }
 
+    private BooleanExpression betweenRegDate(BoardSearchDto dto){
+        String regDateStart = dto.getRegDateStart();
+        String regDateEnd = dto.getRegDateEnd();
+
+        if(StringUtils.isEmpty(regDateStart) && StringUtils.isEmpty(regDateEnd)) {
+            return null;
+        } else if(StringUtils.isEmpty(regDateEnd)) {
+            return null;
+
+        } else if(StringUtils.isEmpty(regDateStart)) {
+            return null;
+
+        } else {
+            return null;
+
+        }
+    }
+
 }
