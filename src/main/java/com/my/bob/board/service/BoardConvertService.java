@@ -2,14 +2,21 @@ package com.my.bob.board.service;
 
 import com.my.bob.board.dto.BoardCommentDto;
 import com.my.bob.board.dto.BoardDto;
+import com.my.bob.board.dto.BoardSearchDto;
+import com.my.bob.board.dto.BoardTitleDto;
 import com.my.bob.board.entity.Board;
 import com.my.bob.board.entity.BoardComment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +31,7 @@ public class BoardConvertService {
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
 
+    private final ModelMapper modelMapper;
 
 
     public BoardDto convertBoardDto(long boardId) {
@@ -49,6 +57,10 @@ public class BoardConvertService {
         return dto;
     }
 
+    public Page<BoardTitleDto> convertBoardList(BoardSearchDto dto, Pageable pageable){
+        return boardService.getBySearch(dto, pageable).map(this::convertTitleDto);
+    }
+
     /* private */
     private BoardCommentDto convertCommentDto(BoardComment boardComment, Set<Long> commentIdSet){
         long commentId = boardComment.getCommentId();
@@ -72,5 +84,15 @@ public class BoardConvertService {
         }
 
         return commentDto;
+    }
+
+    private BoardTitleDto convertTitleDto(Board board) {
+        BoardTitleDto dto = modelMapper.map(board, BoardTitleDto.class);
+
+        LocalDateTime regDate = board.getRegDate();
+        String regDateStr = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        dto.setRegDate(regDateStr);
+
+        return dto;
     }
 }

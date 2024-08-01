@@ -7,6 +7,8 @@ import com.my.bob.board.service.BoardSaveService;
 import com.my.bob.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +25,15 @@ public class BoardController {
     private final BoardDeleteService boardDeleteService;
 
     @GetMapping
-    public CommonResponse getBoardList(@ModelAttribute BoardSearchDto dto){
+    public CommonResponse getBoardList(@ModelAttribute BoardSearchDto dto,
+                                       Pageable pageable){
         CommonResponse commonResponse = new CommonResponse();
 
-        commonResponse.setData("ok");
-
+        Page<BoardTitleDto> pageDtoList = boardConvertService.convertBoardList(dto, pageable);
+        commonResponse.setData(pageDtoList);
         return commonResponse;
     }
+
     @PostMapping
     public CommonResponse addBoard(@RequestBody BoardCreateDto dto) {
         long boardId = boardSaveService.saveNewBoard(dto);

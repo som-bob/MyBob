@@ -9,6 +9,8 @@ public class ModelMapperConfig {
 
     @Bean
     public ModelMapper modelMapper(){
+        // TODO 차후 LocalDateTime 값 -> String 변경 로직 넣기
+
         return new ModelMapper();
     }
 }
