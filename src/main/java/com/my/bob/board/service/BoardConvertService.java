@@ -6,9 +6,11 @@ import com.my.bob.board.dto.BoardSearchDto;
 import com.my.bob.board.dto.BoardTitleDto;
 import com.my.bob.board.entity.Board;
 import com.my.bob.board.entity.BoardComment;
+import com.my.bob.util.DateConvertUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.type.descriptor.DateTimeUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -96,7 +97,7 @@ public class BoardConvertService {
         BoardTitleDto dto = modelMapper.map(board, BoardTitleDto.class);
 
         LocalDateTime regDate = board.getRegDate();
-        String regDateStr = regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String regDateStr = DateConvertUtil.convertDateToString(regDate, DateTimeUtils.FORMAT_STRING_DATE);
         dto.setRegDate(regDateStr);
 
         return dto;
