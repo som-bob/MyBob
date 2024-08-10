@@ -41,7 +41,7 @@ public class JwtTokenProvider {
 
     private static final String TOKEN_AUTH_KEY = "auth";
 
-    // 컴포넌트 스캔을 통한 싱글톤 등록시 secretKey 값을 Bb
+    // 컴포넌트 스캔을 통한 싱글톤 등록시 secretKey 값을 세팅
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);

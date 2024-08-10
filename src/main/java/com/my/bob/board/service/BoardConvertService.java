@@ -87,6 +87,12 @@ public class BoardConvertService {
     }
 
     private BoardTitleDto convertTitleDto(Board board) {
+        if(board.isDelete()) {
+            BoardTitleDto dto = new BoardTitleDto();
+            dto.setBoardTitle("삭제된 글입니다.");
+            return dto;
+        }
+
         BoardTitleDto dto = modelMapper.map(board, BoardTitleDto.class);
 
         LocalDateTime regDate = board.getRegDate();
