@@ -17,16 +17,8 @@ public class CustomerAuthenticationEntryPoint implements AuthenticationEntryPoin
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        // CommonResponse 말고 forbidden 응답만 준다
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);      // JSON 타입 반환
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());   // 한국어 허용
-
-//        CommonResponse commonResponse = new CommonResponse(HttpStatus.UNAUTHORIZED);
-//        PrintWriter responseWriter = response.getWriter();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        responseWriter.write(objectMapper.writeValueAsString(commonResponse));
-//        responseWriter.flush();
-//        responseWriter.close();
     }
 }

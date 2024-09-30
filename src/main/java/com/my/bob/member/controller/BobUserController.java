@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +28,12 @@ public class BobUserController {
     private final LoginService loginService;
 
     @PostMapping("/join")
-    public CommonResponse joinMember(@Valid @RequestBody final JoinUserDto dto){
-        CommonResponse commonResponse = new CommonResponse();
+    public ResponseEntity<Void> joinMember(@Valid @RequestBody final JoinUserDto dto){
 
         try {
             joinService.joinMember(dto);
         } catch (DuplicateUserException e) {
+            return ResponseEntity.badRequest().body(new Re);
             commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
