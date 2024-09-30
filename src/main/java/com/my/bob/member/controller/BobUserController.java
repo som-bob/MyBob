@@ -1,6 +1,6 @@
 package com.my.bob.member.controller;
 
-import com.my.bob.common.dto.CommonResponse;
+import com.my.bob.common.dto.ResponseDto;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.DuplicateUserException;
 import com.my.bob.exception.NonExistentUserException;
@@ -12,12 +12,13 @@ import com.my.bob.member.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.my.bob.common.dto.ResponseDto.FailCode.V_00001;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,36 +29,30 @@ public class BobUserController {
     private final LoginService loginService;
 
     @PostMapping("/join")
-    public ResponseEntity<Void> joinMember(@Valid @RequestBody final JoinUserDto dto){
+    public ResponseEntity<ResponseDto<Object>> joinMember(@Valid @RequestBody final JoinUserDto dto){
 
         try {
             joinService.joinMember(dto);
         } catch (DuplicateUserException e) {
-            return ResponseEntity.badRequest().body(new Re);
-            commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseDto<>(V_00001, e.getMessage()));
         }
 
-        return commonResponse;
+        return ResponseEntity.ok(new ResponseDto<>());
     }
 
     @PostMapping("/login")
-    public CommonResponse login(@Valid @RequestBody final LoginDto dto) throws NonExistentUserException {
+    public ResponseEntity<ResponseDto<TokenDto>> login(@Valid @RequestBody final LoginDto dto)
+            throws NonExistentUserException {
 
         TokenDto tokenDto = loginService.login(dto);
-        return new CommonResponse(tokenDto);
+        return ResponseEntity.ok(new ResponseDto<>(tokenDto));
     }
 
     @PostMapping("/reissue")
-    public CommonResponse reissue(HttpServletRequest request) throws BadRequestException {
+    public ResponseEntity<ResponseDto<TokenDto>> reissue(HttpServletRequest request)
+            throws BadRequestException {
 
         TokenDto tokenDto = loginService.reissue(request);
-        return new CommonResponse(tokenDto);
-    }
-
-    // TODO
-    @PostMapping("/logout")
-    public CommonResponse logout() {
-
-        return null;
+        return ResponseEntity.ok(new ResponseDto<>(tokenDto));
     }
 }

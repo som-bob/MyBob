@@ -1,18 +1,22 @@
 package com.my.bob.handler;
 
-import com.my.bob.common.dto.CommonResponse;
-import com.my.bob.constants.ErrorMessage;
+import com.my.bob.common.dto.ResponseDto;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.UserLoginException;
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+
+import java.util.List;
+
+import static com.my.bob.common.dto.ResponseDto.FailCode;
 
 @Slf4j
 @RestControllerAdvice
@@ -21,57 +25,51 @@ public class GlobalExceptionHandler {
     // Dto validate handler
     @ExceptionHandler(value = {
             MethodArgumentNotValidException.class})
-    public CommonResponse handle(MethodArgumentNotValidException e, WebRequest request) {
+    public ResponseEntity<ResponseDto<Void>> handle(MethodArgumentNotValidException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getFieldErrors());
-        return commonResponse;
+        // 첫번째 에러 메세지만 return
+        List<FieldError> fieldErrors = e.getFieldErrors();
+        String defaultMessage = fieldErrors.get(0).getDefaultMessage();
+
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.V_00001, defaultMessage));
     }
 
     // LoginService, UserDetailService
     @ExceptionHandler(value = {
             UserLoginException.class})
-    public CommonResponse handle(UserLoginException e, WebRequest request) {
+    public ResponseEntity<ResponseDto<Void>> handle(UserLoginException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
-        return commonResponse;
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.V_00001, e.getMessage()));
     }
 
     // LoginService, UserDetailService
     @ExceptionHandler(value = {
             UsernameNotFoundException.class})
-    public CommonResponse handle(UsernameNotFoundException e, WebRequest request) {
+    public ResponseEntity<ResponseDto<Void>> handle(UsernameNotFoundException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
-        return commonResponse;
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.I_00001, e.getMessage()));
     }
 
     // LoginService, UserDetailService
     @ExceptionHandler(value = {
             BadCredentialsException.class})
-    public CommonResponse handle(BadCredentialsException e, WebRequest request) {
+    public ResponseEntity<ResponseDto<Void>> handle(BadCredentialsException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
-        return commonResponse;
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.I_00001, e.getMessage()));
     }
 
     // BadRequestException
     // 해당 Exception 발생할 경우, HTTP_STATUS.BAD_REQUEST 반환
     @ExceptionHandler(value = {
             BadRequestException.class})
-    public CommonResponse handle(BadRequestException e, WebRequest request) {
+    public ResponseEntity<ResponseDto<Void>> handle(BadRequestException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
-        return commonResponse;
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.I_00001, e.getMessage()));
     }
 
 
@@ -79,12 +77,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             IllegalArgumentException.class
     })
-    public CommonResponse handle(IllegalArgumentException e, WebRequest request) {
+    public ResponseEntity<ResponseDto<Void>> handle(IllegalArgumentException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.BAD_REQUEST, e.getMessage());
-        return commonResponse;
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.I_00001, e.getMessage()));
     }
 
 
@@ -92,12 +88,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             Exception.class
     })
-    public CommonResponse handle(Exception e, WebRequest request) {
+    public ResponseEntity<ResponseDto<Void>> handle(Exception e, WebRequest request) {
         exceptionLogging(e, request);
 
-        CommonResponse commonResponse = new CommonResponse();
-        commonResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessage.CONTACT_ADMINISTRATOR);
-        return commonResponse;
+        return ResponseEntity.internalServerError().body(new ResponseDto<>(FailCode.I_00001, e.getMessage()));
     }
 
 

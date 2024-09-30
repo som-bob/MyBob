@@ -4,6 +4,7 @@ import com.my.bob.board.dto.*;
 import com.my.bob.board.service.BoardConvertService;
 import com.my.bob.board.service.BoardDeleteService;
 import com.my.bob.board.service.BoardSaveService;
+import com.my.bob.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,25 +25,25 @@ public class BoardController {
     private final BoardDeleteService boardDeleteService;
 
     @GetMapping
-    public ResponseEntity<Page<BoardTitleDto>> getBoardList(@ModelAttribute BoardSearchDto dto,
-                                                            Pageable pageable){
+    public ResponseEntity<ResponseDto<Page<BoardTitleDto>>> getBoardList(@ModelAttribute BoardSearchDto dto,
+                                                                         Pageable pageable){
 
         Page<BoardTitleDto> pageDtoList = boardConvertService.convertBoardList(dto, pageable);
-        return ResponseEntity.ok(pageDtoList);
+        return ResponseEntity.ok(new ResponseDto<>(pageDtoList));
     }
 
     @PostMapping
-    public ResponseEntity<Long> addBoard(@RequestBody BoardCreateDto dto) {
+    public ResponseEntity<ResponseDto<Long>> addBoard(@RequestBody BoardCreateDto dto) {
         long boardId = boardSaveService.saveNewBoard(dto);
 
-        return ResponseEntity.ok(boardId);
+        return ResponseEntity.ok(new ResponseDto<>(boardId));
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardDto> getBoard(@PathVariable long boardId) {
+    public ResponseEntity<ResponseDto<BoardDto>> getBoard(@PathVariable long boardId) {
         BoardDto dto = boardConvertService.convertBoardDto(boardId);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(new ResponseDto<>(dto));
     }
 
     @PutMapping("/{boardId}")
@@ -61,7 +62,6 @@ public class BoardController {
 
         return ResponseEntity.noContent().build();
     }
-
 
 
     /* 댓글 */
