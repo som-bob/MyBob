@@ -25,17 +25,20 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.apache.commons:commons-lang3'															// lang3
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.2.3' 	// Spring Data JPA
 	implementation 'org.springframework.boot:spring-boot-starter-security'										// Spring Security
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'															// jwt
-	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'								// ModelMapper
+	implementation 'org.apache.commons:commons-collections4'													// collections
+	implementation 'org.modelmapper:modelmapper:3.2.1'															// ModelMapper
 	implementation 'org.springframework.boot:spring-boot-starter-validation'									// dto validate
-	implementation 'org.apache.commons:commons-collections4:4.5.0-M2'											// collections
+	implementation 'org.apache.commons:commons-collections4:4.5.0-M2'
 	/* flyway */
 	implementation group: 'org.flywaydb', name: 'flyway-core', version: '10.10.0'
 	implementation group: 'org.flywaydb', name: 'flyway-mysql', version: '10.10.0'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'											// aop
 
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	//Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
@@ -57,6 +60,24 @@ dependencies {
 	// jwt
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+}
+
+// Querydsl 빌드 옵션 (옵셔널)
+def generated = 'src/main/generated'
+
+// querydsl QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+	main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+	delete file(generated)
 }
 
 tasks.named('test') {

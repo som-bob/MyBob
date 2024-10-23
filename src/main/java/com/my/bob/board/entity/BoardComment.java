@@ -52,6 +52,10 @@ public class BoardComment extends BaseRegEntity {
         this.isDelete = false;
     }
 
+    public boolean isRootComment(){
+        return parentComment == null;
+    }
+
     public String getCommentContent() {
         if(isDelete) {
             return "삭제된 댓글입니다.";

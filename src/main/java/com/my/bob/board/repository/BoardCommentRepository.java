@@ -1,6 +1,5 @@
 package com.my.bob.board.repository;
 
-import com.my.bob.board.entity.Board;
 import com.my.bob.board.entity.BoardComment;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,8 +13,5 @@ public interface BoardCommentRepository extends JpaRepository<BoardComment, Long
     @Override
     @EntityGraph(attributePaths = {"board"})
     List<BoardComment> findAll();
-
-    @EntityGraph(attributePaths = {"board"})
-    List<BoardComment> findAllByBoardAndParentCommentIsNullOrderByRegDateAsc(Board board);
 
 }

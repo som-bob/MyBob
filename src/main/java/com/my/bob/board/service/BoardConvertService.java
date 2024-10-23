@@ -18,10 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,7 +28,6 @@ import java.util.Set;
 public class BoardConvertService {
 
     private final BoardService boardService;
-    private final BoardCommentService boardCommentService;
 
     private final ModelMapper modelMapper;
 
@@ -44,43 +41,44 @@ public class BoardConvertService {
         dto.setContent(board.getBoardContent());
         dto.setDelete(board.isDelete());
 
-        List<BoardComment> comments = boardCommentService.getRootCommentBy(board);
-        if(CollectionUtils.isNotEmpty(comments)) {
-            Set<Long> commentIdSet = new HashSet<>();
-            List<BoardCommentDto> commentDtoList = comments
-                    .stream()
-                    .map(boardComment -> convertCommentDto(boardComment, commentIdSet))
-                    .filter(Objects::nonNull)
-                    .toList();
-            dto.setCommentList(commentDtoList);
-        }
+        List<BoardComment> comments = board.getComments();
+        Optional.of(comments)
+                .ifPresent(
+                        boardComments -> {
+                            List<BoardCommentDto> commentDtoList =
+                                    boardComments
+                                            .stream()
+                                            .filter(BoardComment::isRootComment)
+                                            .map(this::convertCommentDto)
+                                            .toList();
+                            dto.setCommentList(commentDtoList);
+                        });
 
         return dto;
     }
 
-    public Page<BoardTitleDto> convertBoardList(BoardSearchDto dto, Pageable pageable){
+    public Page<BoardTitleDto> convertBoardList(BoardSearchDto dto, Pageable pageable) {
         return boardService.getBySearch(dto, pageable).map(this::convertTitleDto);
     }
 
     /* private */
-    private BoardCommentDto convertCommentDto(BoardComment boardComment, Set<Long> commentIdSet){
+    private BoardCommentDto convertCommentDto(BoardComment boardComment) {
         long commentId = boardComment.getCommentId();
-        if(commentIdSet.contains(commentId)) return null;
 
         BoardCommentDto commentDto = new BoardCommentDto();
         commentDto.setCommentId(commentId);
         commentDto.setContent(boardComment.getCommentContent());
         commentDto.setDelete(boardComment.isDelete());
-        commentIdSet.add(commentId);
 
-        List<BoardComment> childComment = boardComment.getChildComments();      // N + 1 문제?
+        // 하위 댓글 TODO
+        List<BoardComment> childComment = boardComment.getChildComments();
         childComment.sort((o1, o2) -> (int) (o1.getCommentId() - o2.getCommentId()));
-        if(CollectionUtils.isNotEmpty(childComment)) {
+        if (CollectionUtils.isNotEmpty(childComment)) {
             List<BoardCommentDto> dtoList =
                     childComment
                             .stream()
-                            .map(comment -> this.convertCommentDto(comment, commentIdSet))
-                    .filter(Objects::nonNull).toList();
+                            .map(this::convertCommentDto)
+                            .toList();
             commentDto.setSubComments(dtoList);
         }
 
@@ -88,7 +86,7 @@ public class BoardConvertService {
     }
 
     private BoardTitleDto convertTitleDto(Board board) {
-        if(board.isDelete()) {
+        if (board.isDelete()) {
             BoardTitleDto dto = new BoardTitleDto();
             dto.setBoardTitle("삭제된 글입니다.");
             return dto;
@@ -96,8 +94,7 @@ public class BoardConvertService {
 
         BoardTitleDto dto = modelMapper.map(board, BoardTitleDto.class);
 
-        LocalDateTime regDate = board.getRegDate();
-        String regDateStr = DateConvertUtil.convertDateToString(regDate, DateTimeUtils.FORMAT_STRING_DATE);
+        String regDateStr = board.getRegDate().toLocalDate().toString();
         dto.setRegDate(regDateStr);
 
         return dto;
