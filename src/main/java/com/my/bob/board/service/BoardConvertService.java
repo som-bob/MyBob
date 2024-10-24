@@ -6,20 +6,17 @@ import com.my.bob.board.dto.BoardSearchDto;
 import com.my.bob.board.dto.BoardTitleDto;
 import com.my.bob.board.entity.Board;
 import com.my.bob.board.entity.BoardComment;
-import com.my.bob.util.DateConvertUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.hibernate.type.descriptor.DateTimeUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -41,18 +38,9 @@ public class BoardConvertService {
         dto.setContent(board.getBoardContent());
         dto.setDelete(board.isDelete());
 
-        List<BoardComment> comments = board.getComments();
-        Optional.of(comments)
-                .ifPresent(
-                        boardComments -> {
-                            List<BoardCommentDto> commentDtoList =
-                                    boardComments
-                                            .stream()
-                                            .filter(BoardComment::isRootComment)
-                                            .map(this::convertCommentDto)
-                                            .toList();
-                            dto.setCommentList(commentDtoList);
-                        });
+        // later board 조회할 때 comments 함께 들고오도록 변경할 것
+        List<BoardComment> comments = board.getRootComments();
+        dto.setCommentList(convertCommentList(comments));
 
         return dto;
     }
@@ -62,29 +50,6 @@ public class BoardConvertService {
     }
 
     /* private */
-    private BoardCommentDto convertCommentDto(BoardComment boardComment) {
-        long commentId = boardComment.getCommentId();
-
-        BoardCommentDto commentDto = new BoardCommentDto();
-        commentDto.setCommentId(commentId);
-        commentDto.setContent(boardComment.getCommentContent());
-        commentDto.setDelete(boardComment.isDelete());
-
-        // 하위 댓글 TODO
-        List<BoardComment> childComment = boardComment.getChildComments();
-        childComment.sort((o1, o2) -> (int) (o1.getCommentId() - o2.getCommentId()));
-        if (CollectionUtils.isNotEmpty(childComment)) {
-            List<BoardCommentDto> dtoList =
-                    childComment
-                            .stream()
-                            .map(this::convertCommentDto)
-                            .toList();
-            commentDto.setSubComments(dtoList);
-        }
-
-        return commentDto;
-    }
-
     private BoardTitleDto convertTitleDto(Board board) {
         if (board.isDelete()) {
             BoardTitleDto dto = new BoardTitleDto();
@@ -98,5 +63,29 @@ public class BoardConvertService {
         dto.setRegDate(regDateStr);
 
         return dto;
+    }
+
+
+    private List<BoardCommentDto> convertCommentList(List<BoardComment> boardComments) {
+        if (CollectionUtils.isEmpty(boardComments)) {
+            return Collections.emptyList();
+        }
+
+        return boardComments
+                .stream()
+                .map(this::convertCommentDto)
+                .toList();
+    }
+
+    private BoardCommentDto convertCommentDto(BoardComment boardComment) {
+        BoardCommentDto commentDto = new BoardCommentDto();
+        commentDto.setCommentId(boardComment.getCommentId());
+        commentDto.setContent(boardComment.getCommentContent());
+        commentDto.setDelete(boardComment.isDelete());
+
+        List<BoardComment> childComments = boardComment.getChildComments();
+        commentDto.setSubComments(convertCommentList(childComments));
+
+        return commentDto;
     }
 }

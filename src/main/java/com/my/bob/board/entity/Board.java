@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -29,6 +31,7 @@ public class Board extends BaseRegEntity {
     @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean isDelete;
 
+    @BatchSize(size = 1000)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board")
     List<BoardComment> comments;
 
@@ -67,5 +70,13 @@ public class Board extends BaseRegEntity {
 
     public boolean isRegistrant(String requestUser) {
         return this.getRegId().equals(requestUser);
+    }
+
+    public List<BoardComment> getRootComments(){
+        if(this.comments == null) {
+            return Collections.emptyList();
+        }
+
+        return this.comments.stream().filter(BoardComment::isRootComment).toList();
     }
 }

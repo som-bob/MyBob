@@ -2,7 +2,6 @@ package com.my.bob.board.repository;
 
 import com.my.bob.board.dto.BoardSearchDto;
 import com.my.bob.board.entity.Board;
-import com.my.bob.util.DateConvertUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.my.bob.board.entity.QBoard.board;
-import static com.my.bob.util.DateConvertUtil.*;
+import static com.my.bob.util.DateConvertUtil.convertStringToDate;
 
 @Repository
 @RequiredArgsConstructor

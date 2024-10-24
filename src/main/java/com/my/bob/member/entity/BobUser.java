@@ -4,7 +4,7 @@ import com.my.bob.common.entity.BaseTimeEntity;
 import com.my.bob.constants.Authority;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
-    import lombok.AccessLevel;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
