@@ -1,7 +1,7 @@
 package com.my.bob.service;
 
-import com.my.bob.member.dto.JoinUserDto;
 import com.my.bob.exception.DuplicateUserException;
+import com.my.bob.member.dto.JoinUserDto;
 import com.my.bob.member.service.BobUserService;
 import com.my.bob.member.service.JoinService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,31 +28,45 @@ class JoinServiceTest {
     @Test
     @Transactional
     @DisplayName("회원 가입")
-    public void joinUser(){
-//        Given - 테스트를 위한 준비(테스트를 할 수 있는 상황, 객체나 데이터 또는 Mock을 셋팅)
+    void joinUser(){
+        // Given
         String testEmail = "sss@naver.com";
-        JoinUserDto joinUserDto = new JoinUserDto();
-        joinUserDto.setEmail(testEmail);
-        joinUserDto.setPassword("test1234!");
+        JoinUserDto joinUser = getJoinUserDto(testEmail);
 
-
-//        When - 테스트하는 메서드를 실행(어떤 메서드를 실행했을때)
+        // When
         try {
-            joinService.joinMember(joinUserDto);
+            joinService.joinMember(joinUser);
         } catch (DuplicateUserException e) {
-            log.error("another email needs.");
             fail();
         }
 
-//        Then - 테스트 결과 검증(그 메서드를 실행함으로서 기대 되는 결과)
+        // Then
         assertTrue(bobUserService.existByEmail(testEmail));
     }
+
 
     @Test
     @Transactional
     @DisplayName("회원 가입 실패 - 중복 이메일 확인")
-    public void joinUserFail(){
-        // TODO
+    void joinUserFail(){
+        // given
+        String testEmail = "sss@naver.com";
+        JoinUserDto joinUser = getJoinUserDto(testEmail);
+        JoinUserDto sameUser = getJoinUserDto(testEmail);
+        try {
+            joinService.joinMember(joinUser);
+        } catch (DuplicateUserException e) {
+            fail();
+        }
+
+        // when, then
+        assertThrows(DuplicateUserException.class, () -> joinService.joinMember(sameUser));
     }
 
+    private static JoinUserDto getJoinUserDto(String testEmail) {
+        JoinUserDto joinUserDto = new JoinUserDto();
+        joinUserDto.setEmail(testEmail);
+        joinUserDto.setPassword("test1234!");
+        return joinUserDto;
+    }
 }
