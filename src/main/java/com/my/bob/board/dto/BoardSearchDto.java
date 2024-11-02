@@ -10,7 +10,7 @@ public class BoardSearchDto {
 
     private String boardContent;
 
-    private String regDateStart;
-    private String regDateEnd;
+    private String regDateStart;    // yyyy-MM-dd
+    private String regDateEnd;      // yyyy-MM-dd
 
 }

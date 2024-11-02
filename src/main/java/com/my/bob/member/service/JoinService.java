@@ -19,7 +19,7 @@ public class JoinService {
     public void joinMember(final JoinUserDto joinUserDto) throws DuplicateUserException {
         String email = joinUserDto.getEmail();
         if(bobUserService.existByEmail(email)) {
-            throw new DuplicateUserException("이미 가입한 회원입니다.");
+            throw new DuplicateUserException("사용 중인 이메일입니다.");
         }
 
         // 회원 가입
