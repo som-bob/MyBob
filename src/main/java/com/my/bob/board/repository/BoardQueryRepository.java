@@ -30,7 +30,7 @@ public class BoardQueryRepository {
     // 삭제된 글은 삭제된 글이라고 표시
     public Page<Board> getBoardList(BoardSearchDto dto, Pageable pageable) {
         List<Board> results = selectBoardBySearchDto(dto)
-                .offset(pageable.getPageNumber())
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(board.regDate.desc())
                 .fetch();
