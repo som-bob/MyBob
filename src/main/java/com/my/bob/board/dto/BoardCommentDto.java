@@ -12,5 +12,9 @@ public class BoardCommentDto {
 
     private boolean isDelete;
 
+    private String regId;
+    private String regDate;
+
+
     private List<BoardCommentDto> subComments;
 }

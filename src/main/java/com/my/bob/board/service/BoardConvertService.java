@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 
+import static com.my.bob.util.DateConvertUtil.convertDateToString;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,8 @@ public class BoardConvertService {
         dto.setTitle(board.getBoardTitle());
         dto.setContent(board.getBoardContent());
         dto.setDelete(board.isDelete());
+        dto.setRegId(board.getRegId());
+        dto.setRegDate(convertDateToString(board.getRegDate(), "yyyy-MM-dd"));
 
         // later board 조회할 때 comments 함께 들고오도록 변경할 것
         List<BoardComment> comments = board.getRootComments();
@@ -82,6 +86,8 @@ public class BoardConvertService {
         commentDto.setCommentId(boardComment.getCommentId());
         commentDto.setContent(boardComment.getCommentContent());
         commentDto.setDelete(boardComment.isDelete());
+        commentDto.setRegId(boardComment.getRegId());
+        commentDto.setRegDate(convertDateToString(boardComment.getRegDate(), "yyyy-MM-dd"));
 
         List<BoardComment> childComments = boardComment.getChildComments();
         commentDto.setSubComments(convertCommentList(childComments));

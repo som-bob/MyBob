@@ -14,5 +14,8 @@ public class BoardDto {
 
     private boolean isDelete;
 
+    private String regId;
+    private String regDate;
+
     private List<BoardCommentDto> commentList;
 }
