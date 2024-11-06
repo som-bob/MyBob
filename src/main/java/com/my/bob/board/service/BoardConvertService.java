@@ -55,13 +55,12 @@ public class BoardConvertService {
 
     /* private */
     private BoardTitleDto convertTitleDto(Board board) {
+        BoardTitleDto dto = modelMapper.map(board, BoardTitleDto.class);
+
         if (board.isDelete()) {
-            BoardTitleDto dto = new BoardTitleDto();
             dto.setBoardTitle("삭제된 글입니다.");
             return dto;
         }
-
-        BoardTitleDto dto = modelMapper.map(board, BoardTitleDto.class);
 
         String regDateStr = board.getRegDate().toLocalDate().toString();
         dto.setRegDate(regDateStr);
