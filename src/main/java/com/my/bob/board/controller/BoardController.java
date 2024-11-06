@@ -26,7 +26,7 @@ public class BoardController {
 
     @GetMapping
     public ResponseEntity<ResponseDto<Page<BoardTitleDto>>> getBoardList(@ModelAttribute BoardSearchDto dto,
-                                                                         Pageable pageable){
+                                                                         Pageable pageable) {
 
         Page<BoardTitleDto> pageDtoList = boardConvertService.convertBoardList(dto, pageable);
         return ResponseEntity.ok(new ResponseDto<>(pageDtoList));
@@ -48,7 +48,7 @@ public class BoardController {
 
     @PutMapping("/{boardId}")
     public ResponseEntity<Void> updateBoard(@PathVariable long boardId,
-                                      @RequestBody BoardUpdateDto dto, Principal principal) {
+                                            @RequestBody BoardUpdateDto dto, Principal principal) {
         String userName = principal.getName();
         boardSaveService.updateBoard(boardId, userName, dto);
 
@@ -67,7 +67,7 @@ public class BoardController {
     /* 댓글 */
     @PostMapping("/{boardId}/comment")
     public ResponseEntity<Void> addComment(@PathVariable long boardId,
-                                     @RequestBody BoardCommentCreateDto dto) {
+                                           @RequestBody BoardCommentCreateDto dto) {
         boardSaveService.saveNewComment(boardId, dto);
 
         return ResponseEntity.noContent().build();
@@ -75,7 +75,7 @@ public class BoardController {
 
     @PutMapping("/comment/{commentId}")
     public ResponseEntity<Void> updateComment(@PathVariable long commentId,
-                                        @RequestBody BoardCommentUpdateDto dto, Principal principal) {
+                                              @RequestBody BoardCommentUpdateDto dto, Principal principal) {
         String requestUser = principal.getName();
         boardSaveService.updateComment(commentId, requestUser, dto);
 
