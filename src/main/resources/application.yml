@@ -1,0 +1,90 @@
+# JWT
+jwt:
+  expire: 1800000  # 30 minutes
+  refresh:
+    expire: 604800000  # 7 days
+
+# logging level
+logging:
+  level:
+    root: info
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  # DB
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:mysql://localhost:3306/mybob
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+    database: mysql
+    # Batch size
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+        jdbc:
+          batch_size: 100
+
+# JWT
+jwt:
+  secret: YWFzbGtqZGx6a3huY21haHJvd3VlaHJzbWRueGtqZGhmbGtzZGhmd2VsdXJoc2tmbnNk
+
+# server port
+server:
+  port: 8080
+
+# Client Server Host Settings
+client:
+  host:
+    url: http://localhost:3000
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  # DB
+  datasource:
+    url: jdbc:mysql://dev/mybob
+    username: dev
+    password: dev
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # JPA
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+    database: mysql
+    # Batch size
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+        jdbc:
+          batch_size: 100
+
+# JWT
+jwt:
+  secret: YWFzbGtqZGx6a3huY21haHJvd3VlaHJzbWRueGtqZGhmbGtzZGhmd2VsdXJoc2tmbnNk
+
+# server port
+server:
+  port: 8080
+
+# Client Server Host Settings
+client:
+  host:
+    url: http://localhost:3000
+---
