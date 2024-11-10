@@ -70,7 +70,7 @@ public class BoardQueryRepository {
             return null;
         }
 
-        return board.boardTitle.containsIgnoreCase(boardTitle);
+        return board.boardTitle.containsIgnoreCase(boardTitle).and(board.isDelete.eq(false));
     }
 
     private BooleanExpression contentExpression(BoardSearchDto dto){
@@ -79,7 +79,7 @@ public class BoardQueryRepository {
             return null;
         }
 
-        return board.boardContent.containsIgnoreCase(boardContent);
+        return board.boardContent.containsIgnoreCase(boardContent).and(board.isDelete.eq(false));
     }
 
     private BooleanExpression betweenRegDate(BoardSearchDto dto){
@@ -96,15 +96,15 @@ public class BoardQueryRepository {
         LocalDateTime regDateEnd = convertStringToDate(regDateEndStr, DateTimeUtils.FORMAT_STRING_DATE);
 
         if(regDateEnd == null) {
-            return board.regDate.goe(regDateStart);     // goe: regDate >= regDateStart
+            return board.regDate.goe(regDateStart).and(board.isDelete.eq(false));     // goe: regDate >= regDateStart
         }
 
         // regDateEnd 는 다음날 00:00:00로 세팅해서 비교
         regDateEnd = regDateEnd.plusDays(1);
         if(regDateStart == null) {
-            return board.regDate.lt(regDateEnd);        // lt: regDate < regDateEnd (같거나로 하려면 loe)
+            return board.regDate.lt(regDateEnd).and(board.isDelete.eq(false));        // lt: regDate < regDateEnd (같거나로 하려면 loe)
         } else {
-            return board.regDate.between(regDateStart, regDateEnd);
+            return board.regDate.between(regDateStart, regDateEnd).and(board.isDelete.eq(false));
         }
     }
 
