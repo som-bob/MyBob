@@ -55,14 +55,7 @@ public class LoginService {
     }
 
     @Transactional
-    public TokenDto reissue(HttpServletRequest request) throws BadRequestException {
-        String requestHeader = request.getHeader(AuthConstant.AUTH_HEADER);
-        if(StringUtils.isEmpty(requestHeader)) {
-            throw new BadRequestException(ErrorMessage.INVALID_REQUEST);
-        }
-
-        // check refreshToken
-        String token = TokenUtil.parsingToken(requestHeader);
+    public TokenDto reissue(String token) throws BadRequestException {
         if(! bobUserRefreshTokenService.isExists(token)) {
             throw new BadRequestException(ErrorMessage.INVALID_REQUEST);
         }
@@ -82,7 +75,6 @@ public class LoginService {
         // access Token 재발급 후 삭제
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(user.getEmail(), user.getAuthority());
         bobUserRefreshTokenService.saveTokenByTokenDto(user.getUserId(), tokenDto);
-        bobUserRefreshTokenService.deleteByToken(token);
         return tokenDto;
     }
 }

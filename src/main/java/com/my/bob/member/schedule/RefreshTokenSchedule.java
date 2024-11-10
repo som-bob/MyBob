@@ -16,7 +16,7 @@ public class RefreshTokenSchedule {
 
     private final BobUserRefreshTokenService bobUserRefreshTokenService;
 
-    @Scheduled(cron = "0 0 0 0 0")
+//    @Scheduled(cron = "0 0 0 0 0")
     public void deleteTokensExpirationTimeHasExpired(){
         List<BobUserRefreshToken> allAlreadyExpired = bobUserRefreshTokenService.getAllAlreadyExpired();
         bobUserRefreshTokenService.deleteAll(allAlreadyExpired);
