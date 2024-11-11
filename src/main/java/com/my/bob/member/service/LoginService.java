@@ -34,12 +34,12 @@ public class LoginService {
     @Transactional
     public TokenDto login(LoginDto dto) throws NonExistentUserException {
         String email = dto.getEmail();
-        if(! bobUserService.existByEmail(email)) {
+        if (!bobUserService.existByEmail(email)) {
             throw new NonExistentUserException("로그인 정보를 확인해주세요.");
         }
 
         BobUser user = bobUserService.getByEmail(email);
-        if(! passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("비밀번호를 확인해주세요.");
         }
 
@@ -49,20 +49,29 @@ public class LoginService {
 
         // refreshToken 추가
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(email, user.getAuthority());
-        bobUserRefreshTokenService.saveTokenByTokenDto(user.getUserId(), tokenDto);
+
+        BobUserRefreshToken bobUserRefreshToken = new BobUserRefreshToken(user.getUserId(), tokenDto);
+        bobUserRefreshTokenService.saveRefreshToken(bobUserRefreshToken);
 
         return tokenDto;
     }
 
     @Transactional
-    public TokenDto reissue(String token) throws BadRequestException {
-        if(! bobUserRefreshTokenService.isExists(token)) {
+    public TokenDto reissue(HttpServletRequest request) throws BadRequestException {
+        String requestHeader = request.getHeader(AuthConstant.AUTH_HEADER);
+        if (StringUtils.isEmpty(requestHeader)) {
+            throw new BadRequestException(ErrorMessage.INVALID_REQUEST);
+        }
+
+        // check refreshToken
+        String token = TokenUtil.parsingToken(requestHeader);
+        if (! bobUserRefreshTokenService.isExists(token)) {
             throw new BadRequestException(ErrorMessage.INVALID_REQUEST);
         }
 
         BobUserRefreshToken refreshToken = bobUserRefreshTokenService.getByToken(token);
         LocalDateTime expiryDate = refreshToken.getExpiryDate();
-        if(expiryDate.isBefore(LocalDateTime.now())) {
+        if (expiryDate.isBefore(LocalDateTime.now())) {
             // 사용 기간이 지난 refreshToken
             bobUserRefreshTokenService.deleteByToken(token);
             throw new BadRequestException(ErrorMessage.INVALID_REQUEST);
@@ -72,9 +81,13 @@ public class LoginService {
         long userId = refreshToken.getUserId();
         BobUser user = bobUserService.getById(userId);
 
-        // access Token 재발급 후 삭제
+        // 삭제
+        bobUserRefreshTokenService.deleteByToken(token);
+
+        // access Token 재발급
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(user.getEmail(), user.getAuthority());
-        bobUserRefreshTokenService.saveTokenByTokenDto(user.getUserId(), tokenDto);
+        BobUserRefreshToken bobUserRefreshToken = new BobUserRefreshToken(user.getUserId(), tokenDto);
+        bobUserRefreshTokenService.saveRefreshToken(bobUserRefreshToken);
         return tokenDto;
     }
 }

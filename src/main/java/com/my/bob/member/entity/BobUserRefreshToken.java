@@ -1,7 +1,7 @@
 package com.my.bob.member.entity;
 
+import com.my.bob.member.dto.TokenDto;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,10 +24,9 @@ public class BobUserRefreshToken {
 
     private LocalDateTime expiryDate;
 
-    @Builder
-    public BobUserRefreshToken(long userId, String refreshToken, LocalDateTime expiryDate) {
+    public BobUserRefreshToken(long userId, TokenDto tokenDto) {
         this.userId = userId;
-        this.refreshToken = refreshToken;
-        this.expiryDate = expiryDate;
+        this.refreshToken = tokenDto.getRefreshToken();
+        this.expiryDate = tokenDto.getRefreshTokenExpire();
     }
 }

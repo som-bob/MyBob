@@ -1,6 +1,5 @@
 package com.my.bob.member.service;
 
-import com.my.bob.member.dto.TokenDto;
 import com.my.bob.member.entity.BobUserRefreshToken;
 import com.my.bob.member.repository.BobUserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +28,7 @@ public class BobUserRefreshTokenService {
     }
 
     @Transactional
-    public void saveTokenByTokenDto(int userId, TokenDto tokenDto) {
-        String refreshToken = tokenDto.getRefreshToken();
-        LocalDateTime refreshTokenExpire = tokenDto.getRefreshTokenExpire();
-
-        BobUserRefreshToken userRefreshToken = BobUserRefreshToken.builder()
-                .refreshToken(refreshToken)
-                .userId(userId)
-                .expiryDate(refreshTokenExpire).build();
+    public void saveRefreshToken(BobUserRefreshToken userRefreshToken){
         bobUserRefreshTokenRepository.save(userRefreshToken);
     }
 

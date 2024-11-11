@@ -4,13 +4,11 @@ import com.my.bob.common.dto.ResponseDto;
 import com.my.bob.exception.BadRequestException;
 import com.my.bob.exception.DuplicateUserException;
 import com.my.bob.exception.NonExistentUserException;
-import com.my.bob.jwt.TokenUtil;
 import com.my.bob.member.dto.JoinUserDto;
 import com.my.bob.member.dto.LoginDto;
 import com.my.bob.member.dto.TokenDto;
 import com.my.bob.member.service.JoinService;
 import com.my.bob.member.service.LoginService;
-import com.my.bob.member.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.my.bob.common.dto.ResponseDto.FailCode.V_00001;
-import static com.my.bob.jwt.TokenUtil.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +27,6 @@ public class BobUserController {
 
     private final JoinService joinService;
     private final LoginService loginService;
-
-    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/join")
     public ResponseEntity<ResponseDto<Object>> joinMember(@Valid @RequestBody final JoinUserDto dto){
@@ -57,9 +52,7 @@ public class BobUserController {
     public ResponseEntity<ResponseDto<TokenDto>> reissue(HttpServletRequest request)
             throws BadRequestException {
 
-        String token = getTokenFromHeader(request);
-        TokenDto tokenDto = loginService.reissue(token);
-        refreshTokenService.deleteUsedToken(token);
+        TokenDto tokenDto = loginService.reissue(request);
         return ResponseEntity.ok(new ResponseDto<>(tokenDto));
     }
 }
