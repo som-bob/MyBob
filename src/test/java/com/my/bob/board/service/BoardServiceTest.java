@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional  // 테스트 후 롤백 처리
 @ActiveProfiles("local")
+@WithAccount("system@system.com")   // 자동으로 해당 계정으로 들어가도록 세팅
 class BoardServiceTest {
 
     @Autowired
@@ -27,7 +28,6 @@ class BoardServiceTest {
     BoardService boardService;
 
     @DisplayName("실제 DB와 연동된 게시물 저장 테스트")
-    @WithAccount("system@system.com")
     @Test
     void testSaveBoard() {
         // given
@@ -42,10 +42,10 @@ class BoardServiceTest {
         assertThat(board.getBoardId()).isEqualTo(savedBoard.getBoardId());
         assertThat(savedBoard.getBoardTitle()).isEqualTo("제목");
         assertThat(savedBoard.getBoardContent()).isEqualTo("내용");
+        assertThat(savedBoard.getRegId()).isEqualTo("system@system.com");
     }
 
     @DisplayName("실제 DB와 연동된 ID로 게시물 검색 테스트")
-    @WithAccount("system@system.com")
     @Test
     void testGetById() {
         // given
@@ -63,7 +63,6 @@ class BoardServiceTest {
     }
 
     @DisplayName("실제 DB와 연동된 검색 조건으로 게시글 검색 테스트")
-    @WithAccount("system@system.com")
     @Test
     void testGetBySearch() {
         // given
