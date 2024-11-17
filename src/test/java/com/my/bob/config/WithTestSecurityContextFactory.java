@@ -6,8 +6,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-public class WithSecurityContextFactory implements org.springframework.security.test.context.support.WithSecurityContextFactory<WithAccount> {
+public class WithTestSecurityContextFactory implements WithSecurityContextFactory<WithAccount> {
 
     @Override
     public SecurityContext createSecurityContext(WithAccount annotation) {
