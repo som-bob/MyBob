@@ -2,38 +2,34 @@ package com.my.bob.board.service;
 
 import com.my.bob.board.dto.BoardSearchDto;
 import com.my.bob.board.entity.Board;
-import com.my.bob.board.repository.BoardQueryRepository;
 import com.my.bob.board.repository.BoardRepository;
+import com.my.bob.config.WithAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-
-import java.util.Collections;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional  // 테스트 후 롤백 처리
+@ActiveProfiles("local")
 class BoardServiceTest {
 
-    @Mock
-    private BoardRepository boardRepository;
+    @Autowired
+    BoardRepository boardRepository;
 
-    @Mock
-    private BoardQueryRepository boardQueryRepository;
+    @Autowired
+    BoardService boardService;
 
-    @InjectMocks
-    private BoardService boardService;
-
+    @DisplayName("실제 DB와 연동된 게시물 저장 테스트")
+    @WithAccount("system@system.com")
     @Test
-    @DisplayName("게시물 저장 테스트")
-    void testSaveBoard(){
+    void testSaveBoard() {
         // given
         Board board = new Board("제목", "내용");
 
@@ -41,40 +37,51 @@ class BoardServiceTest {
         boardService.save(board);
 
         // then
-        // save 메서드가 정확히 한 번 호출 되었는지 검증
-        verify(boardRepository, times(1)).save(board);
+        Board savedBoard = boardRepository.findById(board.getBoardId()).orElse(null);
+        assertThat(savedBoard).isNotNull();
+        assertThat(board.getBoardId()).isEqualTo(savedBoard.getBoardId());
+        assertThat(savedBoard.getBoardTitle()).isEqualTo("제목");
+        assertThat(savedBoard.getBoardContent()).isEqualTo("내용");
     }
 
+    @DisplayName("실제 DB와 연동된 ID로 게시물 검색 테스트")
+    @WithAccount("system@system.com")
     @Test
-    @DisplayName("ID로 게시물 검색 테스트")
-    void getById(){
+    void testGetById() {
         // given
-        long boardId = 1L;
         Board board = new Board("제목", "내용");
-        when(boardRepository.findById(boardId)).thenReturn(java.util.Optional.of(board));
+        boardService.save(board);
 
         // when
-        Board result = boardService.getById(boardId);
+        Board result = boardService.getById(board.getBoardId());
 
         // then
-        assertThat(result).isEqualTo(board);
+        assertThat(result).isNotNull();
+        assertThat(result.getBoardId()).isEqualTo(board.getBoardId());
+        assertThat(result.getBoardTitle()).isEqualTo("제목");
+        assertThat(result.getBoardContent()).isEqualTo("내용");
     }
 
+    @DisplayName("실제 DB와 연동된 검색 조건으로 게시글 검색 테스트")
+    @WithAccount("system@system.com")
     @Test
-    @DisplayName("검색 조선으로 게시물 검색 테스트")
-    void testGetBySearch(){
+    void testGetBySearch() {
         // given
+        Board board = new Board("검색 제목", "검색 내용");
+        PageRequest pageable = PageRequest.of(0, 1);
+        boardService.save(board);
         BoardSearchDto searchDto = new BoardSearchDto();
-        PageRequest pageable = PageRequest.of(0, 10);
-        Page<Board> page = new PageImpl<>(Collections.singletonList(new Board("제목", "내용")));
-
-        // boardQueryRepository의 search 호출 시 특정 값을 반환하도록 설정
-        when(boardQueryRepository.getBoardList(searchDto, pageable)).thenReturn(page);
+        searchDto.setBoardTitle("검색 제목");
+        searchDto.setBoardContent("검색 내용");
 
         // when
         Page<Board> result = boardService.getBySearch(searchDto, pageable);
 
         // then
-        assertThat(result).isEqualTo(page);
+        assertThat(result).isNotNull();
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent().get(0).getBoardTitle()).isEqualTo("검색 제목");
+        assertThat(result.getContent().get(0).getBoardContent()).isEqualTo("검색 내용");
     }
 }
