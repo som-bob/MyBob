@@ -41,6 +41,8 @@ public class SecurityConfig {
             "/member/join",
             "/member/login",
             "/member/reissue"
+
+            ,"/manage/actuator/**" // actuator 기능 우선 권한 없이 실행
     };
 
     @Bean
