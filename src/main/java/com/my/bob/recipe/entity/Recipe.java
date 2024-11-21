@@ -31,6 +31,13 @@ public class Recipe extends BaseEntity {
     @Column(name = "recipe_description", length = 1000)
     private String recipeDescription;
 
+    @Size(max = 20)
+    @Column(name = "difficulty", length = 20)
+    private String difficulty;
+
+    @Column(name = "cooking_time")
+    private Short cookingTime;
+
     @Size(max = 255)
     @Column(name = "source")
     private String source;
@@ -47,4 +54,6 @@ public class Recipe extends BaseEntity {
 
     @OneToMany(mappedBy = "recipe", orphanRemoval = true)
     private List<RecipeIngredients> recipeIngredients = new ArrayList<>();
+
+
 }
