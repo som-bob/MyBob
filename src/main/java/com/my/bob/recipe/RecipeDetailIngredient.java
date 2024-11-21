@@ -17,10 +17,10 @@ public class RecipeDetailIngredient extends BaseTimeEntity {
     @Column(name = "detail_ingredient_id", nullable = false)
     private Integer id;
 
-    // TODO 연결하기
     @NotNull
-    @Column(name = "recipe_detail_id", nullable = false)
-    private Integer recipeDetailId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_detail_id", nullable = false)
+    private RecipeDetail recipeDetail;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -1,5 +1,6 @@
 package com.my.bob.recipe;
 
+import com.my.bob.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "bob_recipe_ingredients", schema = "mybob")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecipeIngredients {
+public class RecipeIngredients extends BaseEntity {
     @Id
     @Column(name = "detail_ingredient_id", nullable = false)
     private Integer id;

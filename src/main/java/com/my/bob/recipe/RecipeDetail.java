@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Getter
 @Entity
 @Table(name = "bob_recipe_detail")
@@ -37,4 +40,8 @@ public class RecipeDetail extends BaseTimeEntity {
     @Size(max = 3000)
     @Column(name = "recipe_detail_text", length = 3000)
     private String recipeDetailText;
+
+    @OneToMany(mappedBy = "recipeDetail", orphanRemoval = true)
+    private Set<RecipeDetailIngredient> recipeDetailIngredients = new LinkedHashSet<>();
+
 }
