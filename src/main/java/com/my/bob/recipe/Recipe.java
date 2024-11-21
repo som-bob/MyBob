@@ -42,5 +42,6 @@ public class Recipe extends BaseEntity {
     @OneToMany(mappedBy = "recipe")
     private Set<RecipeDetail> bobRecipeDetails = new LinkedHashSet<>();
 
-    // TODO 재료 리스트를 연결해야함. 1:N:M 되어야할수도? (중간 테이블 두기)
+    @OneToMany(mappedBy = "recipe", orphanRemoval = true)
+    private Set<RecipeIngredients> recipeIngredients = new LinkedHashSet<>();
 }
