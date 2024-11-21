@@ -1,4 +1,4 @@
-package com.my.bob.recipe;
+package com.my.bob.recipe.entity;
 
 import com.my.bob.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -42,6 +42,6 @@ public class RecipeDetail extends BaseTimeEntity {
     private String recipeDetailText;
 
     @OneToMany(mappedBy = "recipeDetail", orphanRemoval = true)
-    private Set<RecipeDetailIngredient> recipeDetailIngredients = new LinkedHashSet<>();
+    private List<RecipeDetailIngredient> recipeDetailIngredients = new ArrayList<>();
 
 }

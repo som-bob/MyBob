@@ -1,4 +1,4 @@
-package com.my.bob.recipe;
+package com.my.bob.recipe.entity;
 
 import com.my.bob.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -8,8 +8,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -40,8 +40,8 @@ public class Recipe extends BaseEntity {
     private String imageUrl;
 
     @OneToMany(mappedBy = "recipe")
-    private Set<RecipeDetail> bobRecipeDetails = new LinkedHashSet<>();
+    private List<RecipeDetail> bobRecipeDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", orphanRemoval = true)
-    private Set<RecipeIngredients> recipeIngredients = new LinkedHashSet<>();
+    private List<RecipeIngredients> recipeIngredients = new ArrayList<>();
 }

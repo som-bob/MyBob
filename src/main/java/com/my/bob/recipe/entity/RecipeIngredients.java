@@ -1,4 +1,4 @@
-package com.my.bob.recipe;
+package com.my.bob.recipe.entity;
 
 import com.my.bob.common.entity.BaseEntity;
 import jakarta.persistence.*;

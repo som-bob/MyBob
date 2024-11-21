@@ -10,4 +10,4 @@ CREATE TABLE bob_recipe_ingredients (
 	CONSTRAINT bob_recipe_ingredients_bob_recipe_FK FOREIGN KEY (recipe_id) REFERENCES bob_recipe(recipe_id),
 	CONSTRAINT bob_recipe_ingredients_bob_ingredients_FK FOREIGN KEY (ingredient_id) REFERENCES bob_ingredients(ingredient_id)
 )
-ENGINE=InnoDB COMMENT='레시피 재료 상세';
+COMMENT='레시피 재료 상세';

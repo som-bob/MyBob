@@ -1,4 +1,4 @@
-package com.my.bob.recipe;
+package com.my.bob.recipe.entity;
 
 import com.my.bob.common.entity.BaseTimeEntity;
 import com.my.bob.member.entity.BobUser;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -35,5 +35,5 @@ public class Refrigerator extends BaseTimeEntity {
     private BobUser user;
 
     @OneToMany(mappedBy = "refrigerator")
-    private Set<RefrigeratorIngredient> bobRefrigeratorIngredients = new LinkedHashSet<>();
+    private List<RefrigeratorIngredient> bobRefrigeratorIngredients = new ArrayList<>();
 }
