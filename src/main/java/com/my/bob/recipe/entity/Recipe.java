@@ -39,6 +39,9 @@ public class Recipe extends BaseEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Size(max = 50)
+    private String servings;
+
     @OneToMany(mappedBy = "recipe")
     private List<RecipeDetail> bobRecipeDetails = new ArrayList<>();
 
