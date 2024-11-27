@@ -1,18 +1,13 @@
 package com.my.bob.util;
 
-import com.my.bob.constants.Authority;
-import com.my.bob.jwt.JwtTokenProvider;
-import com.my.bob.member.dto.TokenDto;
+import com.my.bob.v1.member.constants.Authority;
+import com.my.bob.v1.member.dto.TokenDto;
+import com.my.bob.v1.setting.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,7 +19,7 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("Jwt Token 생성 확인")
-    public void createToken(){
+    void createToken(){
         // given
         String testEmail = "admin@test.com";
         String authority = Authority.ROLE_USER.name() + ", " + Authority.ROLE_ADMIN.name();
@@ -39,7 +34,6 @@ class JwtTokenProviderTest {
         // then
         // getName (로그인에 사용된 email 값-)
         String getEmail = authentication.getName();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         assertEquals(testEmail, getEmail);
     }
 }
