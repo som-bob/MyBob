@@ -22,7 +22,7 @@ import static com.my.bob.v1.common.dto.ResponseDto.FailCode.V_00001;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/api/v1/member")
 public class BobUserController {
 
     private final JoinService joinService;

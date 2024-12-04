@@ -16,7 +16,7 @@ import java.security.Principal;
 
 @Slf4j
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/api/vi/board")
 @RequiredArgsConstructor
 public class BoardController {
 
