@@ -33,16 +33,13 @@ public class BoardConvertService {
 
     public BoardDto convertBoardDto(long boardId) {
         Board board = boardService.getById(boardId);
+        BoardDto dto = modelMapper.map(board, BoardDto.class);
 
-        BoardDto dto = new BoardDto();
-        dto.setBoardId(boardId);
         dto.setTitle(board.getBoardTitle());
         dto.setContent(board.getBoardContent());
-        dto.setDelete(board.isDelete());
-        dto.setRegId(board.getRegId());
         dto.setRegDate(convertDateToString(board.getRegDate(), "yyyy-MM-dd"));
 
-        // later board 조회할 때 comments 함께 들고오도록 변경할 것
+        // later board 조회할 때 comments 함께 들고 오도록 변경할 것
         List<BoardComment> comments = board.getRootComments();
         dto.setCommentList(convertCommentList(comments));
 
@@ -81,11 +78,8 @@ public class BoardConvertService {
     }
 
     private BoardCommentDto convertCommentDto(BoardComment boardComment) {
-        BoardCommentDto commentDto = new BoardCommentDto();
-        commentDto.setCommentId(boardComment.getCommentId());
+        BoardCommentDto commentDto = modelMapper.map(boardComment, BoardCommentDto.class);
         commentDto.setContent(boardComment.getCommentContent());
-        commentDto.setDelete(boardComment.isDelete());
-        commentDto.setRegId(boardComment.getRegId());
         commentDto.setRegDate(convertDateToString(boardComment.getRegDate(), "yyyy-MM-dd"));
 
         List<BoardComment> childComments = boardComment.getChildComments();
