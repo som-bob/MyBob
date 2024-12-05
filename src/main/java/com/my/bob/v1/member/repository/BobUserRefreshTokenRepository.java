@@ -1,6 +1,6 @@
 package com.my.bob.v1.member.repository;
 
-import com.my.bob.v1.member.entity.BobUserRefreshToken;
+import com.my.bob.core.domain.member.entity.BobUserRefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

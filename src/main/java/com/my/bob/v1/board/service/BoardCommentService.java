@@ -1,8 +1,8 @@
 package com.my.bob.v1.board.service;
 
-import com.my.bob.v1.board.entity.BoardComment;
+import com.my.bob.core.constants.ErrorMessage;
+import com.my.bob.core.domain.board.entity.BoardComment;
 import com.my.bob.v1.board.repository.BoardCommentRepository;
-import com.my.bob.v1.common.constants.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

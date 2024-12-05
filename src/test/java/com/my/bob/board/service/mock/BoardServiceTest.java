@@ -1,7 +1,7 @@
 package com.my.bob.board.service.mock;
 
-import com.my.bob.v1.board.dto.BoardSearchDto;
-import com.my.bob.v1.board.entity.Board;
+import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.v1.board.repository.BoardQueryRepository;
 import com.my.bob.v1.board.repository.BoardRepository;
 import com.my.bob.v1.board.service.BoardService;

@@ -1,15 +1,15 @@
 package com.my.bob.v1.member.service;
 
-import com.my.bob.v1.common.constants.AuthConstant;
-import com.my.bob.v1.common.constants.ErrorMessage;
-import com.my.bob.v1.member.dto.LoginDto;
-import com.my.bob.v1.member.dto.TokenDto;
-import com.my.bob.v1.member.entity.BobUser;
-import com.my.bob.v1.member.entity.BobUserRefreshToken;
-import com.my.bob.v1.member.exception.BadRequestException;
-import com.my.bob.v1.member.exception.NonExistentUserException;
-import com.my.bob.v1.setting.jwt.JwtTokenProvider;
-import com.my.bob.v1.setting.jwt.TokenUtil;
+import com.my.bob.core.config.JwtTokenProvider;
+import com.my.bob.core.constants.AuthConstant;
+import com.my.bob.core.constants.ErrorMessage;
+import com.my.bob.core.domain.member.dto.LoginDto;
+import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.entity.BobUser;
+import com.my.bob.core.domain.member.entity.BobUserRefreshToken;
+import com.my.bob.core.exception.BadRequestException;
+import com.my.bob.core.domain.member.exception.NonExistentUserException;
+import com.my.bob.core.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

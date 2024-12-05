@@ -1,7 +1,7 @@
 package com.my.bob.service;
 
-import com.my.bob.v1.member.exception.DuplicateUserException;
-import com.my.bob.v1.member.dto.JoinUserDto;
+import com.my.bob.core.domain.member.exception.DuplicateUserException;
+import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.v1.member.service.BobUserService;
 import com.my.bob.v1.member.service.JoinService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,12 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("local")
 class JoinServiceTest {
 
     @Autowired

@@ -6,7 +6,7 @@ import java.util.*;
 
 public class BaseBallTest {
 
-    @Test
+//    @Test
     public void baseball() {
         int length = 4;
         Scanner sc = new Scanner(System.in);

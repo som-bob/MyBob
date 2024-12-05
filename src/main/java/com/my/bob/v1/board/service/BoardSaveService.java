@@ -1,17 +1,17 @@
 package com.my.bob.v1.board.service;
 
-import com.my.bob.v1.board.dto.BoardCommentCreateDto;
-import com.my.bob.v1.board.dto.BoardCommentUpdateDto;
-import com.my.bob.v1.board.dto.BoardCreateDto;
-import com.my.bob.v1.board.dto.BoardUpdateDto;
-import com.my.bob.v1.board.entity.Board;
-import com.my.bob.v1.board.entity.BoardComment;
+import com.my.bob.core.domain.board.dto.BoardCommentCreateDto;
+import com.my.bob.core.domain.board.dto.BoardCommentUpdateDto;
+import com.my.bob.core.domain.board.dto.BoardCreateDto;
+import com.my.bob.core.domain.board.dto.BoardUpdateDto;
+import com.my.bob.core.domain.board.entity.Board;
+import com.my.bob.core.domain.board.entity.BoardComment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.my.bob.v1.common.constants.ErrorMessage.DO_NOT_HAVE_PERMISSION;
-import static com.my.bob.v1.common.constants.ErrorMessage.INVALID_REQUEST;
+import static com.my.bob.core.constants.ErrorMessage.DO_NOT_HAVE_PERMISSION;
+import static com.my.bob.core.constants.ErrorMessage.INVALID_REQUEST;
 
 @Service
 @RequiredArgsConstructor

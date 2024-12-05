@@ -1,12 +1,12 @@
 package com.my.bob.v1.member.controller;
 
-import com.my.bob.v1.common.dto.ResponseDto;
-import com.my.bob.v1.member.dto.JoinUserDto;
-import com.my.bob.v1.member.dto.LoginDto;
-import com.my.bob.v1.member.dto.TokenDto;
-import com.my.bob.v1.member.exception.BadRequestException;
-import com.my.bob.v1.member.exception.DuplicateUserException;
-import com.my.bob.v1.member.exception.NonExistentUserException;
+import com.my.bob.core.domain.base.dto.ResponseDto;
+import com.my.bob.core.domain.member.dto.JoinUserDto;
+import com.my.bob.core.domain.member.dto.LoginDto;
+import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.exception.BadRequestException;
+import com.my.bob.core.domain.member.exception.DuplicateUserException;
+import com.my.bob.core.domain.member.exception.NonExistentUserException;
 import com.my.bob.v1.member.service.JoinService;
 import com.my.bob.v1.member.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.my.bob.v1.common.dto.ResponseDto.FailCode.V_00001;
+import static com.my.bob.core.domain.base.dto.ResponseDto.FailCode.V_00001;
 
 @RestController
 @RequiredArgsConstructor

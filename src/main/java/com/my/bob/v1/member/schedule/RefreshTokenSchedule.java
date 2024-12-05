@@ -1,6 +1,6 @@
 package com.my.bob.v1.member.schedule;
 
-import com.my.bob.v1.member.entity.BobUserRefreshToken;
+import com.my.bob.core.domain.member.entity.BobUserRefreshToken;
 import com.my.bob.v1.member.service.BobUserRefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

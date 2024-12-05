@@ -1,13 +1,13 @@
 package com.my.bob.v1.board.service;
 
-import com.my.bob.v1.board.entity.Board;
-import com.my.bob.v1.board.entity.BoardComment;
+import com.my.bob.core.domain.board.entity.Board;
+import com.my.bob.core.domain.board.entity.BoardComment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.my.bob.v1.common.constants.ErrorMessage.DO_NOT_HAVE_PERMISSION;
+import static com.my.bob.core.constants.ErrorMessage.DO_NOT_HAVE_PERMISSION;
 
 @Slf4j
 @Service

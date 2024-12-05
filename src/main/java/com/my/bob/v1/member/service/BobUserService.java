@@ -1,7 +1,7 @@
 package com.my.bob.v1.member.service;
 
-import com.my.bob.v1.common.constants.ErrorMessage;
-import com.my.bob.v1.member.entity.BobUser;
+import com.my.bob.core.constants.ErrorMessage;
+import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.v1.member.repository.BobRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

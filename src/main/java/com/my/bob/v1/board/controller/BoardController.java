@@ -1,10 +1,10 @@
 package com.my.bob.v1.board.controller;
 
-import com.my.bob.v1.board.dto.*;
+import com.my.bob.core.domain.base.dto.ResponseDto;
+import com.my.bob.core.domain.board.dto.*;
 import com.my.bob.v1.board.service.BoardConvertService;
 import com.my.bob.v1.board.service.BoardDeleteService;
 import com.my.bob.v1.board.service.BoardSaveService;
-import com.my.bob.v1.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

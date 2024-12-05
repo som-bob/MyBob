@@ -1,17 +1,19 @@
 package com.my.bob.util;
 
-import com.my.bob.v1.member.constants.Authority;
-import com.my.bob.v1.member.dto.TokenDto;
-import com.my.bob.v1.setting.jwt.JwtTokenProvider;
+import com.my.bob.core.domain.member.constants.Authority;
+import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.config.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@ActiveProfiles("local")
 class JwtTokenProviderTest {
 
     @Autowired

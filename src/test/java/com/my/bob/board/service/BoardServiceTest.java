@@ -1,9 +1,9 @@
 package com.my.bob.board.service;
 
-import com.my.bob.v1.board.dto.BoardSearchDto;
-import com.my.bob.v1.board.entity.Board;
-import com.my.bob.v1.board.repository.BoardRepository;
 import com.my.bob.config.WithAccount;
+import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.entity.Board;
+import com.my.bob.v1.board.repository.BoardRepository;
 import com.my.bob.v1.board.service.BoardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

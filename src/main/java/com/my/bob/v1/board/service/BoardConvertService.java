@@ -1,11 +1,11 @@
 package com.my.bob.v1.board.service;
 
-import com.my.bob.v1.board.dto.BoardCommentDto;
-import com.my.bob.v1.board.dto.BoardDto;
-import com.my.bob.v1.board.dto.BoardSearchDto;
-import com.my.bob.v1.board.dto.BoardTitleDto;
-import com.my.bob.v1.board.entity.Board;
-import com.my.bob.v1.board.entity.BoardComment;
+import com.my.bob.core.domain.board.dto.BoardCommentDto;
+import com.my.bob.core.domain.board.dto.BoardDto;
+import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.dto.BoardTitleDto;
+import com.my.bob.core.domain.board.entity.Board;
+import com.my.bob.core.domain.board.entity.BoardComment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 
-import static com.my.bob.v1.util.DateConvertUtil.convertDateToString;
+import static com.my.bob.core.util.DateConvertUtil.convertDateToString;
 
 @Slf4j
 @Service

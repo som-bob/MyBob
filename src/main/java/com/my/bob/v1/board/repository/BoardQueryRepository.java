@@ -1,7 +1,7 @@
 package com.my.bob.v1.board.repository;
 
-import com.my.bob.v1.board.dto.BoardSearchDto;
-import com.my.bob.v1.board.entity.Board;
+import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.entity.Board;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.my.bob.v1.board.entity.QBoard.board;
-import static com.my.bob.v1.util.DateConvertUtil.convertStringToDate;
+import static com.my.bob.core.domain.board.entity.QBoard.board;
+import static com.my.bob.core.util.DateConvertUtil.convertStringToDate;
 
 @Repository
 @RequiredArgsConstructor

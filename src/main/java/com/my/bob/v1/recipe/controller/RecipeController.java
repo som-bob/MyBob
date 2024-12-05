@@ -1,6 +1,6 @@
 package com.my.bob.v1.recipe.controller;
 
-import com.my.bob.RecipeTitleDto;
+import com.my.bob.core.domain.recipe.dto.RecipeTitleDto;
 import com.my.bob.v1.recipe.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
