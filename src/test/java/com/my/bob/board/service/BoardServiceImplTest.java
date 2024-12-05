@@ -4,7 +4,7 @@ import com.my.bob.config.WithAccount;
 import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.v1.board.repository.BoardRepository;
-import com.my.bob.v1.board.service.BoardService;
+import com.my.bob.v1.board.service.BoardServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional  // 테스트 후 롤백 처리
 @ActiveProfiles("local")
 @WithAccount("system@system.com")   // 자동으로 해당 계정으로 들어가도록 세팅
-class BoardServiceTest {
+class BoardServiceImplTest {
 
     @Autowired
     BoardRepository boardRepository;
 
     @Autowired
-    BoardService boardService;
+    BoardServiceImpl boardServiceImpl;
 
     @DisplayName("실제 DB와 연동된 게시물 저장 테스트")
     @Test
@@ -35,7 +35,7 @@ class BoardServiceTest {
         Board board = new Board("제목", "내용");
 
         // when
-        boardService.save(board);
+        boardServiceImpl.save(board);
 
         // then
         Board savedBoard = boardRepository.findById(board.getBoardId()).orElse(null);
@@ -51,10 +51,10 @@ class BoardServiceTest {
     void testGetById() {
         // given
         Board board = new Board("제목", "내용");
-        boardService.save(board);
+        boardServiceImpl.save(board);
 
         // when
-        Board result = boardService.getById(board.getBoardId());
+        Board result = boardServiceImpl.getById(board.getBoardId());
 
         // then
         assertThat(result).isNotNull();
@@ -69,13 +69,13 @@ class BoardServiceTest {
         // given
         Board board = new Board("검색 제목", "검색 내용");
         PageRequest pageable = PageRequest.of(0, 1);
-        boardService.save(board);
+        boardServiceImpl.save(board);
         BoardSearchDto searchDto = new BoardSearchDto();
         searchDto.setBoardTitle("검색 제목");
         searchDto.setBoardContent("검색 내용");
 
         // when
-        Page<Board> result = boardService.getBySearch(searchDto, pageable);
+        Page<Board> result = boardServiceImpl.getBySearch(searchDto, pageable);
 
         // then
         assertThat(result).isNotNull();

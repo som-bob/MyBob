@@ -6,6 +6,7 @@ import com.my.bob.core.domain.board.dto.BoardCreateDto;
 import com.my.bob.core.domain.board.dto.BoardUpdateDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
+import com.my.bob.core.service.board.BoardSaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +16,10 @@ import static com.my.bob.core.constants.ErrorMessage.INVALID_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class BoardSaveService {
+public class BoardSaveServiceImpl implements BoardSaveService {
 
-    private final BoardService boardService;
-    private final BoardCommentService boardCommentService;
+    private final BoardServiceImpl boardServiceImpl;
+    private final BoardCommentServiceImpl boardCommentServiceImpl;
 
     @Transactional
     public long saveNewBoard(BoardCreateDto dto){
@@ -29,14 +30,14 @@ public class BoardSaveService {
         }
 
         Board board = new Board(title, content);
-        boardService.save(board);
+        boardServiceImpl.save(board);
 
         return board.getBoardId();
     }
 
     @Transactional
     public void updateBoard(long boardId, String requestUser, BoardUpdateDto dto) {
-        Board board = boardService.getById(boardId);
+        Board board = boardServiceImpl.getById(boardId);
 
         if(! board.isRegistrant(requestUser)) {
             throw new IllegalStateException(DO_NOT_HAVE_PERMISSION);
@@ -46,26 +47,26 @@ public class BoardSaveService {
         }
 
         board.updateBoard(dto.getTitle(), dto.getContent());
-        boardService.save(board);
+        boardServiceImpl.save(board);
     }
 
     @Transactional
     public void saveNewComment(long bordId, BoardCommentCreateDto dto) {
-        Board board = boardService.getById(bordId);
+        Board board = boardServiceImpl.getById(bordId);
 
         Long parentCommentId = dto.getParentCommentId();
         BoardComment parentComment = null;
         if(parentCommentId != null) {
-            parentComment = boardCommentService.getById(parentCommentId);
+            parentComment = boardCommentServiceImpl.getById(parentCommentId);
         }
 
         BoardComment boardComment = new BoardComment(board, parentComment, dto.getComment());
-        boardCommentService.save(boardComment);
+        boardCommentServiceImpl.save(boardComment);
     }
 
     @Transactional
     public void updateComment(long commentId, String requestUser, BoardCommentUpdateDto dto) {
-        BoardComment comment = boardCommentService.getById(commentId);
+        BoardComment comment = boardCommentServiceImpl.getById(commentId);
         String regId = comment.getRegId();
 
         if(! requestUser.equals(regId)) {
@@ -76,6 +77,6 @@ public class BoardSaveService {
         }
 
         comment.updateComment(dto.getComment());
-        boardCommentService.save(comment);
+        boardCommentServiceImpl.save(comment);
     }
 }

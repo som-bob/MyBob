@@ -4,7 +4,7 @@ import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.v1.board.repository.BoardQueryRepository;
 import com.my.bob.v1.board.repository.BoardRepository;
-import com.my.bob.v1.board.service.BoardService;
+import com.my.bob.v1.board.service.BoardServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BoardServiceTest {
+class BoardServiceImplTest {
 
     @Mock
     private BoardRepository boardRepository;
@@ -30,7 +30,7 @@ class BoardServiceTest {
     private BoardQueryRepository boardQueryRepository;
 
     @InjectMocks
-    private BoardService boardService;
+    private BoardServiceImpl boardServiceImpl;
 
     @Test
     @DisplayName("게시물 저장 테스트")
@@ -39,7 +39,7 @@ class BoardServiceTest {
         Board board = new Board("제목", "내용");
 
         // when
-        boardService.save(board);
+        boardServiceImpl.save(board);
 
         // then
         // save 메서드가 정확히 한 번 호출 되었는지 검증
@@ -55,7 +55,7 @@ class BoardServiceTest {
         when(boardRepository.findById(boardId)).thenReturn(java.util.Optional.of(board));
 
         // when
-        Board result = boardService.getById(boardId);
+        Board result = boardServiceImpl.getById(boardId);
 
         // then
         assertThat(result).isEqualTo(board);
@@ -73,7 +73,7 @@ class BoardServiceTest {
         when(boardQueryRepository.getBoardList(searchDto, pageable)).thenReturn(page);
 
         // when
-        Page<Board> result = boardService.getBySearch(searchDto, pageable);
+        Page<Board> result = boardServiceImpl.getBySearch(searchDto, pageable);
 
         // then
         assertThat(result).isEqualTo(page);

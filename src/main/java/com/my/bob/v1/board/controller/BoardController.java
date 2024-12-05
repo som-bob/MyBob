@@ -2,9 +2,11 @@ package com.my.bob.v1.board.controller;
 
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.board.dto.*;
+import com.my.bob.core.domain.board.entity.Board;
+import com.my.bob.core.service.board.BoardDeleteService;
+import com.my.bob.core.service.board.BoardSaveService;
+import com.my.bob.core.service.board.BoardService;
 import com.my.bob.v1.board.service.BoardConvertService;
-import com.my.bob.v1.board.service.BoardDeleteService;
-import com.my.bob.v1.board.service.BoardSaveService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final BoardService boardService;
     private final BoardSaveService boardSaveService;
     private final BoardConvertService boardConvertService;
     private final BoardDeleteService boardDeleteService;
@@ -27,8 +30,8 @@ public class BoardController {
     @GetMapping
     public ResponseEntity<ResponseDto<Page<BoardTitleDto>>> getBoardList(@ModelAttribute BoardSearchDto dto,
                                                                          Pageable pageable) {
-
-        Page<BoardTitleDto> pageDtoList = boardConvertService.convertBoardList(dto, pageable);
+        Page<Board> boards = boardService.getBySearch(dto, pageable);
+        Page<BoardTitleDto> pageDtoList = boards.map(boardConvertService::convertTitleDto);
         return ResponseEntity.ok(new ResponseDto<>(pageDtoList));
     }
 

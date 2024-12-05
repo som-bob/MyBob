@@ -3,6 +3,7 @@ package com.my.bob.v1.board.service;
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
+import com.my.bob.core.service.board.BoardService;
 import com.my.bob.v1.board.repository.BoardQueryRepository;
 import com.my.bob.v1.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BoardService {
+public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardQueryRepository boardQueryRepository;

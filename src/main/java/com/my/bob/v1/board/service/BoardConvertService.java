@@ -2,16 +2,14 @@ package com.my.bob.v1.board.service;
 
 import com.my.bob.core.domain.board.dto.BoardCommentDto;
 import com.my.bob.core.domain.board.dto.BoardDto;
-import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.dto.BoardTitleDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
+import com.my.bob.core.service.board.BoardMapperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,15 +22,15 @@ import static com.my.bob.core.util.DateConvertUtil.convertDateToString;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BoardConvertService {
+public class BoardConvertService implements BoardMapperService {
 
-    private final BoardService boardService;
+    private final BoardServiceImpl boardServiceImpl;
 
     private final ModelMapper modelMapper;
 
 
     public BoardDto convertBoardDto(long boardId) {
-        Board board = boardService.getById(boardId);
+        Board board = boardServiceImpl.getById(boardId);
         BoardDto dto = modelMapper.map(board, BoardDto.class);
 
         dto.setTitle(board.getBoardTitle());
@@ -46,12 +44,7 @@ public class BoardConvertService {
         return dto;
     }
 
-    public Page<BoardTitleDto> convertBoardList(BoardSearchDto dto, Pageable pageable) {
-        return boardService.getBySearch(dto, pageable).map(this::convertTitleDto);
-    }
-
-    /* private */
-    private BoardTitleDto convertTitleDto(Board board) {
+    public BoardTitleDto convertTitleDto(Board board) {
         BoardTitleDto dto = modelMapper.map(board, BoardTitleDto.class);
 
         if (board.isDelete()) {
@@ -65,6 +58,16 @@ public class BoardConvertService {
         return dto;
     }
 
+    public BoardCommentDto convertCommentDto(BoardComment boardComment) {
+        BoardCommentDto commentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+        commentDto.setContent(boardComment.getCommentContent());
+        commentDto.setRegDate(convertDateToString(boardComment.getRegDate(), "yyyy-MM-dd"));
+
+        List<BoardComment> childComments = boardComment.getChildComments();
+        commentDto.setSubComments(convertCommentList(childComments));
+
+        return commentDto;
+    }
 
     private List<BoardCommentDto> convertCommentList(List<BoardComment> boardComments) {
         if (CollectionUtils.isEmpty(boardComments)) {
@@ -77,14 +80,4 @@ public class BoardConvertService {
                 .toList();
     }
 
-    private BoardCommentDto convertCommentDto(BoardComment boardComment) {
-        BoardCommentDto commentDto = modelMapper.map(boardComment, BoardCommentDto.class);
-        commentDto.setContent(boardComment.getCommentContent());
-        commentDto.setRegDate(convertDateToString(boardComment.getRegDate(), "yyyy-MM-dd"));
-
-        List<BoardComment> childComments = boardComment.getChildComments();
-        commentDto.setSubComments(convertCommentList(childComments));
-
-        return commentDto;
-    }
 }
