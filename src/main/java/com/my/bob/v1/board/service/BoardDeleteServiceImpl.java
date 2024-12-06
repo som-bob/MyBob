@@ -2,7 +2,7 @@ package com.my.bob.v1.board.service;
 
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
-import com.my.bob.core.service.board.BoardDeleteService;
+import com.my.bob.core.domain.board.service.BoardDeleteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

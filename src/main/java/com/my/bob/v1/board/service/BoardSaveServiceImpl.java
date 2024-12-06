@@ -6,7 +6,7 @@ import com.my.bob.core.domain.board.dto.BoardCreateDto;
 import com.my.bob.core.domain.board.dto.BoardUpdateDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
-import com.my.bob.core.service.board.BoardSaveService;
+import com.my.bob.core.domain.board.service.BoardSaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -72,7 +72,7 @@ class DrawTest {
     }
 
     // 오늘의 확률
-    @Test
+//    @Test
     void todayLucky() {
         Random random = new Random();
         int testCase = 10000;

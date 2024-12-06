@@ -2,8 +2,8 @@ package com.my.bob.v1.member.service;
 
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.member.entity.BobUser;
-import com.my.bob.core.service.member.BobUserService;
-import com.my.bob.v1.member.repository.BobRepository;
+import com.my.bob.core.domain.member.repository.BobRepository;
+import com.my.bob.core.domain.member.service.BobUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

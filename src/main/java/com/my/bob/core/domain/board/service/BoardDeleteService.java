@@ -1,4 +1,4 @@
-package com.my.bob.core.service.board;
+package com.my.bob.core.domain.board.service;
 
 public interface BoardDeleteService {
 

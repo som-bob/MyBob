@@ -5,7 +5,7 @@ import com.my.bob.core.domain.board.dto.BoardDto;
 import com.my.bob.core.domain.board.dto.BoardTitleDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
-import com.my.bob.core.service.board.BoardMapperService;
+import com.my.bob.core.domain.board.service.BoardMapperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;

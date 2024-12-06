@@ -1,8 +1,8 @@
 package com.my.bob.v1.member.service;
 
 import com.my.bob.core.domain.member.entity.BobUserRefreshToken;
-import com.my.bob.core.service.member.BobUserRefreshTokenService;
-import com.my.bob.v1.member.repository.BobUserRefreshTokenRepository;
+import com.my.bob.core.domain.member.repository.BobUserRefreshTokenRepository;
+import com.my.bob.core.domain.member.service.BobUserRefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;

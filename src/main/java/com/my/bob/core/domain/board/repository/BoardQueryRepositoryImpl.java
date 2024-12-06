@@ -1,4 +1,4 @@
-package com.my.bob.v1.board.repository;
+package com.my.bob.core.domain.board.repository;
 
 import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
@@ -23,11 +23,10 @@ import static com.my.bob.core.util.DateConvertUtil.convertStringToDate;
 @Repository
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BoardQueryRepository {
+public class BoardQueryRepositoryImpl implements BoardQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    // 삭제된 글은 삭제된 글이라고 표시
     public Page<Board> getBoardList(BoardSearchDto dto, Pageable pageable) {
         List<Board> results = selectBoardBySearchDto(dto)
                 .offset(pageable.getOffset())
@@ -38,7 +37,6 @@ public class BoardQueryRepository {
         Long total = getBoardCountBySearchDto(dto);
         return PageableExecutionUtils.getPage(results, pageable, () -> total);
     }
-
 
     /* private method */
     private JPAQuery<Board> selectBoardBySearchDto(BoardSearchDto dto) {

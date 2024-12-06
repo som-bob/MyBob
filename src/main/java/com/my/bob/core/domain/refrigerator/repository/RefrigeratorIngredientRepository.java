@@ -1,4 +1,4 @@
-package com.my.bob.v1.refrigerator.repository;
+package com.my.bob.core.domain.refrigerator.repository;
 
 import com.my.bob.core.domain.refrigerator.entity.RefrigeratorIngredient;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.my.bob.v1.board.repository;
+package com.my.bob.core.domain.board.repository;
 
 import com.my.bob.core.domain.board.entity.BoardComment;
 import org.springframework.data.jpa.repository.EntityGraph;

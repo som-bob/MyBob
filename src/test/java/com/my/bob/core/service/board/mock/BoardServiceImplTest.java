@@ -2,8 +2,8 @@ package com.my.bob.core.service.board.mock;
 
 import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
-import com.my.bob.v1.board.repository.BoardQueryRepository;
-import com.my.bob.v1.board.repository.BoardRepository;
+import com.my.bob.core.domain.board.repository.BoardQueryRepositoryImpl;
+import com.my.bob.core.domain.board.repository.BoardRepository;
 import com.my.bob.v1.board.service.BoardServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class BoardServiceImplTest {
     private BoardRepository boardRepository;
 
     @Mock
-    private BoardQueryRepository boardQueryRepository;
+    private BoardQueryRepositoryImpl boardQueryRepositoryImpl;
 
     // spring boot test 아니기 때문에 실제 객체 필요
     @InjectMocks
@@ -71,7 +71,7 @@ class BoardServiceImplTest {
         Page<Board> page = new PageImpl<>(Collections.singletonList(new Board("제목", "내용")));
 
         // boardQueryRepository의 search 호출 시 특정 값을 반환하도록 설정
-        when(boardQueryRepository.getBoardList(searchDto, pageable)).thenReturn(page);
+        when(boardQueryRepositoryImpl.getBoardList(searchDto, pageable)).thenReturn(page);
 
         // when
         Page<Board> result = boardServiceImpl.getBySearch(searchDto, pageable);

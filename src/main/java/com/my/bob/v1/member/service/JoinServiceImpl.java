@@ -3,7 +3,7 @@ package com.my.bob.v1.member.service;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
-import com.my.bob.core.service.member.JoinService;
+import com.my.bob.core.domain.member.service.JoinService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,4 +1,4 @@
-package com.my.bob.core.service.board;
+package com.my.bob.core.domain.board.service;
 
 import com.my.bob.core.domain.board.dto.BoardDto;
 import com.my.bob.core.domain.board.dto.BoardTitleDto;
