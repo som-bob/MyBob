@@ -2,7 +2,9 @@ package com.my.bob.v1.board.service;
 
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
+import com.my.bob.core.domain.board.service.BoardCommentService;
 import com.my.bob.core.domain.board.service.BoardDeleteService;
+import com.my.bob.core.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,29 +17,29 @@ import static com.my.bob.core.constants.ErrorMessage.DO_NOT_HAVE_PERMISSION;
 @RequiredArgsConstructor
 public class BoardDeleteServiceImpl implements BoardDeleteService {
 
-    private final BoardServiceImpl boardServiceImpl;
-    private final BoardCommentServiceImpl boardCommentServiceImpl;
+    private final BoardService boardService;
+    private final BoardCommentService boardCommentService;
 
 
     @Transactional
     public void deleteBoard(long boardId, String requestUser){
-        Board board = boardServiceImpl.getById(boardId);
+        Board board = boardService.getById(boardId);
         if(! board.isRegistrant(requestUser)) {
             throw new IllegalStateException(DO_NOT_HAVE_PERMISSION);
         }
 
         board.deleteBoard();
-        boardServiceImpl.save(board);
+        boardService.save(board);
     }
 
     @Transactional
     public void deleteComment(long commentId, String requestUser){
-        BoardComment comment = boardCommentServiceImpl.getById(commentId);
+        BoardComment comment = boardCommentService.getById(commentId);
         if(! comment.isRegistrant(requestUser)) {
             throw new IllegalStateException(DO_NOT_HAVE_PERMISSION);
         }
 
         comment.deleteComment();
-        boardCommentServiceImpl.save(comment);
+        boardCommentService.save(comment);
     }
 }

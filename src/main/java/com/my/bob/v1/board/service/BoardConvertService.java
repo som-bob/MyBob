@@ -6,6 +6,7 @@ import com.my.bob.core.domain.board.dto.BoardTitleDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
 import com.my.bob.core.domain.board.service.BoardMapperService;
+import com.my.bob.core.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,13 +25,13 @@ import static com.my.bob.core.util.DateConvertUtil.convertDateToString;
 @Transactional(readOnly = true)
 public class BoardConvertService implements BoardMapperService {
 
-    private final BoardServiceImpl boardServiceImpl;
+    private final BoardService boardService;
 
     private final ModelMapper modelMapper;
 
 
     public BoardDto convertBoardDto(long boardId) {
-        Board board = boardServiceImpl.getById(boardId);
+        Board board = boardService.getById(boardId);
         BoardDto dto = modelMapper.map(board, BoardDto.class);
 
         dto.setTitle(board.getBoardTitle());
