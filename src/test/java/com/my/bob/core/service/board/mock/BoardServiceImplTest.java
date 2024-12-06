@@ -1,4 +1,4 @@
-package com.my.bob.board.service.mock;
+package com.my.bob.core.service.board.mock;
 
 import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
@@ -29,6 +29,7 @@ class BoardServiceImplTest {
     @Mock
     private BoardQueryRepository boardQueryRepository;
 
+    // spring boot test 아니기 때문에 실제 객체 필요
     @InjectMocks
     private BoardServiceImpl boardServiceImpl;
 

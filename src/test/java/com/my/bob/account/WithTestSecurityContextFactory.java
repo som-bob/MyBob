@@ -1,4 +1,4 @@
-package com.my.bob.config;
+package com.my.bob.account;
 
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;

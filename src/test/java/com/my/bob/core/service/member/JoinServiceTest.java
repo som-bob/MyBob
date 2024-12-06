@@ -1,7 +1,7 @@
-package com.my.bob.service;
+package com.my.bob.core.service.member;
 
-import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
+import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.v1.member.service.BobUserServiceImpl;
 import com.my.bob.v1.member.service.JoinServiceImpl;
 import lombok.extern.slf4j.Slf4j;
