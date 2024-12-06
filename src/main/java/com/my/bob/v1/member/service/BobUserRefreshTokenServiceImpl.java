@@ -1,6 +1,7 @@
 package com.my.bob.v1.member.service;
 
 import com.my.bob.core.domain.member.entity.BobUserRefreshToken;
+import com.my.bob.core.service.member.BobUserRefreshTokenService;
 import com.my.bob.v1.member.repository.BobUserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BobUserRefreshTokenService {
+public class BobUserRefreshTokenServiceImpl implements BobUserRefreshTokenService {
 
     private final BobUserRefreshTokenRepository bobUserRefreshTokenRepository;
 

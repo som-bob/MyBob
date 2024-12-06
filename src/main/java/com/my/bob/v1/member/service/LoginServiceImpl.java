@@ -7,8 +7,9 @@ import com.my.bob.core.domain.member.dto.LoginDto;
 import com.my.bob.core.domain.member.dto.TokenDto;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.member.entity.BobUserRefreshToken;
-import com.my.bob.core.exception.BadRequestException;
 import com.my.bob.core.domain.member.exception.NonExistentUserException;
+import com.my.bob.core.exception.BadRequestException;
+import com.my.bob.core.service.member.LoginService;
 import com.my.bob.core.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class LoginService {
+public class LoginServiceImpl implements LoginService {
 
-    private final BobUserService bobUserService;
-    private final BobUserRefreshTokenService bobUserRefreshTokenService;
+    private final BobUserServiceImpl bobUserService;
+    private final BobUserRefreshTokenServiceImpl bobUserRefreshTokenService;
 
     private final PasswordEncoder passwordEncoder;
 

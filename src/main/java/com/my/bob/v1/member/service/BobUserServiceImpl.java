@@ -2,6 +2,7 @@ package com.my.bob.v1.member.service;
 
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.member.entity.BobUser;
+import com.my.bob.core.service.member.BobUserService;
 import com.my.bob.v1.member.repository.BobRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BobUserService {
+public class BobUserServiceImpl implements BobUserService {
 
     private final BobRepository bobRepository;
 
