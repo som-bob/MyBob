@@ -26,16 +26,16 @@ class BoardServiceTest {
     BoardRepository boardRepository;
 
     @Autowired
-    BoardService boardServiceImpl;
+    BoardService boardService;
 
-    @DisplayName("실제 DB와 연동된 게시물 저장 테스트")
     @Test
+    @DisplayName("실제 DB와 연동된 게시물 저장 테스트")
     void testSaveBoard() {
         // given
         Board board = new Board("제목", "내용");
 
         // when
-        boardServiceImpl.save(board);
+        boardService.save(board);
 
         // then
         Board savedBoard = boardRepository.findById(board.getBoardId()).orElse(null);
@@ -46,15 +46,15 @@ class BoardServiceTest {
         assertThat(savedBoard.getRegId()).isEqualTo("system@system.com");
     }
 
-    @DisplayName("실제 DB와 연동된 ID로 게시물 검색 테스트")
     @Test
+    @DisplayName("실제 DB와 연동된 ID로 게시물 검색 테스트")
     void testGetById() {
         // given
         Board board = new Board("제목", "내용");
-        boardServiceImpl.save(board);
+        boardService.save(board);
 
         // when
-        Board result = boardServiceImpl.getById(board.getBoardId());
+        Board result = boardService.getById(board.getBoardId());
 
         // then
         assertThat(result).isNotNull();
@@ -63,19 +63,19 @@ class BoardServiceTest {
         assertThat(result.getBoardContent()).isEqualTo("내용");
     }
 
-    @DisplayName("실제 DB와 연동된 검색 조건으로 게시글 검색 테스트")
     @Test
+    @DisplayName("실제 DB와 연동된 검색 조건으로 게시글 검색 테스트")
     void testGetBySearch() {
         // given
         Board board = new Board("검색 제목", "검색 내용");
         PageRequest pageable = PageRequest.of(0, 1);
-        boardServiceImpl.save(board);
+        boardService.save(board);
         BoardSearchDto searchDto = new BoardSearchDto();
         searchDto.setBoardTitle("검색 제목");
         searchDto.setBoardContent("검색 내용");
 
         // when
-        Page<Board> result = boardServiceImpl.getBySearch(searchDto, pageable);
+        Page<Board> result = boardService.getBySearch(searchDto, pageable);
 
         // then
         assertThat(result).isNotNull();

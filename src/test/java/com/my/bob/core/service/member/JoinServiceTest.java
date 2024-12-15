@@ -2,8 +2,8 @@ package com.my.bob.core.service.member;
 
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
-import com.my.bob.v1.member.service.BobUserServiceImpl;
-import com.my.bob.v1.member.service.JoinServiceImpl;
+import com.my.bob.core.domain.member.service.BobUserService;
+import com.my.bob.core.domain.member.service.JoinService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class JoinServiceTest {
 
     @Autowired
-    private BobUserServiceImpl bobUserService;
+    private BobUserService bobUserService;
 
 
     @Autowired
-    private JoinServiceImpl joinService;
+    private JoinService joinService;
 
 
     @Test

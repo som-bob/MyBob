@@ -14,12 +14,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RefrigeratorServiceImpl implements RefrigeratorService {
 
-    private final RefrigeratorRepository refrigeratorRepository;
     private final BobUserService bobUserService;
+
+    private final RefrigeratorRepository refrigeratorRepository;
 
     @Override
     public RefrigeratorDto createRefrigerator(String email, RefrigeratorCreateDto dto) {
         BobUser bobUser = bobUserService.getByEmail(email);
+        if(refrigeratorRepository.existsByUser(bobUser)) {
+            throw new IllegalArgumentException("이미 냉장고를 생성한 유저입니다.");
+        }
+
         Refrigerator refrigerator = new Refrigerator(dto.getNickName(), bobUser);
 
         Refrigerator savedRefrigerator = refrigeratorRepository.save(refrigerator);

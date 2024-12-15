@@ -6,7 +6,7 @@ import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.service.JoinService;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
-import com.my.bob.v1.refrigerator.service.RefrigeratorServiceImpl;
+import com.my.bob.core.domain.refrigerator.service.RefrigeratorService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class RefrigeratorServiceImplTest {
 
     @Autowired
-    RefrigeratorServiceImpl refrigeratorServiceImpl;
+    RefrigeratorService refrigeratorService;
 
     @Autowired
     JoinService joinService;
@@ -51,7 +51,7 @@ class RefrigeratorServiceImplTest {
         dto.setNickName("나의 냉장고");
 
         // when
-        RefrigeratorDto refrigeratorDto = refrigeratorServiceImpl.createRefrigerator(testUserEmail, dto);
+        RefrigeratorDto refrigeratorDto = refrigeratorService.createRefrigerator(testUserEmail, dto);
 
         // then
         assertThat(refrigeratorDto.getRefrigeratorId()).isPositive();
@@ -68,9 +68,24 @@ class RefrigeratorServiceImplTest {
         dto.setNickName("나의 냉장고");
 
         // when, then
-        assertThatThrownBy(() -> refrigeratorServiceImpl.createRefrigerator(failTestEmail, dto))
+        assertThatThrownBy(() -> refrigeratorService.createRefrigerator(failTestEmail, dto))
                 .isInstanceOf(UsernameNotFoundException.class);
 
+    }
+
+    @Test
+    @DisplayName("냉장고를 두 번 생성할 경우 에러 발생")
+    void failToDuplicateRefrigerator() {
+        // given
+        RefrigeratorCreateDto dto = new RefrigeratorCreateDto();
+        dto.setNickName("나의 냉장고");
+
+        // when
+        refrigeratorService.createRefrigerator(testUserEmail, dto);
+
+        // then
+        assertThatThrownBy(() -> refrigeratorService.createRefrigerator(testUserEmail, dto))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 
