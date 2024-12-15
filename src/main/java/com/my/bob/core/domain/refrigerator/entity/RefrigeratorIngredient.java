@@ -1,6 +1,7 @@
 package com.my.bob.core.domain.refrigerator.entity;
 
 import com.my.bob.core.domain.base.entity.BaseTimeEntity;
+import com.my.bob.core.domain.recipe.entity.Ingredient;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -28,8 +29,10 @@ public class RefrigeratorIngredient extends BaseTimeEntity {
     private Refrigerator refrigerator;
 
     @NotNull
-    @Column(name = "ingredient_id", nullable = false)
-    private Integer ingredientId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "ingredient_id", nullable = false)
+    private Ingredient ingredient;
 
     @Column(name = "date_added")
     private LocalDate dateAdded;

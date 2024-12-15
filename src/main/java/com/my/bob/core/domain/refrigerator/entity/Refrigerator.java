@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -34,6 +34,12 @@ public class Refrigerator extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private BobUser user;
 
-    @OneToMany(mappedBy = "refrigerator")
-    private List<RefrigeratorIngredient> bobRefrigeratorIngredients = new ArrayList<>();
+    @OneToMany(mappedBy = "refrigerator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RefrigeratorIngredient> bobRefrigeratorIngredients;
+
+    public Refrigerator(String nickname, BobUser user) {
+        this.nickname = nickname;
+        this.user = user;
+        this.bobRefrigeratorIngredients = new HashSet<>();
+    }
 }
