@@ -59,7 +59,7 @@ public class BoardConvertService implements BoardMapperService {
         return dto;
     }
 
-    public BoardCommentDto convertCommentDto(BoardComment boardComment) {
+    private BoardCommentDto convertCommentDto(BoardComment boardComment) {
         BoardCommentDto commentDto = modelMapper.map(boardComment, BoardCommentDto.class);
         commentDto.setContent(boardComment.getCommentContent());
         commentDto.setRegDate(convertDateToString(boardComment.getRegDate(), "yyyy-MM-dd"));
