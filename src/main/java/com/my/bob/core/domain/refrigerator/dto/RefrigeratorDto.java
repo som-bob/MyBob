@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class RefrigeratorDto {
+    // 조회용
 
     private int refrigeratorId;
 
@@ -20,6 +21,7 @@ public class RefrigeratorDto {
         this.ingredients = refrigerator.getBobRefrigeratorIngredients()
                 .stream()
                 .map(ingredient -> new RefrigeratorIngredientDto(ingredient.getIngredient(), ingredient.getDateAdded()))
+                .sorted((o1, o2) -> o2.getIngredientName().compareTo(o1.getIngredientName()))
                 .toList();
     }
 }

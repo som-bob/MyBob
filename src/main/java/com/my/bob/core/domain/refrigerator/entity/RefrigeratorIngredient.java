@@ -37,4 +37,11 @@ public class RefrigeratorIngredient extends BaseTimeEntity {
     @Column(name = "date_added")
     private LocalDate dateAdded;
 
+    public RefrigeratorIngredient(Refrigerator refrigerator, Ingredient ingredient, LocalDate dateAdded) {
+        this.refrigerator = refrigerator;
+        this.ingredient = ingredient;
+        this.dateAdded = dateAdded;
+
+        this.refrigerator.addIngredient(this);
+    }
 }

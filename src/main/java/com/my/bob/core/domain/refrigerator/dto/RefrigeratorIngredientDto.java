@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class RefrigeratorIngredientDto {
+    // 조회용
 
     private Integer ingredientId;
 

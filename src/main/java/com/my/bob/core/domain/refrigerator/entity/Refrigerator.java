@@ -42,4 +42,8 @@ public class Refrigerator extends BaseTimeEntity {
         this.user = user;
         this.bobRefrigeratorIngredients = new HashSet<>();
     }
+
+    public void addIngredient(RefrigeratorIngredient refrigeratorIngredient) {
+        bobRefrigeratorIngredients.add(refrigeratorIngredient);
+    }
 }
