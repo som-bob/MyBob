@@ -60,7 +60,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
     private Refrigerator getRefrigerator(int refrigeratorId) {
         Optional<Refrigerator> optionalRefrigerator = refrigeratorRepository.findById(refrigeratorId);
         if(optionalRefrigerator.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.NON_EXISTENT_REFRIGERATOR);
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
         }
 
         return optionalRefrigerator.get();

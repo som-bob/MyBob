@@ -42,7 +42,7 @@ public class RefrigeratorServiceImpl implements RefrigeratorService {
         BobUser user = bobUserService.getByEmail(email);
         Optional<Refrigerator> optionalRefrigerator = refrigeratorRepository.findOneByUser(user);
         if(optionalRefrigerator.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.NON_EXISTENT_REFRIGERATOR);
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
         }
 
         Refrigerator refrigerator = optionalRefrigerator.get();

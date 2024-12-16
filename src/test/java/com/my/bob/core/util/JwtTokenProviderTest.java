@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("local")
+@DisplayName("Jwt Token 테스트")
 class JwtTokenProviderTest {
 
     @Autowired

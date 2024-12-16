@@ -1,5 +1,6 @@
 package com.my.bob.core.domain.refrigerator.service;
 
+import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
@@ -16,13 +17,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+@DisplayName("Mock 나의 냉장고 재료 테스트")
 class RefrigeratorIngredientServiceMockTest {
 
     @InjectMocks
@@ -40,15 +44,15 @@ class RefrigeratorIngredientServiceMockTest {
     private BobUser mockUser;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
         mockUser = new BobUser("test_test@test.com", "<PASSWORD>", "Test User");
     }
 
 
     @Test
-    @DisplayName("Mock 냉장고에 재료 추가 테스트")
-    void addIngredient(){
+    @DisplayName("Mock 냉장고에 재료 추가 - 성공 케이스")
+    void addIngredient() {
         // given
 
         int refrigeratorId = 1;
@@ -74,6 +78,76 @@ class RefrigeratorIngredientServiceMockTest {
         verify(refrigeratorIngredientRepository, times(1))
                 .save(any(RefrigeratorIngredient.class));
 
+        assertThat(result).isNotNull();
+        assertThat(result.getNickName()).isEqualTo("나의 냉장고");
+    }
+
+    @Test
+    @DisplayName("Mock 냉장고가 존재 하지 않음 - 예외 발생")
+    void addIngredient_shouldThrowExceptionWhenRefrigeratorNotFound() {
+        // given
+        int refrigeratorId = 1;
+        RefrigeratorAddIngredientDto dto = new RefrigeratorAddIngredientDto();
+        dto.setIngredientId(100);
+        dto.setAddedDate("2024-12-16");
+
+        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> service.addIngredient(refrigeratorId, dto))
+                .isInstanceOf(IllegalArgumentException.class).hasMessage(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
+    }
+
+    @Test
+    @DisplayName("Mock 재료가 존재하지 않음 - 예외 발생")
+    void addIngredient_shouldThrowExceptionWherIngredientNotFound() {
+        // given
+        int refrigeratorId = 1;
+        int ingredientId = 100;
+
+        Refrigerator refrigerator = new Refrigerator("나의 냉장고", mockUser);
+        ReflectionTestUtils.setField(refrigerator, "id", refrigeratorId);
+
+        RefrigeratorAddIngredientDto dto = new RefrigeratorAddIngredientDto();
+        dto.setIngredientId(ingredientId);
+        dto.setAddedDate("2024-12-16");
+
+        // when
+        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
+        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.empty());
+
+        // then
+        assertThatThrownBy(() -> service.addIngredient(refrigeratorId, dto))
+                .isInstanceOf(IllegalArgumentException.class).hasMessage(ErrorMessage.NON_EXISTENT_INGREDIENT);
+    }
+
+    @Test
+    @DisplayName("Mock 재료가 이미 존재 - 중복 저장 방지")
+    void addIngredient_shouldNotSaveWhenIngredientAlreadyExist() {
+        // given
+        int refrigeratorId = 1;
+        int ingredientId = 100;
+
+        Refrigerator refrigerator = new Refrigerator("나의 냉장고", mockUser);
+        ReflectionTestUtils.setField(refrigerator, "id", refrigeratorId);
+
+        Ingredient ingredient = new Ingredient("테스트 재료");
+        ReflectionTestUtils.setField(ingredient, "id", ingredientId);
+
+        RefrigeratorAddIngredientDto dto = new RefrigeratorAddIngredientDto();
+        dto.setIngredientId(ingredientId);
+        dto.setAddedDate("2024-12-16");
+
+        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
+        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(ingredient));
+        when(refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient))
+                .thenReturn(true);
+
+        // when
+        RefrigeratorDto result = service.addIngredient(refrigeratorId, dto);
+
+        // then
+        verify(refrigeratorIngredientRepository, never()).save(any(RefrigeratorIngredient.class));
         assertThat(result).isNotNull();
         assertThat(result.getNickName()).isEqualTo("나의 냉장고");
     }

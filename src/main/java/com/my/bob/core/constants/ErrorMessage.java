@@ -27,7 +27,7 @@ public class ErrorMessage {
     public static final String NON_EXISTENT_POST = "존재하지 않는 게시글입니다.";
 
     // 냉장고 관련
-    public static final String NON_EXISTENT_REFRIGERATOR = "냉장고가 존재 하지 않습니다.";
+    public static final String NOT_EXISTENT_REFRIGERATOR = "냉장고가 존재 하지 않습니다.";
     public static final String ALREADY_CREATE_REFRIGERATOR = "이미 냉장고를 생성한 유저입니다.";
 
     // 재료 관련

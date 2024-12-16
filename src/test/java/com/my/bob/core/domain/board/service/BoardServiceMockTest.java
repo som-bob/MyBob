@@ -20,6 +20,7 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Mock 게시판 테스트")
 @ExtendWith(MockitoExtension.class)
 class BoardServiceMockTest {
 

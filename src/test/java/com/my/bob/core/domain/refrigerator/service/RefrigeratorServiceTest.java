@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("local")
 @WithAccount("system@system.com")
 @Transactional
+@DisplayName("냉장고 테스트")
 class RefrigeratorServiceTest {
 
     @Autowired

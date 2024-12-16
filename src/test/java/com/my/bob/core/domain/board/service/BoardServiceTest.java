@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional  // 테스트 후 롤백 처리
+@DisplayName("게시판 테스트")
 @ActiveProfiles("local")
 @WithAccount("system@system.com")   // 자동으로 해당 계정으로 들어가도록 세팅
 class BoardServiceTest {
