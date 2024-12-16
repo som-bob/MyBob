@@ -1,4 +1,4 @@
-package com.my.bob.core.service.board.mock;
+package com.my.bob.core.domain.board.service;
 
 import com.my.bob.core.domain.board.dto.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;

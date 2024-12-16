@@ -1,9 +1,7 @@
-package com.my.bob.core.service.member;
+package com.my.bob.core.domain.member.service;
 
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
-import com.my.bob.core.domain.member.service.BobUserService;
-import com.my.bob.core.domain.member.service.JoinService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -42,4 +42,9 @@ public class Ingredient extends BaseEntity {
 
     @Column(name = "storage_days")
     private Short storageDays;
+
+    // TODO delete
+    public Ingredient(String ingredientName) {
+        this.ingredientName = ingredientName;
+    }
 }

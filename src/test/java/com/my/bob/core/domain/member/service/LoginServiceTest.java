@@ -1,4 +1,4 @@
-package com.my.bob.core.service.member;
+package com.my.bob.core.domain.member.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
