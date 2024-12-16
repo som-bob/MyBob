@@ -29,7 +29,7 @@ class BoardServiceTest {
     BoardService boardService;
 
     @Test
-    @DisplayName("실제 DB와 연동된 게시물 저장 테스트")
+    @DisplayName("게시물 저장 테스트")
     void testSaveBoard() {
         // given
         Board board = new Board("제목", "내용");
@@ -47,7 +47,7 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("실제 DB와 연동된 ID로 게시물 검색 테스트")
+    @DisplayName("ID로 게시물 검색 테스트")
     void testGetById() {
         // given
         Board board = new Board("제목", "내용");
@@ -64,7 +64,7 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("실제 DB와 연동된 검색 조건으로 게시글 검색 테스트")
+    @DisplayName("검색 조건으로 게시글 검색 테스트")
     void testGetBySearch() {
         // given
         Board board = new Board("검색 제목", "검색 내용");

@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BoardServiceImplTest {
+class BoardServiceMockTest {
 
     @Mock
     private BoardRepository boardRepository;
@@ -34,7 +34,7 @@ class BoardServiceImplTest {
     private BoardServiceImpl boardServiceImpl;
 
     @Test
-    @DisplayName("게시물 저장 테스트")
+    @DisplayName("Mock 게시물 저장 테스트")
     void testSaveBoard(){
         // given
         Board board = new Board("제목", "내용");
@@ -48,7 +48,7 @@ class BoardServiceImplTest {
     }
 
     @Test
-    @DisplayName("ID로 게시물 검색 테스트")
+    @DisplayName("Mock ID로 게시물 검색 테스트")
     void getById(){
         // given
         long boardId = 1L;
@@ -63,7 +63,7 @@ class BoardServiceImplTest {
     }
 
     @Test
-    @DisplayName("검색 조선으로 게시물 검색 테스트")
+    @DisplayName("Mock 검색 조선으로 게시물 검색 테스트")
     void testGetBySearch(){
         // given
         BoardSearchDto searchDto = new BoardSearchDto();

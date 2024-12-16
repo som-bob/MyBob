@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("local")
 @WithAccount("system@system.com")
 @Transactional
-class RefrigeratorServiceImplTest {
+class RefrigeratorServiceTest {
 
     @Autowired
     RefrigeratorService refrigeratorService;
@@ -60,7 +60,7 @@ class RefrigeratorServiceImplTest {
     }
 
     @Test
-    @DisplayName("존재 하지 않는 유저 신규 냉장고 생성")
+    @DisplayName("존재 하지 않는 유저 신규 냉장고 생성 에러 발생")
     void failToCreateRefrigerator() {
         // given
         String failTestEmail = "<EMAIL>";
@@ -86,6 +86,21 @@ class RefrigeratorServiceImplTest {
         // then
         assertThatThrownBy(() -> refrigeratorService.createRefrigerator(testUserEmail, dto))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("냉장고 조회 하기")
+    void getRefrigerator() {
+        // given
+        RefrigeratorCreateDto dto = new RefrigeratorCreateDto();
+        dto.setNickName("나의 냉장고");
+        RefrigeratorDto refrigeratorDto = refrigeratorService.createRefrigerator(testUserEmail, dto);
+
+        // when
+        RefrigeratorDto getRefrigerator = refrigeratorService.getRefrigerator(testUserEmail);
+
+        // then
+        assertThat(refrigeratorDto).isEqualTo(getRefrigerator);
     }
 
 

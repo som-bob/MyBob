@@ -6,10 +6,7 @@ import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -25,6 +22,14 @@ public class RefrigeratorController {
                                                                            @RequestBody RefrigeratorCreateDto dto) {
         String email = principal.getName();
         RefrigeratorDto refrigeratorDto = refrigeratorService.createRefrigerator(email, dto);
+
+        return ResponseEntity.ok(new ResponseDto<>(refrigeratorDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseDto<RefrigeratorDto>> getRefrigerator(Principal principal) {
+        String email = principal.getName();
+        RefrigeratorDto refrigeratorDto = refrigeratorService.getRefrigerator(email);
 
         return ResponseEntity.ok(new ResponseDto<>(refrigeratorDto));
     }

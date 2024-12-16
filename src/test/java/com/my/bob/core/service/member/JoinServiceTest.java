@@ -22,9 +22,10 @@ class JoinServiceTest {
     @Autowired
     private BobUserService bobUserService;
 
-
     @Autowired
     private JoinService joinService;
+
+    private final String testEmail = "test_sss@naver.com";
 
 
     @Test
@@ -32,8 +33,7 @@ class JoinServiceTest {
     @DisplayName("회원 가입")
     void joinUser(){
         // Given
-        String testEmail = "sss@naver.com";
-        JoinUserDto joinUser = getJoinUserDto(testEmail);
+        JoinUserDto joinUser = getJoinUserDto();
 
         // When
         try {
@@ -52,9 +52,8 @@ class JoinServiceTest {
     @DisplayName("회원 가입 실패 - 중복 이메일 확인")
     void joinUserFail(){
         // given
-        String testEmail = "sss@naver.com";
-        JoinUserDto joinUser = getJoinUserDto(testEmail);
-        JoinUserDto sameUser = getJoinUserDto(testEmail);
+        JoinUserDto joinUser = getJoinUserDto();
+        JoinUserDto sameUser = getJoinUserDto();
         try {
             joinService.joinMember(joinUser);
         } catch (DuplicateUserException e) {
@@ -65,7 +64,7 @@ class JoinServiceTest {
         assertThrows(DuplicateUserException.class, () -> joinService.joinMember(sameUser));
     }
 
-    private static JoinUserDto getJoinUserDto(String testEmail) {
+    private JoinUserDto getJoinUserDto() {
         JoinUserDto joinUserDto = new JoinUserDto();
         joinUserDto.setEmail(testEmail);
         joinUserDto.setPassword("test1234!");
