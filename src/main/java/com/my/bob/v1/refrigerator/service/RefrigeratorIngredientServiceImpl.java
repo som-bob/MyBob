@@ -2,6 +2,7 @@ package com.my.bob.v1.refrigerator.service;
 
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
+import com.my.bob.core.domain.recipe.service.RecipeServiceHelper;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
@@ -20,13 +21,15 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredientService {
 
-    private final RefrigeratorServiceHelper serviceHelper;
+    private final RefrigeratorServiceHelper refrigeratorHelper;
+    private final RecipeServiceHelper recipeServiceHelper;
+
     private final RefrigeratorIngredientRepository refrigeratorIngredientRepository;
 
     @Override
     public RefrigeratorDto addIngredient(int refrigeratorId, RefrigeratorAddIngredientDto dto) {
-        Refrigerator refrigerator = serviceHelper.getRefrigerator(refrigeratorId);
-        Ingredient ingredient = serviceHelper.getIngredient(dto.getIngredientId());
+        Refrigerator refrigerator = refrigeratorHelper.getRefrigerator(refrigeratorId);
+        Ingredient ingredient = recipeServiceHelper.getIngredient(dto.getIngredientId());
 
         // 이미 저장된 데이터가 있는지 검사
         if (refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient)) {
@@ -44,7 +47,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
 
     @Override
     public RefrigeratorDto deleteIngredient(int refrigeratorId, int refrigeratorIngredientId) {
-        Refrigerator refrigerator = serviceHelper.getRefrigerator(refrigeratorId);
+        Refrigerator refrigerator = refrigeratorHelper.getRefrigerator(refrigeratorId);
 
         RefrigeratorIngredient refrigeratorIngredient =
                 refrigeratorIngredientRepository.findById(refrigeratorIngredientId)
@@ -57,7 +60,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
 
     @Override
     public RefrigeratorDto deleteAllIngredients(int refrigeratorId) {
-        Refrigerator refrigerator = serviceHelper.getRefrigerator(refrigeratorId);
+        Refrigerator refrigerator = refrigeratorHelper.getRefrigerator(refrigeratorId);
 
         refrigeratorIngredientRepository.deleteByRefrigerator(refrigerator);
         refrigerator.removeAllIngredients();

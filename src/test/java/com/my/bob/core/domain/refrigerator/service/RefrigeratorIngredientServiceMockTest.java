@@ -4,6 +4,7 @@ import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
+import com.my.bob.core.domain.recipe.service.RecipeServiceHelper;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
@@ -38,6 +39,9 @@ class RefrigeratorIngredientServiceMockTest {
     private RefrigeratorServiceHelper refrigeratorServiceHelper;
 
     @Mock
+    private RecipeServiceHelper recipeServiceHelper;
+
+    @Mock
     private IngredientRepository ingredientRepository;
 
     private BobUser mockUser;
@@ -65,7 +69,7 @@ class RefrigeratorIngredientServiceMockTest {
         dto.setAddedDate("2024-12-16");
 
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
-        when(refrigeratorServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
+        when(recipeServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
         when(refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient)).thenReturn(false);
 
         // when
@@ -111,7 +115,7 @@ class RefrigeratorIngredientServiceMockTest {
 
         // when
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
-        when(refrigeratorServiceHelper.getIngredient(ingredientId))
+        when(recipeServiceHelper.getIngredient(ingredientId))
                 .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT));
 
         // then
@@ -134,7 +138,7 @@ class RefrigeratorIngredientServiceMockTest {
         dto.setAddedDate("2024-12-16");
 
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
-        when(refrigeratorServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
+        when(recipeServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
         when(refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient))
                 .thenReturn(true);
 
@@ -193,7 +197,7 @@ class RefrigeratorIngredientServiceMockTest {
                 getMockRefrigeratorIngredient(refrigeratorIngredientId, refrigerator, ingredient);
 
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
-        when(refrigeratorServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
+        when(recipeServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
         when(refrigeratorIngredientRepository.findById(refrigeratorIngredientId))
                 .thenReturn(Optional.of(refrigeratorIngredient));
 
