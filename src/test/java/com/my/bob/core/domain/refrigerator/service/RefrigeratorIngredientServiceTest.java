@@ -50,12 +50,14 @@ class RefrigeratorIngredientServiceTest {
     private BobUser mockUser;
     private Refrigerator refrigerator;
     private Ingredient ingredient;
+    private Ingredient ingredient2;
 
     @BeforeEach
     void setUp() {
         // 테스트 데이터 초기화
         mockUser = bobUserRepository.save(new BobUser("test_test@test.com", "<PASSWORD>", "테스트 유저입니다"));
         ingredient = ingredientRepository.save(new Ingredient("테스트 저장 재료"));
+        ingredient2 = ingredientRepository.save(new Ingredient("테스트 저장 재료 2"));
         refrigerator = refrigeratorRepository.save(new Refrigerator("나의 냉장고", mockUser));
     }
 
@@ -97,7 +99,7 @@ class RefrigeratorIngredientServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getIngredients()).hasSize(1); // 중복 저장해도 하나의 재료만 저장 되어 있다
     }
-   
+
     @Test
     @DisplayName("재료 삭제 - 성공 후 재료 제거 확인")
     void deleteIngredient_shouldDeleteSuccessfully() {
@@ -113,8 +115,8 @@ class RefrigeratorIngredientServiceTest {
         // then
         assertThat(refrigeratorIngredientRepository.findById(refrigeratorIngredientId)).isEmpty();
     }
-    
-    
+
+
     @Test
     @DisplayName("재료 삭제 - 냉장고에 재료가 존재 하지 않는 경우 예외 발생")
     void deleteIngredient_shouldThrowException_WhenIngredientNotFound() {
@@ -133,6 +135,22 @@ class RefrigeratorIngredientServiceTest {
         assertThatThrownBy(() -> service.deleteIngredient(refrigeratorId, refrigeratorIngredientId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.NOT_EXISTENT_INGREDIENT);
+    }
+
+    @Test
+    @DisplayName("재료 모두 삭제 - 성공")
+    void deleteAllIngredient_shouldDeleteAllIngredient() {
+        // given
+        Integer refrigeratorId = refrigerator.getId();
+        refrigeratorIngredientRepository.save(new RefrigeratorIngredient(refrigerator, ingredient, LocalDate.now()));
+        refrigeratorIngredientRepository.save(new RefrigeratorIngredient(refrigerator, ingredient2, LocalDate.now()));
+
+        // when
+        RefrigeratorDto result = service.deleteAllIngredients(refrigeratorId);
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getIngredients()).isEmpty();
     }
 
 }

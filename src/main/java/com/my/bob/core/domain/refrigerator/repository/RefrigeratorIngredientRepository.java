@@ -7,4 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RefrigeratorIngredientRepository extends JpaRepository<RefrigeratorIngredient, Integer> {
     boolean existsByRefrigeratorAndIngredient(Refrigerator refrigerator, Ingredient ingredient);
+
+    void deleteByRefrigerator(Refrigerator refrigerator);
+
 }

@@ -97,7 +97,7 @@ class RefrigeratorIngredientServiceMockTest {
     }
 
     @Test
-    @DisplayName("Mock 재료 추가 - 재료가 존재하지 않음(예외 발생)")
+    @DisplayName("Mock 재료 추가 - 재료가 존재 하지 않음(예외 발생)")
     void addIngredient_shouldThrowExceptionWherIngredientNotFound() {
         // given
         int refrigeratorId = 1;
@@ -161,7 +161,7 @@ class RefrigeratorIngredientServiceMockTest {
     }
 
     @Test
-    @DisplayName("Mock 재료 삭제 - 냉장고가 존재 하지 않는 경우 예외 발생")
+    @DisplayName("Mock 재료 삭제 - 냉장고가 존재 하지 않음(예외 발생)")
     void deleteIngredient_shouldThrowException_WhenIngredientNotFound() {
         // given
         int refrigeratorId = 1;
@@ -204,6 +204,40 @@ class RefrigeratorIngredientServiceMockTest {
         assertThat(result.getIngredients()).isEmpty();
     }
 
+    @Test
+    @DisplayName("Mock 재료 모두 삭제 - 냉장고가 존재 하지 않음(예외 발생)")
+    void deleteAllIngredient_shouldThrowException_WhenRefrigeratorNotFound() {
+        // given
+        int refrigeratorId = 1;
+        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> service.deleteAllIngredients(refrigeratorId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
+    }
+
+    @Test
+    @DisplayName("Mock 재료 모두 삭제 - 성공")
+    void deleteAllIngredient_shouldDeleteAllIngredient() {
+        // given
+        int refrigeratorId = 1;
+        Refrigerator refrigerator = getMockRefrigerator(refrigeratorId);
+        RefrigeratorIngredient ri1 = getMockRefrigeratorIngredient(1, refrigerator, getMockIngredient(100));
+        refrigerator.addIngredient(ri1);
+        RefrigeratorIngredient ri2 = getMockRefrigeratorIngredient(2, refrigerator, getMockIngredient(101));
+        refrigerator.addIngredient(ri2);
+
+        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
+
+        // when
+        RefrigeratorDto result = service.deleteAllIngredients(refrigeratorId);
+
+        // then
+        verify(refrigeratorIngredientRepository, times(1)).deleteByRefrigerator(refrigerator);
+        assertThat(result).isNotNull();
+        assertThat(result.getIngredients()).isEmpty();
+    }
 
     private Refrigerator getMockRefrigerator(int refrigeratorId) {
         Refrigerator refrigerator = new Refrigerator("나의 냉장고", mockUser);
