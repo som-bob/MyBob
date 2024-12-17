@@ -1,7 +1,7 @@
 package com.my.bob.core.domain.recipe.service;
 
-import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
+import com.my.bob.core.domain.recipe.exception.IngredientNotFoundException;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class RecipeServiceHelper {
     public Ingredient getIngredient(int ingredientId) {
         Optional<Ingredient> optionalIngredient = ingredientRepository.findById(ingredientId);
         if (optionalIngredient.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT);
+            throw new IngredientNotFoundException();
         }
 
         return optionalIngredient.get();

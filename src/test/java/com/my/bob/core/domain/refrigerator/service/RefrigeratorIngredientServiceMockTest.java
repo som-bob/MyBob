@@ -3,12 +3,14 @@ package com.my.bob.core.domain.refrigerator.service;
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
+import com.my.bob.core.domain.recipe.exception.IngredientNotFoundException;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.recipe.service.RecipeServiceHelper;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
 import com.my.bob.core.domain.refrigerator.entity.RefrigeratorIngredient;
+import com.my.bob.core.domain.refrigerator.exception.RefrigeratorNotFoundException;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorIngredientRepository;
 import com.my.bob.v1.refrigerator.service.RefrigeratorIngredientServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,11 +95,11 @@ class RefrigeratorIngredientServiceMockTest {
         dto.setAddedDate("2024-12-16");
 
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId))
-                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR));
+                .thenThrow(new RefrigeratorNotFoundException());
 
         // when & then
         assertThatThrownBy(() -> service.addIngredient(refrigeratorId, dto))
-                .isInstanceOf(IllegalArgumentException.class).hasMessage(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
+                .isInstanceOf(RefrigeratorNotFoundException.class).hasMessage(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
     }
 
     @Test
@@ -116,11 +118,11 @@ class RefrigeratorIngredientServiceMockTest {
         // when
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
         when(recipeServiceHelper.getIngredient(ingredientId))
-                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT));
+                .thenThrow(new IngredientNotFoundException());
 
         // then
         assertThatThrownBy(() -> service.addIngredient(refrigeratorId, dto))
-                .isInstanceOf(IllegalArgumentException.class).hasMessage(ErrorMessage.NOT_EXISTENT_INGREDIENT);
+                .isInstanceOf(IngredientNotFoundException.class).hasMessage(ErrorMessage.NOT_EXISTENT_INGREDIENT);
     }
 
     @Test
@@ -159,11 +161,11 @@ class RefrigeratorIngredientServiceMockTest {
         int ingredientId = 100;
 
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId))
-                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR));
+                .thenThrow(new RefrigeratorNotFoundException());
 
         // when &  then
         assertThatThrownBy(() -> service.deleteIngredient(refrigeratorId, ingredientId))
-                .isInstanceOf(IllegalArgumentException.class).hasMessage(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
+                .isInstanceOf(RefrigeratorNotFoundException.class).hasMessage(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
     }
 
     @Test
@@ -180,7 +182,7 @@ class RefrigeratorIngredientServiceMockTest {
 
         // when & then
         assertThatThrownBy(() -> service.deleteIngredient(refrigeratorId, ingredientId))
-                .isInstanceOf(IllegalArgumentException.class).hasMessage(ErrorMessage.NOT_EXISTENT_INGREDIENT);
+                .isInstanceOf(IngredientNotFoundException.class).hasMessage(ErrorMessage.NOT_EXISTENT_INGREDIENT);
     }
 
     @Test
@@ -216,11 +218,11 @@ class RefrigeratorIngredientServiceMockTest {
         // given
         int refrigeratorId = 1;
         when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId))
-                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR));
+                .thenThrow(new RefrigeratorNotFoundException());
 
         // when & then
         assertThatThrownBy(() -> service.deleteAllIngredients(refrigeratorId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(RefrigeratorNotFoundException.class)
                 .hasMessage(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
     }
 

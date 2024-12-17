@@ -1,7 +1,7 @@
 package com.my.bob.v1.refrigerator.service;
 
-import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
+import com.my.bob.core.domain.recipe.exception.IngredientNotFoundException;
 import com.my.bob.core.domain.recipe.service.RecipeServiceHelper;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
@@ -50,8 +50,8 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
         Refrigerator refrigerator = refrigeratorHelper.getRefrigerator(refrigeratorId);
 
         RefrigeratorIngredient refrigeratorIngredient =
-                refrigeratorIngredientRepository.findById(refrigeratorIngredientId)
-                        .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT));
+                refrigeratorIngredientRepository
+                        .findById(refrigeratorIngredientId).orElseThrow(IngredientNotFoundException::new);
 
         refrigerator.removeIngredient(refrigeratorIngredient);
         refrigeratorIngredientRepository.delete(refrigeratorIngredient);

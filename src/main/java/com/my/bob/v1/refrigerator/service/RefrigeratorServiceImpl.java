@@ -6,6 +6,7 @@ import com.my.bob.core.domain.member.service.BobUserService;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
+import com.my.bob.core.domain.refrigerator.exception.RefrigeratorNotFoundException;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorRepository;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class RefrigeratorServiceImpl implements RefrigeratorService {
         BobUser user = bobUserService.getByEmail(email);
         Optional<Refrigerator> optionalRefrigerator = refrigeratorRepository.findOneByUser(user);
         if(optionalRefrigerator.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
+            throw new RefrigeratorNotFoundException();
         }
 
         Refrigerator refrigerator = optionalRefrigerator.get();

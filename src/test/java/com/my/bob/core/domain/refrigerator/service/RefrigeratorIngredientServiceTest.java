@@ -5,6 +5,7 @@ import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
+import com.my.bob.core.domain.recipe.exception.IngredientNotFoundException;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
@@ -133,7 +134,7 @@ class RefrigeratorIngredientServiceTest {
         // when & then
         assertThat(result).isNotNull();
         assertThatThrownBy(() -> service.deleteIngredient(refrigeratorId, refrigeratorIngredientId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IngredientNotFoundException.class)
                 .hasMessage(ErrorMessage.NOT_EXISTENT_INGREDIENT);
     }
 
