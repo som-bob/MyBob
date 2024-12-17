@@ -95,5 +95,16 @@ class RefrigeratorIngredientServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getIngredients()).hasSize(1); // 중복 저장해도 하나의 재료만 저장 되어 있다
     }
+    
+    @Test
+    @DisplayName("재료 삭제 - 냉장고에 재료가 존재하지 않는 경우 예외 발생")
+    void deleteIngredient_shouldThrowException_WhenIngredientNotFound() {
+        // TODO 검증
+        // given
+
+        // when
+
+        // then
+    }
 
 }

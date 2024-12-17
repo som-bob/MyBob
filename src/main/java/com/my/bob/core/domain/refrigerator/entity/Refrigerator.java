@@ -46,4 +46,8 @@ public class Refrigerator extends BaseTimeEntity {
     public void addIngredient(RefrigeratorIngredient refrigeratorIngredient) {
         bobRefrigeratorIngredients.add(refrigeratorIngredient);
     }
+
+    public void removeIngredient(RefrigeratorIngredient refrigeratorIngredient) {
+        bobRefrigeratorIngredients.remove(refrigeratorIngredient);
+    }
 }

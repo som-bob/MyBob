@@ -23,8 +23,8 @@ import java.util.Optional;
 public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredientService {
 
     private final RefrigeratorRepository refrigeratorRepository;
-    private final RefrigeratorIngredientRepository refrigeratorIngredientRepository;
     private final IngredientRepository ingredientRepository;
+    private final RefrigeratorIngredientRepository refrigeratorIngredientRepository;
 
     @Override
     public RefrigeratorDto addIngredient(int refrigeratorId, RefrigeratorAddIngredientDto dto) {
@@ -32,7 +32,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
         Ingredient ingredient = getIngredient(dto.getIngredientId());
 
         // 이미 저장된 데이터가 있는지 검사
-        if(refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient)){
+        if (refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient)) {
             return new RefrigeratorDto(refrigerator);
         }
 
@@ -47,7 +47,15 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
 
     @Override
     public RefrigeratorDto deleteIngredient(int refrigeratorId, int ingredientId) {
-        return null;
+        Refrigerator refrigerator = getRefrigerator(refrigeratorId);
+
+        RefrigeratorIngredient refrigeratorIngredient =
+                refrigeratorIngredientRepository.findByRefrigeratorAndIngredientId(refrigerator, ingredientId)
+                        .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT));
+
+        refrigerator.removeIngredient(refrigeratorIngredient);
+        refrigeratorIngredientRepository.delete(refrigeratorIngredient);
+        return new RefrigeratorDto(refrigerator);
     }
 
     @Override
@@ -59,7 +67,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
     // private method
     private Refrigerator getRefrigerator(int refrigeratorId) {
         Optional<Refrigerator> optionalRefrigerator = refrigeratorRepository.findById(refrigeratorId);
-        if(optionalRefrigerator.isEmpty()) {
+        if (optionalRefrigerator.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
         }
 
@@ -68,8 +76,8 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
 
     private Ingredient getIngredient(int ingredientId) {
         Optional<Ingredient> optionalIngredient = ingredientRepository.findById(ingredientId);
-        if(optionalIngredient.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.NON_EXISTENT_INGREDIENT);
+        if (optionalIngredient.isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT);
         }
 
         return optionalIngredient.get();

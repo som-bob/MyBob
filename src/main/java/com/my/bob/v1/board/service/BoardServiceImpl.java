@@ -27,7 +27,7 @@ public class BoardServiceImpl implements BoardService {
 
     public Board getById(long boardId) {
         return boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalStateException(ErrorMessage.NON_EXISTENT_POST));
+                .orElseThrow(() -> new IllegalStateException(ErrorMessage.NOT_EXISTENT_POST));
     }
 
     public Page<Board> getBySearch(BoardSearchDto dto, Pageable pageable) {
