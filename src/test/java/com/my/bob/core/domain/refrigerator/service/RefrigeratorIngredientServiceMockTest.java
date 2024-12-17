@@ -183,18 +183,20 @@ class RefrigeratorIngredientServiceMockTest {
         // given
         int refrigeratorId = 1;
         int ingredientId = 100;
+        int refrigeratorIngredientId = 1;
 
         Refrigerator refrigerator = getMockRefrigerator(refrigeratorId);
         Ingredient ingredient = getMockIngredient(ingredientId);
-        RefrigeratorIngredient refrigeratorIngredient = getMockRefrigeratorIngredient(refrigerator, ingredient);
+        RefrigeratorIngredient refrigeratorIngredient =
+                getMockRefrigeratorIngredient(refrigeratorIngredientId, refrigerator, ingredient);
 
         when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
         when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(ingredient));
-        when(refrigeratorIngredientRepository.findByRefrigeratorAndIngredientId(refrigerator, ingredientId))
+        when(refrigeratorIngredientRepository.findById(refrigeratorIngredientId))
                 .thenReturn(Optional.of(refrigeratorIngredient));
 
         // when
-        RefrigeratorDto result = service.deleteIngredient(refrigeratorId, ingredientId);
+        RefrigeratorDto result = service.deleteIngredient(refrigeratorId, refrigeratorIngredientId);
 
         // then
         verify(refrigeratorIngredientRepository, times(1)).delete(refrigeratorIngredient);
@@ -215,9 +217,11 @@ class RefrigeratorIngredientServiceMockTest {
         return ingredient;
     }
 
-    private RefrigeratorIngredient getMockRefrigeratorIngredient(Refrigerator refrigerator, Ingredient ingredient) {
+    private RefrigeratorIngredient getMockRefrigeratorIngredient(int refrigeratorIngredientId,
+                                                                 Refrigerator refrigerator,
+                                                                 Ingredient ingredient) {
         RefrigeratorIngredient refrigeratorIngredient = new RefrigeratorIngredient(refrigerator, ingredient, LocalDate.now());
-        ReflectionTestUtils.setField(refrigeratorIngredient, "id", 1);
+        ReflectionTestUtils.setField(refrigeratorIngredient, "id", refrigeratorIngredientId);
         return refrigeratorIngredient;
     }
 }

@@ -46,11 +46,11 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
     }
 
     @Override
-    public RefrigeratorDto deleteIngredient(int refrigeratorId, int ingredientId) {
+    public RefrigeratorDto deleteIngredient(int refrigeratorId, int refrigeratorIngredientId) {
         Refrigerator refrigerator = getRefrigerator(refrigeratorId);
 
         RefrigeratorIngredient refrigeratorIngredient =
-                refrigeratorIngredientRepository.findByRefrigeratorAndIngredientId(refrigerator, ingredientId)
+                refrigeratorIngredientRepository.findById(refrigeratorIngredientId)
                         .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT));
 
         refrigerator.removeIngredient(refrigeratorIngredient);
