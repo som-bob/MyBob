@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("local")
 @DisplayName("나의 냉장고 재료 테스트")
 @WithAccount("test_test@test.com")   // 자동으로 해당 계정으로 들어가도록 세팅
-class RefrigeratorIngredientServiceTest {
+class RefrigeratorIngredientServiceIntegrationTest {
 
     @Autowired
     private RefrigeratorIngredientService service;
