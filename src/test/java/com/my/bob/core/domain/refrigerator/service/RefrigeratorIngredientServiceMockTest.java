@@ -9,7 +9,6 @@ import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
 import com.my.bob.core.domain.refrigerator.entity.RefrigeratorIngredient;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorIngredientRepository;
-import com.my.bob.core.domain.refrigerator.repository.RefrigeratorRepository;
 import com.my.bob.v1.refrigerator.service.RefrigeratorIngredientServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,10 +32,10 @@ class RefrigeratorIngredientServiceMockTest {
     private RefrigeratorIngredientServiceImpl service;
 
     @Mock
-    private RefrigeratorRepository refrigeratorRepository;
+    private RefrigeratorIngredientRepository refrigeratorIngredientRepository;
 
     @Mock
-    private RefrigeratorIngredientRepository refrigeratorIngredientRepository;
+    private RefrigeratorServiceHelper refrigeratorServiceHelper;
 
     @Mock
     private IngredientRepository ingredientRepository;
@@ -65,8 +64,8 @@ class RefrigeratorIngredientServiceMockTest {
         dto.setIngredientId(ingredientId);
         dto.setAddedDate("2024-12-16");
 
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
-        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(ingredient));
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
+        when(refrigeratorServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
         when(refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient)).thenReturn(false);
 
         // when
@@ -89,7 +88,8 @@ class RefrigeratorIngredientServiceMockTest {
         dto.setIngredientId(100);
         dto.setAddedDate("2024-12-16");
 
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.empty());
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId))
+                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR));
 
         // when & then
         assertThatThrownBy(() -> service.addIngredient(refrigeratorId, dto))
@@ -110,8 +110,9 @@ class RefrigeratorIngredientServiceMockTest {
         dto.setAddedDate("2024-12-16");
 
         // when
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
-        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.empty());
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
+        when(refrigeratorServiceHelper.getIngredient(ingredientId))
+                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_INGREDIENT));
 
         // then
         assertThatThrownBy(() -> service.addIngredient(refrigeratorId, dto))
@@ -132,8 +133,8 @@ class RefrigeratorIngredientServiceMockTest {
         dto.setIngredientId(ingredientId);
         dto.setAddedDate("2024-12-16");
 
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
-        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(ingredient));
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
+        when(refrigeratorServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
         when(refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient))
                 .thenReturn(true);
 
@@ -153,7 +154,8 @@ class RefrigeratorIngredientServiceMockTest {
         int refrigeratorId = 1;
         int ingredientId = 100;
 
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.empty());
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId))
+                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR));
 
         // when &  then
         assertThatThrownBy(() -> service.deleteIngredient(refrigeratorId, ingredientId))
@@ -169,7 +171,7 @@ class RefrigeratorIngredientServiceMockTest {
 
         int ingredientId = 100;
 
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
         when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.empty());
 
         // when & then
@@ -190,8 +192,8 @@ class RefrigeratorIngredientServiceMockTest {
         RefrigeratorIngredient refrigeratorIngredient =
                 getMockRefrigeratorIngredient(refrigeratorIngredientId, refrigerator, ingredient);
 
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
-        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(ingredient));
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
+        when(refrigeratorServiceHelper.getIngredient(ingredientId)).thenReturn(ingredient);
         when(refrigeratorIngredientRepository.findById(refrigeratorIngredientId))
                 .thenReturn(Optional.of(refrigeratorIngredient));
 
@@ -209,7 +211,8 @@ class RefrigeratorIngredientServiceMockTest {
     void deleteAllIngredient_shouldThrowException_WhenRefrigeratorNotFound() {
         // given
         int refrigeratorId = 1;
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.empty());
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId))
+                .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXISTENT_REFRIGERATOR));
 
         // when & then
         assertThatThrownBy(() -> service.deleteAllIngredients(refrigeratorId))
@@ -228,7 +231,7 @@ class RefrigeratorIngredientServiceMockTest {
         RefrigeratorIngredient ri2 = getMockRefrigeratorIngredient(2, refrigerator, getMockIngredient(101));
         refrigerator.addIngredient(ri2);
 
-        when(refrigeratorRepository.findById(refrigeratorId)).thenReturn(Optional.of(refrigerator));
+        when(refrigeratorServiceHelper.getRefrigerator(refrigeratorId)).thenReturn(refrigerator);
 
         // when
         RefrigeratorDto result = service.deleteAllIngredients(refrigeratorId);
