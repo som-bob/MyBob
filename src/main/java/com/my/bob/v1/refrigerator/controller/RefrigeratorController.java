@@ -1,4 +1,4 @@
-package com.my.bob.v1.refrigerator.contorller;
+package com.my.bob.v1.refrigerator.controller;
 
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
