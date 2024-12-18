@@ -1,0 +1,30 @@
+jwt:
+  secret: YWFzbGtqZGx6a3huY21haHJvd3VlaHJzbWRueGtqZGhmbGtzZGhmd2VsdXJoc2tmbnNk
+
+server:
+  port: 8080
+
+client:
+  host:
+    url: http://localhost:3000
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    database: h2
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+        jdbc:
+          batch_size: 100
