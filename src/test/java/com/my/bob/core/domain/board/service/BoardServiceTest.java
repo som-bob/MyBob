@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("게시판 테스트")
 @ActiveProfiles("local")
 @WithAccount("system@system.com")   // 자동으로 해당 계정으로 들어가도록 세팅
-class BoardServiceIntegrationTest {
+class BoardServiceTest {
 
     @Autowired
     BoardRepository boardRepository;
