@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 @DisplayName("Jwt Token 테스트")
 class JwtTokenProviderTest {
 

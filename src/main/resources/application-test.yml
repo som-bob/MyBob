@@ -9,11 +9,15 @@ client:
     url: http://localhost:3000
 
 spring:
+  flyway:
+    enabled: true
+    clean-on-validation-error: true
+    locations: classpath:db/migration/h2
   config:
     activate:
       on-profile: test
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:mybob;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -22,7 +26,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
     generate-ddl: true
-    database: h2
+    database: mysql
     properties:
       hibernate:
         default_batch_fetch_size: 1000

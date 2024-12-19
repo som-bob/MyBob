@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 @WithAccount("system@system.com")
 @Transactional
 @DisplayName("냉장고 테스트")

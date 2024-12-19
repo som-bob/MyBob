@@ -33,6 +33,9 @@ info:
     name: my-bob
     company: som
 
+# TODO 차후 active 설정을 외부 파일로 변경한다 (docker 등)
 spring:
+  flyway:
+    locations: classpath:db/migration
   profiles:
     active: local

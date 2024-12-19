@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 @DisplayName("회원 가입")
 class JoinServiceTest {
 
