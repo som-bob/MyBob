@@ -16,6 +16,8 @@ public class ErrorMessage {
     public static final String INVALID_EMAIL = "올바르지 않은 이메일 형식입니다.";
     public static final String INVALID_PASSWORD = "올바르지 않은 패스워드 형식입니다.";
 
+    public static final String ALREADY_EXIST_MEMBER = "사용 중인 이메일입니다.";
+
     public static final String EMPTY_EMAIL = "이메일을 입력해주세요.";
     public static final String EMPTY_PASSWORD = "비밀번호를 입력해주세요.";
 

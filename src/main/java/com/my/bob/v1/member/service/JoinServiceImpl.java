@@ -1,5 +1,6 @@
 package com.my.bob.v1.member.service;
 
+import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
@@ -20,7 +21,7 @@ public class JoinServiceImpl implements JoinService {
     public void joinMember(final JoinUserDto joinUserDto) throws DuplicateUserException {
         String email = joinUserDto.getEmail();
         if(bobUserService.existByEmail(email)) {
-            throw new DuplicateUserException("사용 중인 이메일입니다.");
+            throw new DuplicateUserException(ErrorMessage.ALREADY_EXIST_MEMBER);
         }
 
         // 회원 가입

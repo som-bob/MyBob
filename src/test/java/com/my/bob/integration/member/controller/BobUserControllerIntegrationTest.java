@@ -1,7 +1,6 @@
 package com.my.bob.integration.member.controller;
 
 import com.my.bob.core.constants.ErrorMessage;
-import com.my.bob.core.constants.FailCode;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.dto.LoginDto;
@@ -21,6 +20,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDateTime;
 
+import static com.my.bob.core.constants.FailCode.V_00001;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -67,7 +67,7 @@ class BobUserControllerIntegrationTest {
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
                     assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.V_00001.name());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
                     assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.INVALID_PASSWORD);
                 });
     }
@@ -88,7 +88,7 @@ class BobUserControllerIntegrationTest {
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
                     assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.V_00001.name());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
                     assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.INVALID_EMAIL);
                 });
     }
@@ -108,8 +108,38 @@ class BobUserControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> assertThat(responseDto.getStatus()).isEqualTo(successMessage));
-
     }
+
+    @Test
+    @DisplayName("회원 가입 실패 - 중복 회원 가입")
+    void joinMember_fail() {
+        // given
+        JoinUserDto dto = new JoinUserDto();
+        dto.setEmail(email);
+        dto.setPassword(password);
+
+        webTestClient.post()
+                .uri(baseUrl + "join")
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> assertThat(responseDto.getStatus()).isEqualTo(successMessage));
+
+        // when & then
+        webTestClient.post()
+                .uri(baseUrl + "join")
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> {
+                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
+                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
+                    assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.ALREADY_EXIST_MEMBER);
+                });
+    }
+
 
     @Test
     @DisplayName("로그인 실패 - 존재 하지 않는 유저")
@@ -130,7 +160,7 @@ class BobUserControllerIntegrationTest {
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
                     assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.V_00001.name());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
                     assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.NEED_TO_CONFIRM_LOGIN_INFORMATION);
                 });
     }
@@ -154,7 +184,7 @@ class BobUserControllerIntegrationTest {
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
                     assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.V_00001.name());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
                     assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.NEED_TO_CONFIRM_PASSWORD);
                 });
     }
