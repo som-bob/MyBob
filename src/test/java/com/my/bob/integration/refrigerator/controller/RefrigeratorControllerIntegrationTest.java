@@ -1,5 +1,6 @@
 package com.my.bob.integration.refrigerator.controller;
 
+import com.my.bob.core.constants.FailCode;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.dto.LoginDto;
@@ -130,7 +131,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertThat(responseDto.getErrorCode()).isEqualTo(ResponseDto.FailCode.R_00001.name());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.R_00001.name());
                     assertThat(responseDto.getStatus()).isEqualTo(failMessage);
                 });
     }
@@ -146,7 +147,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertThat(responseDto.getErrorCode()).isEqualTo(ResponseDto.FailCode.R_00001.name());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.R_00001.name());
                     assertThat(responseDto.getStatus()).isEqualTo(failMessage);
                 });
     }

@@ -19,9 +19,11 @@ public class ErrorMessage {
     public static final String EMPTY_EMAIL = "이메일을 입력해주세요.";
     public static final String EMPTY_PASSWORD = "비밀번호를 입력해주세요.";
 
-
     // 유저 관련
     public static final String USER_CANNOT_BE_FOUND = "해당 유저를 찾을 수 없습니다.";
+    public static final String NEED_TO_CONFIRM_LOGIN_INFORMATION = "로그인 정보를 확인해주세요.";
+    public static final String NEED_TO_CONFIRM_PASSWORD = "비밀번호를 확인해주세요.";
+
 
     // 게시판 관련
     public static final String NOT_EXISTENT_POST = "존재하지 않는 게시글입니다.";

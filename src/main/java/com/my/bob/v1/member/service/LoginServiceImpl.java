@@ -36,12 +36,12 @@ public class LoginServiceImpl implements LoginService {
     public TokenDto login(LoginDto dto) throws NonExistentUserException {
         String email = dto.getEmail();
         if (!bobUserService.existByEmail(email)) {
-            throw new NonExistentUserException("로그인 정보를 확인해주세요.");
+            throw new NonExistentUserException(ErrorMessage.NEED_TO_CONFIRM_LOGIN_INFORMATION);
         }
 
         BobUser user = bobUserService.getByEmail(email);
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("비밀번호를 확인해주세요.");
+            throw new BadCredentialsException(ErrorMessage.NEED_TO_CONFIRM_PASSWORD);
         }
 
         // 마지막 로그인 일시 업데이트

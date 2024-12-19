@@ -1,5 +1,6 @@
 package com.my.bob.core.config;
 
+import com.my.bob.core.constants.FailCode;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.exception.UserLoginException;
 import com.my.bob.core.domain.recipe.exception.IngredientException;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
-
-import static com.my.bob.core.domain.base.dto.ResponseDto.FailCode;
 
 @Slf4j
 @RestControllerAdvice
@@ -52,7 +51,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDto<Void>> handle(UsernameNotFoundException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.I_00001, e.getMessage()));
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.V_00001, e.getMessage()));
     }
 
     // LoginService, UserDetailService
@@ -61,7 +60,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDto<Void>> handle(BadCredentialsException e, WebRequest request) {
         exceptionLogging(e, request);
 
-        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.I_00001, e.getMessage()));
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.V_00001, e.getMessage()));
     }
 
     // BadRequestException

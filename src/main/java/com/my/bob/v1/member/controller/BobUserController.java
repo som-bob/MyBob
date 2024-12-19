@@ -1,5 +1,6 @@
 package com.my.bob.v1.member.controller;
 
+import com.my.bob.core.constants.FailCode;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.dto.LoginDto;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.my.bob.core.domain.base.dto.ResponseDto.FailCode.V_00001;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
@@ -34,7 +33,7 @@ public class BobUserController {
         try {
             joinService.joinMember(dto);
         } catch (DuplicateUserException e) {
-            return ResponseEntity.badRequest().body(new ResponseDto<>(V_00001, e.getMessage()));
+            return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.V_00001, e.getMessage()));
         }
 
         return ResponseEntity.ok(new ResponseDto<>());

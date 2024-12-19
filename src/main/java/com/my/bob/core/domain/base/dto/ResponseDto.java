@@ -1,9 +1,8 @@
 package com.my.bob.core.domain.base.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
+import com.my.bob.core.constants.FailCode;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,16 +30,6 @@ public class ResponseDto<T> {
     }
 
     /**
-     * FailCode 정의된 error code, message return
-     * @param failCode 정의된 fail code, message 값
-     */
-    public ResponseDto(FailCode failCode) {
-        this.status = "FAIL";
-        this.errorCode = failCode.name();
-        this.errorMessage = failCode.failMessage;
-    }
-
-    /**
      * 실패시 errorCode, errorMessage 세팅
      * @param failCode 실패 코드
      * @param errorMessage 실패 메세지
@@ -49,22 +38,5 @@ public class ResponseDto<T> {
         this.status = "FAIL";
         this.errorCode = failCode.name();
         this.errorMessage = errorMessage;
-    }
-
-    // 실패 코드 정의
-    @Getter
-    @AllArgsConstructor
-    public enum FailCode {
-        I_00001("시스템 내부에 문제가 생겼습니다."),
-
-        V_00001("유효하지 못한 데이터입니다."),
-
-        R_00001("냉장고 기능에 문제가 있습니다."),
-
-        I_00002("재료 기능에 문제가 있습니다."),
-        ;
-
-        private final String failMessage;
-
     }
 }
