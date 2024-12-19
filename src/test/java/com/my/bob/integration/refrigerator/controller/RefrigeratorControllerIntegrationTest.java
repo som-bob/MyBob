@@ -21,7 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)     // 테스트 클래스당 인스턴스 1개만 생성
@@ -93,9 +93,9 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertEquals(successMessage, responseDto.getStatus());
-                    assertNotNull(responseDto.getData());
-                    assertFalse(refrigeratorRepository.findAll().isEmpty());
+                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
+                    assertThat(responseDto.getData()).isNotNull();
+                    assertThat(refrigeratorRepository.findAll()).isNotEmpty();
                 })
         ;
     }
@@ -116,9 +116,9 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertEquals(successMessage, responseDto.getStatus());
-                    assertNotNull(responseDto.getData());
-                    assertFalse(refrigeratorRepository.findAll().isEmpty());
+                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
+                    assertThat(responseDto.getData()).isNotNull();
+                    assertThat(refrigeratorRepository.findAll()).isNotEmpty();
                 });
 
         // 두번째 시도 실패
@@ -130,8 +130,8 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertEquals(ResponseDto.FailCode.R_00001.name(), responseDto.getErrorCode());
-                    assertEquals(failMessage, responseDto.getStatus());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(ResponseDto.FailCode.R_00001.name());
+                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
                 });
     }
 
@@ -146,11 +146,11 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertEquals(failMessage, responseDto.getStatus());
-                    assertEquals(ResponseDto.FailCode.R_00001.name(), responseDto.getErrorCode());
+                    assertThat(responseDto.getErrorCode()).isEqualTo(ResponseDto.FailCode.R_00001.name());
+                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
                 });
     }
-    
+
     @Test
     @DisplayName("냉장고 조회 - 성공")
     void getRefrigerator_success() {
@@ -165,15 +165,16 @@ class RefrigeratorControllerIntegrationTest {
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {})
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
                 .value(responseDto -> {
-                    assertEquals(successMessage, responseDto.getStatus());
+                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
 
                     RefrigeratorDto data = responseDto.getData();
-                    assertNotNull(data);
+                    assertThat(data).isNotNull();
                     assertThat(data.getRefrigeratorId()).isPositive();
 
-                    assertFalse(refrigeratorRepository.findAll().isEmpty());
+                    assertThat(refrigeratorRepository.findAll()).isNotEmpty();
                 });
 
         // 조회
@@ -182,15 +183,16 @@ class RefrigeratorControllerIntegrationTest {
                 .header("Authorization", "Bearer " + token)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {})
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
                 .value(responseDto -> {
-                    assertEquals(successMessage, responseDto.getStatus());
+                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
 
                     RefrigeratorDto data = responseDto.getData();
-                    assertNotNull(data);
+                    assertThat(data).isNotNull();
                     assertThat(data.getRefrigeratorId()).isPositive();
 
-                    assertFalse(refrigeratorRepository.findAll().isEmpty());
+                    assertThat(refrigeratorRepository.findAll()).isNotEmpty();
                 });
     }
 
