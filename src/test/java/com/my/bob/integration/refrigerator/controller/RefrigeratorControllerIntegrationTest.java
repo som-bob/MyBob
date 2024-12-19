@@ -21,7 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)     // 테스트 클래스당 인스턴스 1개만 생성
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("통합 테스트 - 냉장고 RefrigeratorController")
 class RefrigeratorControllerIntegrationTest {
@@ -50,7 +50,7 @@ class RefrigeratorControllerIntegrationTest {
     private final String password = "<PASSWORD1234>!";
     private String token;
 
-    @BeforeAll
+    @BeforeEach
     void setUpDatabase() throws DuplicateUserException, NonExistentUserException {
         JoinUserDto dto = new JoinUserDto();
         dto.setEmail(email);
@@ -65,7 +65,7 @@ class RefrigeratorControllerIntegrationTest {
         token = tokenDto.getAccessToken();
     }
 
-    @AfterAll
+    @AfterEach
     void clearDatabase() {
         refrigeratorRepository.deleteAll();
         refrigeratorIngredientRepository.deleteAll();
@@ -92,6 +92,42 @@ class RefrigeratorControllerIntegrationTest {
                     assertFalse(refrigeratorRepository.findAll().isEmpty());
                 })
         ;
+    }
+
+    @Test
+    @DisplayName("냉장고 생성 - 실패(이미 존재 하는 냉장고 재요청)")
+    void createRefrigerator_fail_ExistAlreadyRefrigerator() {
+        RefrigeratorCreateDto dto = new RefrigeratorCreateDto();
+        dto.setNickName("테스트 냉장고");
+        assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
+
+        // 첫번째 시도 성공
+        webTestClient.post()
+                .uri(BASE_URL)
+                .header("Authorization", "Bearer " + token)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> {
+                    assertEquals("SUCCESS", responseDto.getStatus());
+                    assertNotNull(responseDto.getData());
+                    assertFalse(refrigeratorRepository.findAll().isEmpty());
+                })
+        ;
+
+        // 두번째 시도 실패
+        webTestClient.post()
+                .uri(BASE_URL)
+                .header("Authorization", "Bearer " + token)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> {
+                    assertEquals(ResponseDto.FailCode.R_00001.name(), responseDto.getErrorCode());
+                    assertEquals("FAIL", responseDto.getStatus());
+                });
     }
 
 }
