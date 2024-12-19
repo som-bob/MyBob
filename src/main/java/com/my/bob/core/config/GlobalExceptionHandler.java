@@ -4,7 +4,7 @@ import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.recipe.exception.IngredientException;
 import com.my.bob.core.domain.refrigerator.exception.RefrigeratorException;
 import com.my.bob.core.exception.BadRequestException;
-import com.my.bob.core.exception.UserLoginException;
+import com.my.bob.core.domain.member.exception.UserLoginException;
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
