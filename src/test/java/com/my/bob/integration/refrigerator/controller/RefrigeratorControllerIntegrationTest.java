@@ -10,14 +10,17 @@ import com.my.bob.core.domain.member.repository.BobUserRepository;
 import com.my.bob.core.domain.member.service.JoinService;
 import com.my.bob.core.domain.member.service.LoginService;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
+import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorIngredientRepository;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
@@ -44,14 +47,15 @@ class RefrigeratorControllerIntegrationTest {
     @Autowired
     private RefrigeratorIngredientRepository refrigeratorIngredientRepository;
 
-    private final String BASE_URL = "/api/v1/refrigerator";
+    private final String baseUrl = "/api/v1/refrigerator";
 
     private final String email = "test__user@test.com";
-    private final String password = "<PASSWORD1234>!";
     private String token;
 
     @BeforeEach
     void setUpDatabase() throws DuplicateUserException, NonExistentUserException {
+        String password = "<PASSWORD1234>!";
+
         JoinUserDto dto = new JoinUserDto();
         dto.setEmail(email);
         dto.setPassword(password);
@@ -80,7 +84,7 @@ class RefrigeratorControllerIntegrationTest {
         assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
 
         webTestClient.post()
-                .uri(BASE_URL)
+                .uri(baseUrl)
                 .header("Authorization", "Bearer " + token)
                 .bodyValue(dto)
                 .exchange()
@@ -103,7 +107,7 @@ class RefrigeratorControllerIntegrationTest {
 
         // 첫번째 시도 성공
         webTestClient.post()
-                .uri(BASE_URL)
+                .uri(baseUrl)
                 .header("Authorization", "Bearer " + token)
                 .bodyValue(dto)
                 .exchange()
@@ -113,12 +117,11 @@ class RefrigeratorControllerIntegrationTest {
                     assertEquals("SUCCESS", responseDto.getStatus());
                     assertNotNull(responseDto.getData());
                     assertFalse(refrigeratorRepository.findAll().isEmpty());
-                })
-        ;
+                });
 
         // 두번째 시도 실패
         webTestClient.post()
-                .uri(BASE_URL)
+                .uri(baseUrl)
                 .header("Authorization", "Bearer " + token)
                 .bodyValue(dto)
                 .exchange()
@@ -127,6 +130,46 @@ class RefrigeratorControllerIntegrationTest {
                 .value(responseDto -> {
                     assertEquals(ResponseDto.FailCode.R_00001.name(), responseDto.getErrorCode());
                     assertEquals("FAIL", responseDto.getStatus());
+                });
+    }
+    
+    @Test
+    @DisplayName("냉장고 조회 - 성공")
+    void getRefrigerator_success() {
+        RefrigeratorCreateDto dto = new RefrigeratorCreateDto();
+        dto.setNickName("테스트 냉장고");
+        assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
+
+        // 생성
+        webTestClient.post()
+                .uri(baseUrl)
+                .header("Authorization", "Bearer " + token)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> {
+                    assertEquals("SUCCESS", responseDto.getStatus());
+                    assertNotNull(responseDto.getData());
+                    assertFalse(refrigeratorRepository.findAll().isEmpty());
+                });
+
+        // 조회
+        webTestClient.get()
+                .uri(baseUrl)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(responseDto -> {
+                    assertEquals("SUCCESS", responseDto.getStatus());
+
+                    RefrigeratorDto data = responseDto.getData();
+                    assertNotNull(data);
+                    assertThat(data.getRefrigeratorId()).isPositive();
+
+                    assertFalse(refrigeratorRepository.findAll().isEmpty());
                 });
     }
 

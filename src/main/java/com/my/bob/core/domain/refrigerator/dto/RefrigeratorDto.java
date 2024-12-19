@@ -2,10 +2,12 @@ package com.my.bob.core.domain.refrigerator.dto;
 
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class RefrigeratorDto {
     // 조회용
 
