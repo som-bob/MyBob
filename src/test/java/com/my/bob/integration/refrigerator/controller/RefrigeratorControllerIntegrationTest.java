@@ -48,9 +48,11 @@ class RefrigeratorControllerIntegrationTest {
     private RefrigeratorIngredientRepository refrigeratorIngredientRepository;
 
     private final String baseUrl = "/api/v1/refrigerator";
-
     private final String email = "test__user@test.com";
     private String token;
+
+    private final String successMessage = "SUCCESS";
+    private final String failMessage = "FAIL";
 
     @BeforeEach
     void setUpDatabase() throws DuplicateUserException, NonExistentUserException {
@@ -91,7 +93,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertEquals("SUCCESS", responseDto.getStatus());
+                    assertEquals(successMessage, responseDto.getStatus());
                     assertNotNull(responseDto.getData());
                     assertFalse(refrigeratorRepository.findAll().isEmpty());
                 })
@@ -114,7 +116,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertEquals("SUCCESS", responseDto.getStatus());
+                    assertEquals(successMessage, responseDto.getStatus());
                     assertNotNull(responseDto.getData());
                     assertFalse(refrigeratorRepository.findAll().isEmpty());
                 });
@@ -129,7 +131,23 @@ class RefrigeratorControllerIntegrationTest {
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
                     assertEquals(ResponseDto.FailCode.R_00001.name(), responseDto.getErrorCode());
-                    assertEquals("FAIL", responseDto.getStatus());
+                    assertEquals(failMessage, responseDto.getStatus());
+                });
+    }
+
+    @Test
+    @DisplayName("냉장고 조회 - 실패(존재 하지 않는 냉장고)")
+    void getRefrigerator_fail_NotExistRefrigerator() {
+        // 조회
+        webTestClient.get()
+                .uri(baseUrl)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> {
+                    assertEquals(failMessage, responseDto.getStatus());
+                    assertEquals(ResponseDto.FailCode.R_00001.name(), responseDto.getErrorCode());
                 });
     }
     
@@ -147,10 +165,14 @@ class RefrigeratorControllerIntegrationTest {
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(ResponseDto.class)
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {})
                 .value(responseDto -> {
-                    assertEquals("SUCCESS", responseDto.getStatus());
-                    assertNotNull(responseDto.getData());
+                    assertEquals(successMessage, responseDto.getStatus());
+
+                    RefrigeratorDto data = responseDto.getData();
+                    assertNotNull(data);
+                    assertThat(data.getRefrigeratorId()).isPositive();
+
                     assertFalse(refrigeratorRepository.findAll().isEmpty());
                 });
 
@@ -160,10 +182,9 @@ class RefrigeratorControllerIntegrationTest {
                 .header("Authorization", "Bearer " + token)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
-                })
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {})
                 .value(responseDto -> {
-                    assertEquals("SUCCESS", responseDto.getStatus());
+                    assertEquals(successMessage, responseDto.getStatus());
 
                     RefrigeratorDto data = responseDto.getData();
                     assertNotNull(data);
