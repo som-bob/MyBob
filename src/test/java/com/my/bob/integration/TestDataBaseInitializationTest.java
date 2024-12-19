@@ -24,7 +24,7 @@ class TestDataBaseInitializationTest {
     }
 
     @Test
-    @DisplayName("데이터베이스 초기화 확인 - test 환경 Flyway 마이그레이션 테스트")
+    @DisplayName("test 환경 Flyway 마이그레이션 테스트")
     void testFlywayMigration() {
         log.info("Success");
     }

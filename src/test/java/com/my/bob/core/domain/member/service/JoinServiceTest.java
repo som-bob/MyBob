@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
+@Transactional
 @ActiveProfiles("test")
 @DisplayName("회원 가입")
 class JoinServiceTest {
@@ -28,7 +29,6 @@ class JoinServiceTest {
 
 
     @Test
-    @Transactional
     @DisplayName("회원 가입")
     void joinUser(){
         // Given
@@ -47,7 +47,6 @@ class JoinServiceTest {
 
 
     @Test
-    @Transactional
     @DisplayName("회원 가입 실패 - 중복 이메일 확인")
     void joinUserFail(){
         // given
