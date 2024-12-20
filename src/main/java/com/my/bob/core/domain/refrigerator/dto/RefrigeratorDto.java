@@ -4,6 +4,7 @@ import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -23,7 +24,7 @@ public class RefrigeratorDto {
         this.ingredients = refrigerator.getBobRefrigeratorIngredients()
                 .stream()
                 .map(ingredient -> new RefrigeratorIngredientDto(ingredient.getIngredient(), ingredient.getDateAdded()))
-                .sorted((o1, o2) -> o2.getIngredientName().compareTo(o1.getIngredientName()))
+                .sorted(Comparator.comparing(RefrigeratorIngredientDto::getIngredientName))
                 .toList();
     }
 }

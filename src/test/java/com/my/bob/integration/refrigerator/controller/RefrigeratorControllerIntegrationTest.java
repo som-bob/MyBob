@@ -16,8 +16,10 @@ import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
+import com.my.bob.core.domain.refrigerator.dto.RefrigeratorIngredientDto;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorIngredientRepository;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorRepository;
+import com.my.bob.integration.common.IntegrationTestResponseValidator;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import static com.my.bob.core.constants.FailCode.I_00002;
@@ -65,8 +68,8 @@ class RefrigeratorControllerIntegrationTest {
     private final String baseUrl = "/api/v1/refrigerator";
     private final String email = "test__user@test.com";
     private String token;
-    private int ingredient_1_id;
-    private int ingredient_2_id;
+    private int ingredientId1;
+    private int ingredientId2;
 
     @BeforeEach
     @WithAccount("system")
@@ -87,13 +90,13 @@ class RefrigeratorControllerIntegrationTest {
         token = tokenDto.getAccessToken();
 
         // 기본 재료 2개 이상 저장
-        Ingredient ingredient1 = new Ingredient("가_테스트 재료");
+        Ingredient ingredient1 = new Ingredient("나_테스트 재료");
         Ingredient save1 = ingredientRepository.save(ingredient1);
-        ingredient_1_id = save1.getId();
+        ingredientId1 = save1.getId();
 
-        Ingredient ingredient2 = new Ingredient("나_테스트 재료");
+        Ingredient ingredient2 = new Ingredient("가_테스트 재료");
         Ingredient save2 = ingredientRepository.save(ingredient2);
-        ingredient_2_id = save2.getId();
+        ingredientId2 = save2.getId();
     }
 
     @AfterEach
@@ -169,9 +172,8 @@ class RefrigeratorControllerIntegrationTest {
                 .exchange()
                 .expectStatus().is4xxClientError()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> {
-                    assertFailResponse(responseDto, R_00001, ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
-                });
+                .value(responseDto ->
+                        assertFailResponse(responseDto, R_00001, ErrorMessage.NOT_EXISTENT_REFRIGERATOR));
     }
 
     @Test
@@ -224,7 +226,7 @@ class RefrigeratorControllerIntegrationTest {
     void addIngredient_fail_NotExistRefrigerator() {
         // given
         RefrigeratorAddIngredientDto dto = new RefrigeratorAddIngredientDto();
-        dto.setIngredientId(ingredient_1_id);
+        dto.setIngredientId(ingredientId1);
         dto.setAddedDate(LocalDate.now().toString());
 
         int notExistRefrigeratorId = 999;
@@ -265,6 +267,82 @@ class RefrigeratorControllerIntegrationTest {
                     assertThat(refrigeratorIngredientRepository.findAll()).isEmpty();
                 });
     }
+
+    @Test
+    @DisplayName("냉장고 재료 추가 - 성공")
+    void addIngredient_success() {
+        // given
+        int refrigeratorId = createRefrigeratorAndGetId();
+
+        RefrigeratorAddIngredientDto addIngredientDto = new RefrigeratorAddIngredientDto();
+        addIngredientDto.setIngredientId(ingredientId1);
+        addIngredientDto.setAddedDate(LocalDate.now().toString());
+
+        // when & then
+        webTestClient.post()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
+                .bodyValue(addIngredientDto)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(responseDto -> {
+                    assertSuccessResponse(responseDto);
+                    assertThat(refrigeratorIngredientRepository.findAll()).isNotEmpty();
+                });
+    }
+
+    @Test
+    @DisplayName("냉장고 재료 추가 - 성공(2개 이상 재료 이름순 나열 확인)")
+    void addIngredient_success_twoIngredient() {
+        // given
+        int refrigeratorId = createRefrigeratorAndGetId();
+
+        RefrigeratorAddIngredientDto addIngredientDto1 = new RefrigeratorAddIngredientDto();
+        addIngredientDto1.setIngredientId(ingredientId1);
+        addIngredientDto1.setAddedDate(LocalDate.now().toString());
+
+        RefrigeratorAddIngredientDto addIngredientDto2 = new RefrigeratorAddIngredientDto();
+        addIngredientDto2.setIngredientId(ingredientId2);
+        addIngredientDto2.setAddedDate(LocalDate.now().toString());
+
+        // when & then
+        // 첫번째 재료
+        webTestClient.post()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
+                .bodyValue(addIngredientDto1)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(IntegrationTestResponseValidator::assertSuccessResponse);
+
+        // 두번째 재료
+        webTestClient.post()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
+                .bodyValue(addIngredientDto2)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(responseDto -> {
+                    assertSuccessResponse(responseDto);
+
+                    RefrigeratorDto refrigeratorDto = responseDto.getData();
+                    assertThat(refrigeratorDto).isNotNull();
+
+                    List<RefrigeratorIngredientDto> ingredients = refrigeratorDto.getIngredients();
+                    assertThat(ingredients).hasSize(2);
+
+                    assertThat(
+                            ingredients.stream().map(RefrigeratorIngredientDto::getIngredientName).toList()
+                    ).containsExactly("가_테스트 재료", "나_테스트 재료");
+                });
+    }
+
 
     private int createRefrigeratorAndGetId() {
         RefrigeratorCreateDto refrigeratorCreateDto = new RefrigeratorCreateDto();
