@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS bob_user (
     authority VARCHAR(255) DEFAULT 'ROLE_USER',
     last_login_date DATETIME NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mod_date DATETIME,
     PRIMARY KEY (user_id)
 );
 
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS bob_refrigerator (
     nickname VARCHAR(100),
     user_id INTEGER NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mod_date DATETIME,
     PRIMARY KEY (refrigerator_id),
     CONSTRAINT FK_refrigerator_user FOREIGN KEY (user_id)
     REFERENCES bob_user (user_id) ON DELETE CASCADE
@@ -46,8 +46,10 @@ CREATE TABLE IF NOT EXISTS bob_ingredients (
     storage_method VARCHAR(100),
     icon_url VARCHAR(255),
     image_url VARCHAR(255),
-    reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    reg_id varchar(100) NOT NULL,
+    reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    mod_id varchar(100),
+    mod_date DATETIME,
     PRIMARY KEY (ingredient_id)
 );
 
@@ -58,7 +60,7 @@ CREATE TABLE IF NOT EXISTS bob_refrigerator_ingredient (
     ingredient_id INTEGER NOT NULL,
     date_added DATE,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mod_date DATETIME,
     PRIMARY KEY (refrigerator_ingredient_id),
     CONSTRAINT FK_refrigerator_ingredient_refrigerator FOREIGN KEY (refrigerator_id)
     REFERENCES bob_refrigerator (refrigerator_id) ON DELETE CASCADE,
@@ -76,8 +78,10 @@ CREATE TABLE IF NOT EXISTS bob_recipe (
     difficulty VARCHAR(20),
     source VARCHAR(255),
     image_url VARCHAR(255),
+    reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mod_id varchar(100),
+    mod_date DATETIME,
     PRIMARY KEY (recipe_id)
 );
 
@@ -87,8 +91,10 @@ CREATE TABLE IF NOT EXISTS bob_recipe_ingredients (
     recipe_id INTEGER NOT NULL,
     ingredient_id INTEGER NOT NULL,
     amount VARCHAR(100),
+    reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mod_id varchar(100),
+    mod_date DATETIME,
     PRIMARY KEY (detail_ingredient_id),
     CONSTRAINT FK_recipe_ingredients_recipe FOREIGN KEY (recipe_id)
     REFERENCES bob_recipe (recipe_id),
@@ -103,8 +109,10 @@ CREATE TABLE IF NOT EXISTS bob_recipe_detail (
     recipe_order INTEGER NOT NULL,
     recipe_detail_text VARCHAR(3000),
     image_url VARCHAR(255),
+    reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mod_id varchar(100),
+    mod_date DATETIME,
     PRIMARY KEY (recipe_detail_id),
     CONSTRAINT FK_recipe_detail_recipe FOREIGN KEY (recipe_id)
     REFERENCES bob_recipe (recipe_id) ON DELETE CASCADE
@@ -116,8 +124,9 @@ CREATE TABLE IF NOT EXISTS bob_board (
     board_title VARCHAR(255),
     board_content VARCHAR(255),
     is_delete BOOLEAN NOT NULL DEFAULT FALSE,
+    reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NULL,
+    mod_date DATETIME,
     PRIMARY KEY (board_id)
 );
 
@@ -128,8 +137,9 @@ CREATE TABLE IF NOT EXISTS bob_board_comment (
     parent_id BIGINT NULL,
     comment_content VARCHAR(1000) NOT NULL,
     is_delete BOOLEAN NOT NULL DEFAULT FALSE,
+    reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mod_date DATETIME,
     PRIMARY KEY (comment_id),
     CONSTRAINT FK_board_comment_board FOREIGN KEY (board_id)
     REFERENCES bob_board (board_id),

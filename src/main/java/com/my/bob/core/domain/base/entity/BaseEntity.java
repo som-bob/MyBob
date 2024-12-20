@@ -26,11 +26,11 @@ public class BaseEntity {
     private LocalDateTime regDate;
 
     @LastModifiedBy
-    @Column(nullable = false)
+    @Column
     private String modId;
 
 
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column
     private LocalDateTime modDate;
 }

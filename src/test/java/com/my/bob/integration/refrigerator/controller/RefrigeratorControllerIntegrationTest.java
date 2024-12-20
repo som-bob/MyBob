@@ -1,6 +1,7 @@
 package com.my.bob.integration.refrigerator.controller;
 
-import com.my.bob.core.constants.FailCode;
+import com.my.bob.account.WithAccount;
+import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.dto.LoginDto;
@@ -10,6 +11,9 @@ import com.my.bob.core.domain.member.exception.NonExistentUserException;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
 import com.my.bob.core.domain.member.service.JoinService;
 import com.my.bob.core.domain.member.service.LoginService;
+import com.my.bob.core.domain.recipe.entity.Ingredient;
+import com.my.bob.core.domain.recipe.repository.IngredientRepository;
+import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorIngredientRepository;
@@ -21,6 +25,13 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.time.LocalDate;
+import java.util.Objects;
+
+import static com.my.bob.core.constants.FailCode.I_00002;
+import static com.my.bob.core.constants.FailCode.R_00001;
+import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertFailResponse;
+import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertSuccessResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,17 +59,21 @@ class RefrigeratorControllerIntegrationTest {
     @Autowired
     private RefrigeratorIngredientRepository refrigeratorIngredientRepository;
 
+    @Autowired
+    private IngredientRepository ingredientRepository;
+
     private final String baseUrl = "/api/v1/refrigerator";
     private final String email = "test__user@test.com";
     private String token;
-
-    private final String successMessage = "SUCCESS";
-    private final String failMessage = "FAIL";
+    private int ingredient_1_id;
+    private int ingredient_2_id;
 
     @BeforeEach
+    @WithAccount("system")
     void setUpDatabase() throws DuplicateUserException, NonExistentUserException {
         String password = "<PASSWORD1234>!";
 
+        // 회원 가입 유저 세팅 + token 발급
         JoinUserDto dto = new JoinUserDto();
         dto.setEmail(email);
         dto.setPassword(password);
@@ -70,12 +85,22 @@ class RefrigeratorControllerIntegrationTest {
         loginDto.setPassword(password);
         TokenDto tokenDto = loginService.login(loginDto);
         token = tokenDto.getAccessToken();
+
+        // 기본 재료 2개 이상 저장
+        Ingredient ingredient1 = new Ingredient("가_테스트 재료");
+        Ingredient save1 = ingredientRepository.save(ingredient1);
+        ingredient_1_id = save1.getId();
+
+        Ingredient ingredient2 = new Ingredient("나_테스트 재료");
+        Ingredient save2 = ingredientRepository.save(ingredient2);
+        ingredient_2_id = save2.getId();
     }
 
     @AfterEach
     void clearDatabase() {
-        refrigeratorRepository.deleteAll();
         refrigeratorIngredientRepository.deleteAll();
+        refrigeratorRepository.deleteAll();
+        ingredientRepository.deleteAll();
         bobUserRepository.deleteAll();
     }
 
@@ -94,7 +119,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
+                    assertSuccessResponse(responseDto);
                     assertThat(responseDto.getData()).isNotNull();
                     assertThat(refrigeratorRepository.findAll()).isNotEmpty();
                 })
@@ -117,7 +142,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
+                    assertSuccessResponse(responseDto);
                     assertThat(responseDto.getData()).isNotNull();
                     assertThat(refrigeratorRepository.findAll()).isNotEmpty();
                 });
@@ -130,10 +155,8 @@ class RefrigeratorControllerIntegrationTest {
                 .exchange()
                 .expectStatus().is4xxClientError()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> {
-                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.R_00001.name());
-                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                });
+                .value(responseDto ->
+                        assertFailResponse(responseDto, R_00001, ErrorMessage.ALREADY_CREATE_REFRIGERATOR));
     }
 
     @Test
@@ -147,8 +170,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody(ResponseDto.class)
                 .value(responseDto -> {
-                    assertThat(responseDto.getErrorCode()).isEqualTo(FailCode.R_00001.name());
-                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
+                    assertFailResponse(responseDto, R_00001, ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
                 });
     }
 
@@ -169,7 +191,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
                 })
                 .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
+                    assertSuccessResponse(responseDto);
 
                     RefrigeratorDto data = responseDto.getData();
                     assertThat(data).isNotNull();
@@ -187,7 +209,7 @@ class RefrigeratorControllerIntegrationTest {
                 .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
                 })
                 .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(successMessage);
+                    assertSuccessResponse(responseDto);
 
                     RefrigeratorDto data = responseDto.getData();
                     assertThat(data).isNotNull();
@@ -197,4 +219,73 @@ class RefrigeratorControllerIntegrationTest {
                 });
     }
 
+    @Test
+    @DisplayName("냉장고 재료 추가 실패 - 냉장고가 존재 하지 않음")
+    void addIngredient_fail_NotExistRefrigerator() {
+        // given
+        RefrigeratorAddIngredientDto dto = new RefrigeratorAddIngredientDto();
+        dto.setIngredientId(ingredient_1_id);
+        dto.setAddedDate(LocalDate.now().toString());
+
+        int notExistRefrigeratorId = 999;
+
+        webTestClient.post()
+                .uri(baseUrl + "/" + notExistRefrigeratorId + "/ingredient")
+                .bodyValue(dto)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> {
+                    assertFailResponse(responseDto, R_00001, ErrorMessage.NOT_EXISTENT_REFRIGERATOR);
+                    assertThat(refrigeratorIngredientRepository.findAll()).isEmpty();
+                });
+    }
+
+    @Test
+    @DisplayName("냉장고 재고 추가 실패 - 존재 하지 않는 재료")
+    void addIngredient_fail_NotExistIngredient() {
+        // given
+        int refrigeratorId = createRefrigeratorAndGetId();
+
+        RefrigeratorAddIngredientDto addIngredientDto = new RefrigeratorAddIngredientDto();
+        addIngredientDto.setIngredientId(999);
+        addIngredientDto.setAddedDate(LocalDate.now().toString());
+
+        webTestClient.post()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
+                .bodyValue(addIngredientDto)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody(ResponseDto.class)
+                .value(responseDto -> {
+                    assertFailResponse(responseDto, I_00002, ErrorMessage.NOT_EXISTENT_INGREDIENT);
+
+                    assertThat(refrigeratorIngredientRepository.findAll()).isEmpty();
+                });
+    }
+
+    private int createRefrigeratorAndGetId() {
+        RefrigeratorCreateDto refrigeratorCreateDto = new RefrigeratorCreateDto();
+        refrigeratorCreateDto.setNickName("테스트 냉장고");
+
+        assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
+
+        // 냉장고 생성
+        return Objects.requireNonNull(
+                        webTestClient.post()
+                                .uri(baseUrl)
+                                .header("Authorization", "Bearer " + token)
+                                .bodyValue(refrigeratorCreateDto)
+                                .exchange()
+                                .expectStatus().isOk()
+                                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                                })
+                                .returnResult()
+                                .getResponseBody()
+                )
+                .getData()
+                .getRefrigeratorId();
+    }
 }

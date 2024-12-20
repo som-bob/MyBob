@@ -1,6 +1,5 @@
 package com.my.bob.integration.member.controller;
 
-import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.dto.JoinUserDto;
 import com.my.bob.core.domain.member.dto.LoginDto;
@@ -8,6 +7,7 @@ import com.my.bob.core.domain.member.dto.TokenDto;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
 import com.my.bob.core.domain.member.service.JoinService;
+import com.my.bob.integration.common.IntegrationTestResponseValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDateTime;
 
+import static com.my.bob.core.constants.ErrorMessage.*;
 import static com.my.bob.core.constants.FailCode.V_00001;
+import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertFailResponse;
+import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertSuccessResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -44,9 +47,6 @@ class BobUserControllerIntegrationTest {
     private final String email = "test__user@test.com";
     private final String password = "correctPassword1234!";
 
-    private final String successMessage = "SUCCESS";
-    private final String failMessage = "FAIL";
-
     @AfterEach
     public void cleanUp() {
         bobUserRepository.deleteAll();
@@ -65,11 +65,7 @@ class BobUserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
-                    assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.INVALID_PASSWORD);
-                });
+                .value(responseDto -> assertFailResponse(responseDto, V_00001, INVALID_PASSWORD));
     }
 
 
@@ -86,11 +82,7 @@ class BobUserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
-                    assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.INVALID_EMAIL);
-                });
+                .value(responseDto -> assertFailResponse(responseDto, V_00001, INVALID_EMAIL));
     }
 
     @Test
@@ -107,7 +99,7 @@ class BobUserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> assertThat(responseDto.getStatus()).isEqualTo(successMessage));
+                .value(IntegrationTestResponseValidator::assertSuccessResponse);
     }
 
     @Test
@@ -124,7 +116,7 @@ class BobUserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> assertThat(responseDto.getStatus()).isEqualTo(successMessage));
+                .value(IntegrationTestResponseValidator::assertSuccessResponse);
 
         // when & then
         webTestClient.post()
@@ -133,11 +125,7 @@ class BobUserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
-                    assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.ALREADY_EXIST_MEMBER);
-                });
+                .value(responseDto -> assertFailResponse(responseDto, V_00001, ALREADY_EXIST_MEMBER));
     }
 
 
@@ -158,11 +146,8 @@ class BobUserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
-                    assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.NEED_TO_CONFIRM_LOGIN_INFORMATION);
-                });
+                .value(responseDto ->
+                        assertFailResponse(responseDto, V_00001, NEED_TO_CONFIRM_LOGIN_INFORMATION));
     }
 
     @Test
@@ -182,11 +167,8 @@ class BobUserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody(ResponseDto.class)
-                .value(responseDto -> {
-                    assertThat(responseDto.getStatus()).isEqualTo(failMessage);
-                    assertThat(responseDto.getErrorCode()).isEqualTo(V_00001.name());
-                    assertThat(responseDto.getErrorMessage()).isEqualTo(ErrorMessage.NEED_TO_CONFIRM_PASSWORD);
-                });
+                .value(responseDto ->
+                        assertFailResponse(responseDto, V_00001, NEED_TO_CONFIRM_PASSWORD));
     }
 
     @Test
@@ -207,11 +189,11 @@ class BobUserControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<ResponseDto<TokenDto>>() {
                 })
-                .value(tokenDtoResponseDto -> {
-                    assertThat(tokenDtoResponseDto.getStatus()).isEqualTo(successMessage);
-                    assertThat(tokenDtoResponseDto.getData()).isNotNull();
+                .value(responseDto -> {
+                    assertSuccessResponse(responseDto);
+                    assertThat(responseDto.getData()).isNotNull();
 
-                    TokenDto data = tokenDtoResponseDto.getData();
+                    TokenDto data = responseDto.getData();
                     assertThat(data.getAccessToken()).isNotNull();
                     assertThat(data.getAccessTokenExpire()).isAfter(LocalDateTime.now());
                     assertThat(data.getRefreshToken()).isNotNull();
