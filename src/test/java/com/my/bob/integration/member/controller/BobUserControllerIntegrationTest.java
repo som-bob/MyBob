@@ -24,6 +24,7 @@ import static com.my.bob.core.constants.ErrorMessage.*;
 import static com.my.bob.core.constants.FailCode.V_00001;
 import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertFailResponse;
 import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertSuccessResponse;
+import static com.my.bob.integration.util.IntegrationTestUtils.getTestUserEmail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -44,7 +45,6 @@ class BobUserControllerIntegrationTest {
 
     private final String baseUrl = "/api/v1/member/";
 
-    private final String email = "test__user@test.com";
     private final String password = "correctPassword1234!";
 
     @AfterEach
@@ -56,7 +56,7 @@ class BobUserControllerIntegrationTest {
     @DisplayName("회원 가입 실패 - valid 체크 실패(잘못된 비밀번호)")
     void joinMember_fail_invalidPassword() {
         JoinUserDto dto = new JoinUserDto();
-        dto.setEmail(email);
+        dto.setEmail(getTestUserEmail());
         dto.setPassword("WRONG_PASSWORD");
 
         webTestClient.post()
@@ -90,7 +90,7 @@ class BobUserControllerIntegrationTest {
     void joinMember_success() {
         // given
         JoinUserDto dto = new JoinUserDto();
-        dto.setEmail(email);
+        dto.setEmail(getTestUserEmail());
         dto.setPassword(password);
 
         webTestClient.post()
@@ -107,7 +107,7 @@ class BobUserControllerIntegrationTest {
     void joinMember_fail() {
         // given
         JoinUserDto dto = new JoinUserDto();
-        dto.setEmail(email);
+        dto.setEmail(getTestUserEmail());
         dto.setPassword(password);
 
         webTestClient.post()
@@ -157,7 +157,7 @@ class BobUserControllerIntegrationTest {
         joinTestUser();
 
         LoginDto dto = new LoginDto();
-        dto.setEmail(email);
+        dto.setEmail(getTestUserEmail());
         dto.setPassword("WRONG_PASSWORD");
 
         // when & then
@@ -178,7 +178,7 @@ class BobUserControllerIntegrationTest {
         joinTestUser();
 
         LoginDto dto = new LoginDto();
-        dto.setEmail(email);
+        dto.setEmail(getTestUserEmail());
         dto.setPassword(password);
 
         // when& then
@@ -204,7 +204,7 @@ class BobUserControllerIntegrationTest {
 
     private void joinTestUser() {
         JoinUserDto dto = new JoinUserDto();
-        dto.setEmail(email);
+        dto.setEmail(getTestUserEmail());
         dto.setPassword(password);
 
         try {

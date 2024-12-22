@@ -3,11 +3,6 @@ package com.my.bob.integration.refrigerator.controller;
 import com.my.bob.account.WithAccount;
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.base.dto.ResponseDto;
-import com.my.bob.core.domain.member.dto.JoinUserDto;
-import com.my.bob.core.domain.member.dto.LoginDto;
-import com.my.bob.core.domain.member.dto.TokenDto;
-import com.my.bob.core.domain.member.exception.DuplicateUserException;
-import com.my.bob.core.domain.member.exception.NonExistentUserException;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
 import com.my.bob.core.domain.member.service.JoinService;
 import com.my.bob.core.domain.member.service.LoginService;
@@ -35,6 +30,8 @@ import static com.my.bob.core.constants.FailCode.I_00002;
 import static com.my.bob.core.constants.FailCode.R_00001;
 import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertFailResponse;
 import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertSuccessResponse;
+import static com.my.bob.integration.util.IntegrationTestUtils.getTestUserEmail;
+import static com.my.bob.integration.util.IntegrationTestUtils.getTokenFromTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -66,28 +63,14 @@ class RefrigeratorControllerIntegrationTest {
     private IngredientRepository ingredientRepository;
 
     private final String baseUrl = "/api/v1/refrigerator";
-    private final String email = "test__user@test.com";
     private String token;
     private int ingredientId1;
     private int ingredientId2;
 
     @BeforeEach
     @WithAccount("system")
-    void setUpDatabase() throws DuplicateUserException, NonExistentUserException {
-        String password = "<PASSWORD1234>!";
-
-        // 회원 가입 유저 세팅 + token 발급
-        JoinUserDto dto = new JoinUserDto();
-        dto.setEmail(email);
-        dto.setPassword(password);
-        dto.setNickName("Test User");
-        joinService.joinMember(dto);
-
-        LoginDto loginDto = new LoginDto();
-        loginDto.setEmail(email);
-        loginDto.setPassword(password);
-        TokenDto tokenDto = loginService.login(loginDto);
-        token = tokenDto.getAccessToken();
+    void setUpDatabase() {
+        token = getTokenFromTestUser(joinService, loginService);
 
         // 기본 재료 2개 이상 저장
         Ingredient ingredient1 = new Ingredient("나_테스트 재료");
@@ -112,7 +95,7 @@ class RefrigeratorControllerIntegrationTest {
     void createRefrigerator_success() {
         RefrigeratorCreateDto dto = new RefrigeratorCreateDto();
         dto.setNickName("테스트 냉장고");
-        assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
+        assertTrue(bobUserRepository.findOneByEmail(getTestUserEmail()).isPresent());
 
         webTestClient.post()
                 .uri(baseUrl)
@@ -134,7 +117,7 @@ class RefrigeratorControllerIntegrationTest {
     void createRefrigerator_fail_ExistAlreadyRefrigerator() {
         RefrigeratorCreateDto dto = new RefrigeratorCreateDto();
         dto.setNickName("테스트 냉장고");
-        assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
+        assertTrue(bobUserRepository.findOneByEmail(getTestUserEmail()).isPresent());
 
         // 첫번째 시도 성공
         webTestClient.post()
@@ -181,7 +164,7 @@ class RefrigeratorControllerIntegrationTest {
     void getRefrigerator_success() {
         RefrigeratorCreateDto dto = new RefrigeratorCreateDto();
         dto.setNickName("테스트 냉장고");
-        assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
+        assertTrue(bobUserRepository.findOneByEmail(getTestUserEmail()).isPresent());
 
         // 생성
         webTestClient.post()
@@ -347,8 +330,7 @@ class RefrigeratorControllerIntegrationTest {
     private int createRefrigeratorAndGetId() {
         RefrigeratorCreateDto refrigeratorCreateDto = new RefrigeratorCreateDto();
         refrigeratorCreateDto.setNickName("테스트 냉장고");
-
-        assertTrue(bobUserRepository.findOneByEmail(email).isPresent());
+        assertTrue(bobUserRepository.findOneByEmail(getTestUserEmail()).isPresent());
 
         // 냉장고 생성
         return Objects.requireNonNull(
