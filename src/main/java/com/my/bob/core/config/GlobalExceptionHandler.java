@@ -105,7 +105,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    /** ExceptionHandler 정의되지 않은 모든 Exception 발생시 - 서버 Error return */
+    /** ExceptionHandler 정의 되지 않은 모든 Exception 발생시 - 서버 Error return */
     @ExceptionHandler(value = {
             Exception.class
     })
