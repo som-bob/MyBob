@@ -38,20 +38,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-	// swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-
-	// spring doc
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
-	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.15' // Spring Web MVC용
+	// WebTestClient (if applicable)
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-	// swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
 	//Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
@@ -71,6 +64,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'		// marid db 사용하지 않을 시 삭제
 	runtimeOnly 'com.h2database:h2'
 
 	// jwt

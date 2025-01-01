@@ -39,13 +39,6 @@ public class SecurityConfig {
             "/api/*/member/join",
             "/api/*/member/login",
             "/api/*/member/reissue"
-            // swagger 모두 허용
-            ,"/swagger-ui/**"
-            ,"/v3/api-docs/**"
-            ,"/swagger-ui.html"
-            ,"/swagger-resources/**"
-            ,"/webjars/**"
-
             ,"manage/actuator/**" // actuator 기능 우선 권한 없이 실행
     };
 
