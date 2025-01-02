@@ -119,7 +119,7 @@ public class GlobalExceptionHandler {
     // 모든 exception 발생시, 로깅
     private void exceptionLogging(Exception e, WebRequest request) {
         try {
-            log.error("exception: {}", e.getClass().getName());
+            log.error("exception: {}", e.getClass().getName(), e);
 
             String description = request.getDescription(true);
             if(StringUtils.isEmpty(description)) {
