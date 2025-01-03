@@ -32,6 +32,7 @@ public class Recipe extends BaseEntity {
     @Column(name = "recipe_description", length = 1000)
     private String recipeDescription;
 
+    // TODO enum 변경할 것
     @Size(max = 20)
     @Column(name = "difficulty", length = 20)
     private String difficulty;
