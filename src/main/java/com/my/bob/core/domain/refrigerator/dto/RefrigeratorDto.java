@@ -23,7 +23,7 @@ public class RefrigeratorDto {
         this.nickName = refrigerator.getNickname();
         this.ingredients = refrigerator.getBobRefrigeratorIngredients()
                 .stream()
-                .map(ingredient -> new RefrigeratorIngredientDto(ingredient.getIngredient(), ingredient.getDateAdded()))
+                .map(ingredient -> new RefrigeratorIngredientDto(ingredient, ingredient.getDateAdded()))
                 .sorted(Comparator.comparing(RefrigeratorIngredientDto::getIngredientName))
                 .toList();
     }

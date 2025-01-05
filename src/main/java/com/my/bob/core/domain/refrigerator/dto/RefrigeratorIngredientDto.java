@@ -1,6 +1,7 @@
 package com.my.bob.core.domain.refrigerator.dto;
 
 import com.my.bob.core.domain.recipe.entity.Ingredient;
+import com.my.bob.core.domain.refrigerator.entity.RefrigeratorIngredient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,10 +20,10 @@ public class RefrigeratorIngredientDto {
 
     private String addedDate;
 
-    public RefrigeratorIngredientDto(Ingredient ingredient, LocalDate addedDate) {
+    public RefrigeratorIngredientDto(RefrigeratorIngredient ingredient, LocalDate addedDate) {
         this.ingredientId = ingredient.getId();
-        this.ingredientName = ingredient.getIngredientName();
-        this.ingredientUrl = ingredient.getImageUrl();
+        this.ingredientName = ingredient.getIngredient().getIngredientName();
+        this.ingredientUrl = ingredient.getIngredient().getImageUrl();
         this.addedDate = addedDate.toString();
     }
 }

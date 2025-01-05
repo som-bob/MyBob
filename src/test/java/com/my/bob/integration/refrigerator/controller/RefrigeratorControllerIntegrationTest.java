@@ -40,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("통합 테스트 - 냉장고 RefrigeratorController")
 class RefrigeratorControllerIntegrationTest {
+    // 냉장고 재료 삭제에 대한 테스트가 없습니다!
 
     @Autowired
     private WebTestClient webTestClient;
