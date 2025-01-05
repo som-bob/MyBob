@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Transactional
 @DisplayName("냉장고 테스트")
 class RefrigeratorServiceTest {
+    // 냉장고 재료 추가, 삭제 테스트가 없음!
 
     @Autowired
     RefrigeratorService refrigeratorService;

@@ -327,6 +327,102 @@ class RefrigeratorControllerIntegrationTest {
                 });
     }
 
+    @Test
+    @DisplayName("냉장고 재료 삭제 - 실패(존재 하지 않는 재료)")
+    void deleteIngredient_fail_NotExistIngredient() {
+        // given
+        int refrigeratorId = createRefrigeratorAndGetId();
+        int failToDeleteIngredientId = 999;
+
+        // when & then
+        webTestClient.delete()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient/" + failToDeleteIngredientId)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(responseDto ->
+                        assertFailResponse(responseDto, I_00002, ErrorMessage.NOT_EXISTENT_INGREDIENT));
+    }
+
+
+    @Test
+    @DisplayName("냉장고 재료 삭제 - 성공")
+    void deleteIngredient_success() {
+        // given
+        int refrigeratorId = createRefrigeratorAndGetId();
+
+        RefrigeratorAddIngredientDto addIngredientDto = new RefrigeratorAddIngredientDto();
+        addIngredientDto.setIngredientId(ingredientId1);
+        addIngredientDto.setAddedDate(LocalDate.now().toString());
+
+        // when
+        ResponseDto<RefrigeratorDto> responseBody = webTestClient.post()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
+                .bodyValue(addIngredientDto)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(responseDto -> {
+                    assertSuccessResponse(responseDto);
+                    assertThat(refrigeratorIngredientRepository.findAll()).isNotEmpty();
+                })
+                .returnResult()
+                .getResponseBody();
+
+        // then 1 - 냉장고, 냉장고 재료 데이터가 있음
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.getData()).isNotNull();
+        RefrigeratorDto refrigeratorDto = responseBody.getData();
+        List<RefrigeratorIngredientDto> ingredients = refrigeratorDto.getIngredients();
+        assertThat(ingredients).hasSize(1);
+
+        // then 2 - 재료 삭제
+        RefrigeratorIngredientDto refrigeratorIngredientDto = ingredients.stream().findFirst().get();
+        Integer ingredientId = refrigeratorIngredientDto.getIngredientId();
+        webTestClient.delete()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient/" + ingredientId)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(responseDto -> {
+                    assertSuccessResponse(responseDto);
+
+                    RefrigeratorDto resultRefrigeratorDto = responseDto.getData();
+                    assertThat(resultRefrigeratorDto).isNotNull();
+                    assertThat(resultRefrigeratorDto.getIngredients()).isEmpty();
+                });
+    }
+
+    @Test
+    @DisplayName("냉장고 재료 모두 삭제 - 성공")
+    void deleteAllIngredient_success() {
+        // given - 재료 두개 추가한 냉장고
+        RefrigeratorDto refrigeratorDto = createRefrigeratorAndAddIngredients();
+        int refrigeratorId = refrigeratorDto.getRefrigeratorId();
+
+        // when & then
+        webTestClient.delete()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredients")
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                })
+                .value(responseDto -> {
+                    assertSuccessResponse(responseDto);
+
+                    RefrigeratorDto resultRefrigeratorDto = responseDto.getData();
+                    assertThat(resultRefrigeratorDto).isNotNull();
+                    assertThat(resultRefrigeratorDto.getIngredients()).isEmpty();
+                });
+    }
+
 
     private int createRefrigeratorAndGetId() {
         RefrigeratorCreateDto refrigeratorCreateDto = new RefrigeratorCreateDto();
@@ -348,5 +444,42 @@ class RefrigeratorControllerIntegrationTest {
                 )
                 .getData()
                 .getRefrigeratorId();
+    }
+
+    private RefrigeratorDto createRefrigeratorAndAddIngredients() {
+        // 냉장고 생성
+        int refrigeratorId = createRefrigeratorAndGetId();
+
+        // 재료 두 개 추가
+        RefrigeratorAddIngredientDto addIngredientDto1 = new RefrigeratorAddIngredientDto();
+        addIngredientDto1.setIngredientId(ingredientId1);
+        addIngredientDto1.setAddedDate(LocalDate.now().toString());
+
+        RefrigeratorAddIngredientDto addIngredientDto2 = new RefrigeratorAddIngredientDto();
+        addIngredientDto2.setIngredientId(ingredientId2);
+        addIngredientDto2.setAddedDate(LocalDate.now().toString());
+
+        // when & then
+        // 첫번째 재료
+        webTestClient.post()
+                .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
+                .bodyValue(addIngredientDto1)
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk();
+
+        // 두번째 재료
+        return Objects.requireNonNull(webTestClient.post()
+                        .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
+                        .bodyValue(addIngredientDto2)
+                        .header("Authorization", "Bearer " + token)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
+                        })
+                        .returnResult()
+                        .getResponseBody()
+                )
+                .getData();
     }
 }
