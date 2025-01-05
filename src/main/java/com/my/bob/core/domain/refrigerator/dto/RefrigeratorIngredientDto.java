@@ -15,11 +15,14 @@ public class RefrigeratorIngredientDto {
 
     private String ingredientName;
 
+    private String ingredientUrl;
+
     private String addedDate;
 
     public RefrigeratorIngredientDto(Ingredient ingredient, LocalDate addedDate) {
         this.ingredientId = ingredient.getId();
         this.ingredientName = ingredient.getIngredientName();
+        this.ingredientUrl = ingredient.getImageUrl();
         this.addedDate = addedDate.toString();
     }
 }
