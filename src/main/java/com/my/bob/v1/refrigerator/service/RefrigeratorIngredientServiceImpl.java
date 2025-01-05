@@ -27,6 +27,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
     private final RefrigeratorIngredientRepository refrigeratorIngredientRepository;
 
     @Override
+    @Transactional
     public RefrigeratorDto addIngredient(int refrigeratorId, RefrigeratorAddIngredientDto dto) {
         Refrigerator refrigerator = refrigeratorHelper.getRefrigerator(refrigeratorId);
         Ingredient ingredient = recipeServiceHelper.getIngredient(dto.getIngredientId());
@@ -46,6 +47,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
     }
 
     @Override
+    @Transactional
     public RefrigeratorDto deleteIngredient(int refrigeratorId, int refrigeratorIngredientId) {
         Refrigerator refrigerator = refrigeratorHelper.getRefrigerator(refrigeratorId);
 
@@ -59,6 +61,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
     }
 
     @Override
+    @Transactional
     public RefrigeratorDto deleteAllIngredients(int refrigeratorId) {
         Refrigerator refrigerator = refrigeratorHelper.getRefrigerator(refrigeratorId);
 
