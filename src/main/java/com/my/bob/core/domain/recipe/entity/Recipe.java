@@ -1,6 +1,7 @@
 package com.my.bob.core.domain.recipe.entity;
 
 import com.my.bob.core.domain.base.entity.BaseEntity;
+import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.refrigerator.entity.RecipeIngredients;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -32,10 +33,9 @@ public class Recipe extends BaseEntity {
     @Column(name = "recipe_description", length = 1000)
     private String recipeDescription;
 
-    // TODO enum 변경할 것
-    @Size(max = 20)
+    @Enumerated(EnumType.STRING)
     @Column(name = "difficulty", length = 20)
-    private String difficulty;
+    private Difficulty difficulty;
 
     @Column(name = "cooking_time")
     private Short cookingTime;
