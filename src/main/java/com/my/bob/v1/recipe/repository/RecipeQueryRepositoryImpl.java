@@ -6,7 +6,6 @@ import com.my.bob.core.domain.recipe.dto.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,19 +30,36 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
     // TODO check 쿼리 실행 속도가 느리다면 recipe_id, ingredient_id, difficulty, recipe_name에 인덱스 추가
     @Override
     public Page<RecipeListItemDto> getByParam(Pageable pageable, RecipeSearchDto dto) {
-        // 기본 쿼리 설정
-        JPAQuery<Recipe> query = jpaQueryFactory
-                .select(recipe)
+        // 기본 Recipe Id 조회 쿼리
+        List<Integer> recipeIds = jpaQueryFactory
+                .select(recipe.id)
                 .from(recipe)
-                .leftJoin(recipe.recipeIngredients, recipeIngredients).fetchJoin() // N + 1
-                .leftJoin(recipeIngredients.ingredient, ingredient).fetchJoin()
+                .leftJoin(recipe.recipeIngredients, recipeIngredients)
+                .leftJoin(recipeIngredients.ingredient, ingredient)
                 .where(
                         recipeNameContains(dto),
                         recipeDescriptionContains(dto),
                         ingredientIdsIn(dto),
                         difficultyEquals(dto)
                 )
-                .distinct();
+                .distinct()
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch()
+                ;
+
+        // 결과가 없을 경우 빈 페이지 반환
+        if(recipeIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        // Recipe 데이터를 ID 기반으로 조회 (페이징된 결과)
+        List<Recipe> results = jpaQueryFactory
+                .selectFrom(recipe)
+                .leftJoin(recipe.recipeIngredients, recipeIngredients).fetchJoin()
+                .leftJoin(recipeIngredients.ingredient, ingredient).fetchJoin()
+                .where(recipe.id.in(recipeIds))
+                .fetch();
 
         // 총 데이터 개수
         long total = Optional.ofNullable(jpaQueryFactory
@@ -59,12 +75,6 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                         )
                         .fetchOne())
                 .orElse(0L);
-
-        // 페이지 처리
-        List<Recipe> results = query
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
 
         return new PageImpl<>(results, pageable, total).map(RecipeListItemDto::new);
     }
@@ -88,8 +98,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
     private BooleanExpression ingredientIdsIn(RecipeSearchDto dto) {
         List<Integer> ingredientIds = dto.getIngredientIds();
         return ingredientIds != null && !ingredientIds.isEmpty()
-                ? recipeIngredients.ingredient.id.in(ingredientIds)
-                : null;
+                ? recipeIngredients.ingredient.id.in(ingredientIds) : null;
     }
 
     // 난이도 조건
