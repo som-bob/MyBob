@@ -45,11 +45,10 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 .distinct()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch()
-                ;
+                .fetch();
 
         // 결과가 없을 경우 빈 페이지 반환
-        if(recipeIds.isEmpty()) {
+        if (recipeIds.isEmpty()) {
             return Page.empty(pageable);
         }
 
@@ -94,7 +93,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 recipe.recipeDescription.containsIgnoreCase(recipeDescription) : null;
     }
 
-    // 재료 ID 조건
+    // 재료 ID 조건 (TODO 이 부분 보완 필요)
     private BooleanExpression ingredientIdsIn(RecipeSearchDto dto) {
         List<Integer> ingredientIds = dto.getIngredientIds();
         return ingredientIds != null && !ingredientIds.isEmpty()

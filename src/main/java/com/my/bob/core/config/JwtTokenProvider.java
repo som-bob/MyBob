@@ -31,6 +31,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class JwtTokenProvider {
+    // TODO 패키지 이동할것
 
     @Value("${jwt.expire}")
     private int ACCESS_TOKEN_EXPIRE_TIME;   // 30분

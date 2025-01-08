@@ -1,10 +1,12 @@
 package com.my.bob.core.domain.recipe.dto;
 
 import com.my.bob.core.domain.recipe.contants.Difficulty;
+import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.refrigerator.entity.RecipeIngredients;
 import lombok.Data;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -26,10 +28,14 @@ public class RecipeListItemDto {
         this.servings = recipe.getServings();
         this.difficulty = recipe.getDifficulty();
 
-        List<RecipeIngredients> recipeIngredients = recipe.getRecipeIngredients();
-        this.ingredients = recipeIngredients
+        List<Ingredient> ingredientList = recipe.getRecipeIngredients()
                 .stream()
                 .map(RecipeIngredients::getIngredient)
+                .sorted(Comparator.comparing(Ingredient::getIngredientName))
+                .toList();
+
+        this.ingredients = ingredientList
+                .stream()
                 .map(IngredientDto::new)
                 .toList();
     }
