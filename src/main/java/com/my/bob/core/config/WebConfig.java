@@ -1,5 +1,7 @@
 package com.my.bob.core.config;
 
+import com.my.bob.core.config.interceptor.CustomerInterceptor;
+import com.my.bob.core.config.interceptor.MDCInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

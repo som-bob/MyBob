@@ -1,4 +1,4 @@
-package com.my.bob.core.config;
+package com.my.bob.core.config.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
