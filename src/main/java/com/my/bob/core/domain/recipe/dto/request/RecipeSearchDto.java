@@ -1,4 +1,4 @@
-package com.my.bob.core.domain.recipe.dto;
+package com.my.bob.core.domain.recipe.dto.request;
 
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import lombok.Data;

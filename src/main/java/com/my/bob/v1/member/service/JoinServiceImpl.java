@@ -1,7 +1,7 @@
 package com.my.bob.v1.member.service;
 
 import com.my.bob.core.constants.ErrorMessage;
-import com.my.bob.core.domain.member.dto.JoinUserDto;
+import com.my.bob.core.domain.member.dto.request.JoinUserDto;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.service.JoinService;

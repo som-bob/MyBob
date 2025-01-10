@@ -4,7 +4,7 @@ import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
 import com.my.bob.core.domain.member.service.JoinService;
 import com.my.bob.core.domain.member.service.LoginService;
-import com.my.bob.core.domain.recipe.dto.IngredientDto;
+import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import org.junit.jupiter.api.*;

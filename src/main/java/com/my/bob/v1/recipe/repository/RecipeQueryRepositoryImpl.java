@@ -1,8 +1,8 @@
 package com.my.bob.v1.recipe.repository;
 
 import com.my.bob.core.domain.recipe.contants.Difficulty;
-import com.my.bob.core.domain.recipe.dto.RecipeListItemDto;
-import com.my.bob.core.domain.recipe.dto.RecipeSearchDto;
+import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
+import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -111,7 +111,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                         .selectOne()
                         .from(recipeIngredients)
                         .where(
-                                // 현재 recipe와 매핑된 재료
+                                // 현재 recipe와 매핑된 재료 (최상위 select 쿼리에서 조회된 recipe)
                                 recipeIngredients.recipe.eq(recipe),
                                 // ingredientIds에 없는 값이 있음
                                 recipeIngredients.ingredient.id.notIn(ingredientIds)

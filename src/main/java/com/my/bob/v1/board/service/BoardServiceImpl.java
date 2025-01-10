@@ -1,7 +1,7 @@
 package com.my.bob.v1.board.service;
 
 import com.my.bob.core.constants.ErrorMessage;
-import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.dto.request.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.repository.BoardQueryRepository;
 import com.my.bob.core.domain.board.repository.BoardRepository;

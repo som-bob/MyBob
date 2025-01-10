@@ -1,8 +1,8 @@
 package com.my.bob.integration.util;
 
-import com.my.bob.core.domain.member.dto.JoinUserDto;
-import com.my.bob.core.domain.member.dto.LoginDto;
-import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.dto.request.JoinUserDto;
+import com.my.bob.core.domain.member.dto.request.LoginDto;
+import com.my.bob.core.domain.member.dto.response.TokenDto;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.exception.NonExistentUserException;
 import com.my.bob.core.domain.member.service.JoinService;

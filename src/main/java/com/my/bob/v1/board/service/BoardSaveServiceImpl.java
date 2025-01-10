@@ -1,9 +1,9 @@
 package com.my.bob.v1.board.service;
 
-import com.my.bob.core.domain.board.dto.BoardCommentCreateDto;
-import com.my.bob.core.domain.board.dto.BoardCommentUpdateDto;
-import com.my.bob.core.domain.board.dto.BoardCreateDto;
-import com.my.bob.core.domain.board.dto.BoardUpdateDto;
+import com.my.bob.core.domain.board.dto.request.BoardCommentCreateDto;
+import com.my.bob.core.domain.board.dto.request.BoardCommentUpdateDto;
+import com.my.bob.core.domain.board.dto.request.BoardCreateDto;
+import com.my.bob.core.domain.board.dto.request.BoardUpdateDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.entity.BoardComment;
 import com.my.bob.core.domain.board.service.BoardCommentService;

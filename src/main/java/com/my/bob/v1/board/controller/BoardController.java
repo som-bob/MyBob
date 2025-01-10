@@ -1,7 +1,9 @@
 package com.my.bob.v1.board.controller;
 
 import com.my.bob.core.domain.base.dto.ResponseDto;
-import com.my.bob.core.domain.board.dto.*;
+import com.my.bob.core.domain.board.dto.request.*;
+import com.my.bob.core.domain.board.dto.response.BoardDto;
+import com.my.bob.core.domain.board.dto.response.BoardTitleDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.service.BoardDeleteService;
 import com.my.bob.core.domain.board.service.BoardSaveService;

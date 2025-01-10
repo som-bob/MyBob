@@ -1,9 +1,9 @@
 package com.my.bob.v1.refrigerator.controller;
 
 import com.my.bob.core.domain.base.dto.ResponseDto;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorAddIngredientDto;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
+import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorAddIngredientDto;
+import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorCreateDto;
+import com.my.bob.core.domain.refrigerator.dto.response.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorIngredientService;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorService;
 import jakarta.validation.Valid;

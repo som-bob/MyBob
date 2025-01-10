@@ -1,7 +1,7 @@
 package com.my.bob.v1.recipe.controller;
 
 import com.my.bob.core.domain.base.dto.ResponseDto;
-import com.my.bob.core.domain.recipe.dto.IngredientDto;
+import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.service.IngredientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

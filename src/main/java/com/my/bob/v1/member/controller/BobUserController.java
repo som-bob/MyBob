@@ -2,9 +2,9 @@ package com.my.bob.v1.member.controller;
 
 import com.my.bob.core.constants.FailCode;
 import com.my.bob.core.domain.base.dto.ResponseDto;
-import com.my.bob.core.domain.member.dto.JoinUserDto;
-import com.my.bob.core.domain.member.dto.LoginDto;
-import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.dto.request.JoinUserDto;
+import com.my.bob.core.domain.member.dto.request.LoginDto;
+import com.my.bob.core.domain.member.dto.response.TokenDto;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.exception.NonExistentUserException;
 import com.my.bob.core.domain.member.service.JoinService;

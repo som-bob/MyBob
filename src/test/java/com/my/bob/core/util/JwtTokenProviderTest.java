@@ -1,8 +1,8 @@
 package com.my.bob.core.util;
 
-import com.my.bob.core.config.JwtTokenProvider;
+import com.my.bob.core.config.util.JwtTokenProvider;
 import com.my.bob.core.domain.member.constants.Authority;
-import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.dto.response.TokenDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.my.bob.core.domain.recipe.service;
 
-import com.my.bob.core.domain.recipe.dto.IngredientDto;
+import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import org.junit.jupiter.api.BeforeEach;

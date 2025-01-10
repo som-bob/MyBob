@@ -1,4 +1,4 @@
-package com.my.bob.core.domain.recipe.dto;
+package com.my.bob.core.domain.recipe.dto.response;
 
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.recipe.entity.Ingredient;

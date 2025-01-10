@@ -1,8 +1,8 @@
-package com.my.bob.core.config;
+package com.my.bob.core.config.util;
 
 import com.my.bob.core.constants.AuthConstant;
 import com.my.bob.core.constants.ErrorMessage;
-import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.dto.response.TokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,7 +31,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class JwtTokenProvider {
-    // TODO 패키지 이동할것
 
     @Value("${jwt.expire}")
     private int ACCESS_TOKEN_EXPIRE_TIME;   // 30분

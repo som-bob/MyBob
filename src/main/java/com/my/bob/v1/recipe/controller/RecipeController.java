@@ -1,8 +1,8 @@
 package com.my.bob.v1.recipe.controller;
 
 import com.my.bob.core.domain.base.dto.ResponseDto;
-import com.my.bob.core.domain.recipe.dto.RecipeListItemDto;
-import com.my.bob.core.domain.recipe.dto.RecipeSearchDto;
+import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
+import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

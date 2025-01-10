@@ -1,6 +1,6 @@
 package com.my.bob.core.domain.board.service;
 
-import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.dto.request.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.my.bob.core.domain.board.repository.BoardQueryRepositoryImpl;
 import com.my.bob.core.domain.board.repository.BoardRepository;

@@ -1,4 +1,4 @@
-package com.my.bob.core.domain.recipe.dto;
+package com.my.bob.core.domain.recipe.dto.response;
 
 import lombok.Data;
 

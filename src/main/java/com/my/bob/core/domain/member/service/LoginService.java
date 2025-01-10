@@ -1,7 +1,7 @@
 package com.my.bob.core.domain.member.service;
 
-import com.my.bob.core.domain.member.dto.LoginDto;
-import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.dto.request.LoginDto;
+import com.my.bob.core.domain.member.dto.response.TokenDto;
 import com.my.bob.core.domain.member.exception.NonExistentUserException;
 import com.my.bob.core.exception.BadRequestException;
 import jakarta.servlet.http.HttpServletRequest;

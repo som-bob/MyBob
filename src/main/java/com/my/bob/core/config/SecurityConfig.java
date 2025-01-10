@@ -3,6 +3,7 @@ package com.my.bob.core.config;
 import com.my.bob.core.config.filter.JwtAuthenticationFilter;
 import com.my.bob.core.config.handler.CustomerAccessDeniedHandler;
 import com.my.bob.core.config.point.CustomerAuthenticationEntryPoint;
+import com.my.bob.core.config.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

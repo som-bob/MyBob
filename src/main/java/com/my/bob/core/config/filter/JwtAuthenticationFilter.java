@@ -1,6 +1,6 @@
 package com.my.bob.core.config.filter;
 
-import com.my.bob.core.config.JwtTokenProvider;
+import com.my.bob.core.config.util.JwtTokenProvider;
 import com.my.bob.core.constants.AuthConstant;
 import com.my.bob.core.util.TokenUtil;
 import io.micrometer.common.util.StringUtils;

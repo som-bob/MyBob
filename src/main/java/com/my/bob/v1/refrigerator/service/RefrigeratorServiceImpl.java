@@ -2,8 +2,8 @@ package com.my.bob.v1.refrigerator.service;
 
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.member.service.BobUserService;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
+import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorCreateDto;
+import com.my.bob.core.domain.refrigerator.dto.response.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
 import com.my.bob.core.domain.refrigerator.exception.RefrigeratorAlreadyExist;
 import com.my.bob.core.domain.refrigerator.exception.RefrigeratorNotFoundException;

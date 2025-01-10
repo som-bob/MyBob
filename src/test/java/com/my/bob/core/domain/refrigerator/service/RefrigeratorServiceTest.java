@@ -1,11 +1,11 @@
 package com.my.bob.core.domain.refrigerator.service;
 
 import com.my.bob.account.WithAccount;
-import com.my.bob.core.domain.member.dto.JoinUserDto;
+import com.my.bob.core.domain.member.dto.request.JoinUserDto;
 import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.service.JoinService;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
+import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorCreateDto;
+import com.my.bob.core.domain.refrigerator.dto.response.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.exception.RefrigeratorAlreadyExist;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;

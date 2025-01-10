@@ -1,7 +1,7 @@
 package com.my.bob.core.domain.refrigerator.service;
 
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorCreateDto;
-import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
+import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorCreateDto;
+import com.my.bob.core.domain.refrigerator.dto.response.RefrigeratorDto;
 
 public interface RefrigeratorService {
 

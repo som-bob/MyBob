@@ -1,6 +1,6 @@
 package com.my.bob.core.domain.member.entity;
 
-import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.dto.response.TokenDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

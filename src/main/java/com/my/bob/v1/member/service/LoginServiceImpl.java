@@ -1,10 +1,10 @@
 package com.my.bob.v1.member.service;
 
-import com.my.bob.core.config.JwtTokenProvider;
+import com.my.bob.core.config.util.JwtTokenProvider;
 import com.my.bob.core.constants.AuthConstant;
 import com.my.bob.core.constants.ErrorMessage;
-import com.my.bob.core.domain.member.dto.LoginDto;
-import com.my.bob.core.domain.member.dto.TokenDto;
+import com.my.bob.core.domain.member.dto.request.LoginDto;
+import com.my.bob.core.domain.member.dto.response.TokenDto;
 import com.my.bob.core.domain.member.entity.BobUser;
 import com.my.bob.core.domain.member.entity.BobUserRefreshToken;
 import com.my.bob.core.domain.member.exception.NonExistentUserException;

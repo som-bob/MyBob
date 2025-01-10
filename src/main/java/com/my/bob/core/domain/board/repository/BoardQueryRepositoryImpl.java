@@ -1,6 +1,6 @@
 package com.my.bob.core.domain.board.repository;
 
-import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.dto.request.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;

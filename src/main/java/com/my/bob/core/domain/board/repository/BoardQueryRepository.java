@@ -1,6 +1,6 @@
 package com.my.bob.core.domain.board.repository;
 
-import com.my.bob.core.domain.board.dto.BoardSearchDto;
+import com.my.bob.core.domain.board.dto.request.BoardSearchDto;
 import com.my.bob.core.domain.board.entity.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

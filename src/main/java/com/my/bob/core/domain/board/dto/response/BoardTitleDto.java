@@ -1,4 +1,4 @@
-package com.my.bob.core.domain.board.dto;
+package com.my.bob.core.domain.board.dto.response;
 
 import lombok.Data;
 

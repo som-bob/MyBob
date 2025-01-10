@@ -1,15 +1,13 @@
-package com.my.bob.core.domain.board.dto;
+package com.my.bob.core.domain.board.dto.response;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class BoardDto {
+public class BoardCommentDto {
 
-    private long boardId;
-
-    private String title;
+    private long commentId;
     private String content;
 
     private boolean isDelete;
@@ -17,5 +15,6 @@ public class BoardDto {
     private String regId;
     private String regDate;
 
-    private List<BoardCommentDto> commentList;
+
+    private List<BoardCommentDto> subComments;
 }

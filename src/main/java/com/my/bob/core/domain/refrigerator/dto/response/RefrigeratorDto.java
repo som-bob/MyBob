@@ -1,4 +1,4 @@
-package com.my.bob.core.domain.refrigerator.dto;
+package com.my.bob.core.domain.refrigerator.dto.response;
 
 import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
 import lombok.Data;
