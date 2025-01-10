@@ -14,6 +14,8 @@ import com.my.bob.core.domain.refrigerator.dto.RefrigeratorDto;
 import com.my.bob.core.domain.refrigerator.dto.RefrigeratorIngredientDto;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorIngredientRepository;
 import com.my.bob.core.domain.refrigerator.repository.RefrigeratorRepository;
+import com.my.bob.core.domain.refrigerator.service.RefrigeratorIngredientService;
+import com.my.bob.core.domain.refrigerator.service.RefrigeratorService;
 import com.my.bob.integration.common.IntegrationTestResponseValidator;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 import static com.my.bob.core.constants.FailCode.I_00002;
 import static com.my.bob.core.constants.FailCode.R_00001;
@@ -55,7 +56,13 @@ class RefrigeratorControllerIntegrationTest {
     private BobUserRepository bobUserRepository;
 
     @Autowired
+    private RefrigeratorService refrigeratorService;
+
+    @Autowired
     private RefrigeratorRepository refrigeratorRepository;
+
+    @Autowired
+    private RefrigeratorIngredientService refrigeratorIngredientService;
 
     @Autowired
     private RefrigeratorIngredientRepository refrigeratorIngredientRepository;
@@ -423,27 +430,14 @@ class RefrigeratorControllerIntegrationTest {
                 });
     }
 
-
+    /* 특정 단계에서 이미 생성된 데이터를 필요로 할경우 사용 */
     private int createRefrigeratorAndGetId() {
         RefrigeratorCreateDto refrigeratorCreateDto = new RefrigeratorCreateDto();
         refrigeratorCreateDto.setNickName("테스트 냉장고");
         assertTrue(bobUserRepository.findOneByEmail(getTestUserEmail()).isPresent());
 
         // 냉장고 생성
-        return Objects.requireNonNull(
-                        webTestClient.post()
-                                .uri(baseUrl)
-                                .header("Authorization", "Bearer " + token)
-                                .bodyValue(refrigeratorCreateDto)
-                                .exchange()
-                                .expectStatus().isOk()
-                                .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
-                                })
-                                .returnResult()
-                                .getResponseBody()
-                )
-                .getData()
-                .getRefrigeratorId();
+        return refrigeratorService.createRefrigerator(getTestUserEmail(), refrigeratorCreateDto).getRefrigeratorId();
     }
 
     private RefrigeratorDto createRefrigeratorAndAddIngredients() {
@@ -460,26 +454,8 @@ class RefrigeratorControllerIntegrationTest {
         addIngredientDto2.setAddedDate(LocalDate.now().toString());
 
         // when & then
-        // 첫번째 재료
-        webTestClient.post()
-                .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
-                .bodyValue(addIngredientDto1)
-                .header("Authorization", "Bearer " + token)
-                .exchange()
-                .expectStatus().isOk();
-
-        // 두번째 재료
-        return Objects.requireNonNull(webTestClient.post()
-                        .uri(baseUrl + "/" + refrigeratorId + "/ingredient")
-                        .bodyValue(addIngredientDto2)
-                        .header("Authorization", "Bearer " + token)
-                        .exchange()
-                        .expectStatus().isOk()
-                        .expectBody(new ParameterizedTypeReference<ResponseDto<RefrigeratorDto>>() {
-                        })
-                        .returnResult()
-                        .getResponseBody()
-                )
-                .getData();
+        // 두 재료 추가 후 return
+        refrigeratorIngredientService.addIngredient(refrigeratorId, addIngredientDto1);
+        return refrigeratorIngredientService.addIngredient(refrigeratorId, addIngredientDto2);
     }
 }
