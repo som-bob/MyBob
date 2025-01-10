@@ -57,9 +57,5 @@ public class Recipe extends BaseEntity {
     @OneToMany(mappedBy = "recipe", orphanRemoval = true)
     private List<RecipeIngredients> recipeIngredients = new ArrayList<>();
 
-    // 차후 레시피 생성 로직 변경시
-    public Recipe() {
-
-    }
 
 }

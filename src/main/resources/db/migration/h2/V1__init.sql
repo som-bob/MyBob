@@ -1,7 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS mybob;
-SET SCHEMA mybob;
-
 -- 초기 테이블 생성 SQL 스크립트
+CREATE SCHEMA IF NOT EXISTS mybob;
 
 -- 사용자 테이블
 CREATE TABLE IF NOT EXISTS bob_user (

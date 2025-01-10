@@ -8,8 +8,14 @@ client:
   host:
     url: http://localhost:3000
 
+logging:
+  level:
+    org.flywaydb: DEBUG
+
 spring:
   flyway:
+    schemas: mybob
+    default-schema: mybob
     enabled: true
     clean-on-validation-error: true
     locations: classpath:db/migration/h2
