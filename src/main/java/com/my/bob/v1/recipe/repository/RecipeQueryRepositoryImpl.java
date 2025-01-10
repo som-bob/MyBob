@@ -6,12 +6,14 @@ import com.my.bob.core.domain.recipe.dto.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -93,11 +95,31 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 recipe.recipeDescription.containsIgnoreCase(recipeDescription) : null;
     }
 
-    // 재료 ID 조건 (TODO 이 부분 보완 필요)
+    // 재료 ID 조건
     private BooleanExpression ingredientIdsIn(RecipeSearchDto dto) {
         List<Integer> ingredientIds = dto.getIngredientIds();
-        return ingredientIds != null && !ingredientIds.isEmpty()
-                ? recipeIngredients.ingredient.id.in(ingredientIds) : null;
+        if (CollectionUtils.isEmpty(ingredientIds)) {
+            return null;
+        }
+
+        // 조건 1: recipeIngredients.ingredient.id가 ingredientIds에 포함되어 있어야 함
+        BooleanExpression includedInIngredientIds = recipeIngredients.ingredient.id.in(ingredientIds);
+
+        // 조건 2: recipeIngredients.ingredient.id 중 ingredientIds에 없는 값이 있으면 안됨
+        BooleanExpression noExtraIngredients =
+                JPAExpressions
+                        .selectOne()
+                        .from(recipeIngredients)
+                        .where(
+                                // 현재 recipe와 매핑된 재료
+                                recipeIngredients.recipe.eq(recipe),
+                                // ingredientIds에 없는 값이 있음
+                                recipeIngredients.ingredient.id.notIn(ingredientIds)
+                        )
+                        .notExists(); // ingredientIds에 없는 값이 있는 레시피는 조회되지 않음
+
+        // 조건 결합
+        return includedInIngredientIds.and(noExtraIngredients);
     }
 
     // 난이도 조건
