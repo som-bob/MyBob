@@ -56,8 +56,8 @@ class IngredientControllerIntegrationTest {
 
     @AfterEach
     void cleanUp(){
-        ingredientRepository.deleteAll();
-        bobUserRepository.deleteAll();
+        ingredientRepository.deleteAllInBatch();
+        bobUserRepository.deleteAllInBatch();
     }
 
     @Test
@@ -86,7 +86,7 @@ class IngredientControllerIntegrationTest {
     @DisplayName("재료 조회 - 빈 결과")
     void getAllIngredient_empty() {
         // given
-        ingredientRepository.deleteAll();
+        ingredientRepository.deleteAllInBatch();
 
         // when & then
         webTestClient.get()

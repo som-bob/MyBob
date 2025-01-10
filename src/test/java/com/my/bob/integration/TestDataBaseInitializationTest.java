@@ -20,7 +20,7 @@ class TestDataBaseInitializationTest {
 
     @BeforeEach
     void clearDatabase() {
-        bobUserRepository.deleteAll();
+        bobUserRepository.deleteAllInBatch();
     }
 
     @Test

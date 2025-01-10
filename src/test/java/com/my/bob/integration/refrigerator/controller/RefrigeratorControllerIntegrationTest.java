@@ -92,10 +92,10 @@ class RefrigeratorControllerIntegrationTest {
 
     @AfterEach
     void clearDatabase() {
-        refrigeratorIngredientRepository.deleteAll();
-        refrigeratorRepository.deleteAll();
-        ingredientRepository.deleteAll();
-        bobUserRepository.deleteAll();
+        refrigeratorIngredientRepository.deleteAllInBatch();
+        refrigeratorRepository.deleteAllInBatch();
+        ingredientRepository.deleteAllInBatch();
+        bobUserRepository.deleteAllInBatch();
     }
 
     @Test
