@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import static com.my.bob.core.domain.recipe.entity.QIngredient.ingredient;
 import static com.my.bob.core.domain.recipe.entity.QRecipe.recipe;
-import static com.my.bob.core.domain.refrigerator.entity.QRecipeIngredients.recipeIngredients;
+import static com.my.bob.core.domain.recipe.entity.QRecipeIngredients.recipeIngredients;
 
 @Repository
 @RequiredArgsConstructor

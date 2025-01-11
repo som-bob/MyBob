@@ -2,7 +2,6 @@ package com.my.bob.core.domain.recipe.entity;
 
 import com.my.bob.core.domain.base.entity.BaseEntity;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
-import com.my.bob.core.domain.refrigerator.entity.RecipeIngredients;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -57,5 +56,15 @@ public class Recipe extends BaseEntity {
     @OneToMany(mappedBy = "recipe", orphanRemoval = true)
     private List<RecipeIngredients> recipeIngredients = new ArrayList<>();
 
+    public Recipe(String recipeName, String recipeDescription, Difficulty difficulty, Short cookingTime) {
+        this.recipeName = recipeName;
+        this.recipeDescription = recipeDescription;
+        this.difficulty = difficulty;
+        this.cookingTime = cookingTime;
+    }
 
+    protected void addIngredient(RecipeIngredients recipeIngredients) {
+        this.recipeIngredients.add(recipeIngredients);
+
+    }
 }

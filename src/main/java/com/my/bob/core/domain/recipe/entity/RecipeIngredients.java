@@ -1,8 +1,6 @@
-package com.my.bob.core.domain.refrigerator.entity;
+package com.my.bob.core.domain.recipe.entity;
 
 import com.my.bob.core.domain.base.entity.BaseEntity;
-import com.my.bob.core.domain.recipe.entity.Ingredient;
-import com.my.bob.core.domain.recipe.entity.Recipe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,7 +13,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "bob_recipe_ingredients", schema = "mybob")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeIngredients extends BaseEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "detail_ingredient_id", nullable = false)
     private Integer id;
 
@@ -32,4 +32,11 @@ public class RecipeIngredients extends BaseEntity {
     @Size(max = 100)
     @Column(name = "amount", length = 100)
     private String amount;
+
+    public RecipeIngredients(Recipe recipe, Ingredient ingredient, String amount) {
+        this.recipe = recipe;
+        this.recipe.addIngredient(this);
+        this.ingredient = ingredient;
+        this.amount = amount;
+    }
 }
