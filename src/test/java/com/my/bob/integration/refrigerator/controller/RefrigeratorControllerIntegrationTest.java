@@ -17,6 +17,7 @@ import com.my.bob.core.domain.refrigerator.repository.RefrigeratorRepository;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorIngredientService;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorService;
 import com.my.bob.integration.common.IntegrationTestResponseValidator;
+import com.my.bob.integration.util.IntegrationTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,8 +32,6 @@ import static com.my.bob.core.constants.FailCode.I_00002;
 import static com.my.bob.core.constants.FailCode.R_00001;
 import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertFailResponse;
 import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertSuccessResponse;
-import static com.my.bob.integration.util.IntegrationTestUtils.getTestUserEmail;
-import static com.my.bob.integration.util.IntegrationTestUtils.getTokenFromTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,17 +39,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)     // 테스트 클래스당 인스턴스 1개만 생성
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("통합 테스트 - 냉장고 RefrigeratorController")
-class RefrigeratorControllerIntegrationTest {
+class RefrigeratorControllerIntegrationTest extends IntegrationTestUtils {
     // 냉장고 재료 삭제에 대한 테스트가 없습니다!
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @Autowired
-    private JoinService joinService;
-
-    @Autowired
-    private LoginService loginService;
 
     @Autowired
     private BobUserRepository bobUserRepository;
@@ -78,24 +71,19 @@ class RefrigeratorControllerIntegrationTest {
     @BeforeEach
     @WithAccount("system")
     void setUpDatabase() {
-        token = getTokenFromTestUser(joinService, loginService);
+        token = getTokenFromTestUser();
 
         // 기본 재료 2개 이상 저장
-        Ingredient ingredient1 = new Ingredient("나_테스트 재료");
-        Ingredient save1 = ingredientRepository.save(ingredient1);
+        Ingredient save1 = ingredientRepository.save(new Ingredient("나_테스트 재료"));
         ingredientId1 = save1.getId();
 
-        Ingredient ingredient2 = new Ingredient("가_테스트 재료");
-        Ingredient save2 = ingredientRepository.save(ingredient2);
+        Ingredient save2 = ingredientRepository.save(new Ingredient("가_테스트 재료"));
         ingredientId2 = save2.getId();
     }
 
     @AfterEach
     void clearDatabase() {
-        refrigeratorIngredientRepository.deleteAllInBatch();
-        refrigeratorRepository.deleteAllInBatch();
-        ingredientRepository.deleteAllInBatch();
-        bobUserRepository.deleteAllInBatch();
+        cleanUp(refrigeratorIngredientRepository, refrigeratorRepository, ingredientRepository, bobUserRepository);
     }
 
     @Test

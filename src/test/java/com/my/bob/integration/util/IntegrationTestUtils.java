@@ -7,15 +7,23 @@ import com.my.bob.core.domain.member.exception.DuplicateUserException;
 import com.my.bob.core.domain.member.exception.NonExistentUserException;
 import com.my.bob.core.domain.member.service.JoinService;
 import com.my.bob.core.domain.member.service.LoginService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import static org.assertj.core.api.Assertions.fail;
 
-public class IntegrationTestUtils {
+public abstract class IntegrationTestUtils {
+
+    @Autowired
+    private JoinService joinService;
+
+    @Autowired
+    private LoginService loginService;
 
     private static final String TEST_USER_EMAIL = "test__user@test.com";
     private static final String TEST_USER_PASSWORD = "<PASSWORD1234>!";
 
-    public static String getTokenFromTestUser(JoinService joinService, LoginService loginService) {
+    public String getTokenFromTestUser() {
         // 회원 가입 유저 세팅 + token 발급
         JoinUserDto dto = new JoinUserDto();
         dto.setEmail(TEST_USER_EMAIL);
@@ -41,5 +49,11 @@ public class IntegrationTestUtils {
 
     public static String getTestUserEmail(){
         return TEST_USER_EMAIL;
+    }
+
+    public void cleanUp(JpaRepository... jpaRepositories) {
+        for (JpaRepository jpaRepository : jpaRepositories) {
+            jpaRepository.deleteAllInBatch();
+        }
     }
 }

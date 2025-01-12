@@ -2,11 +2,10 @@ package com.my.bob.integration.ingredient.controller;
 
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
-import com.my.bob.core.domain.member.service.JoinService;
-import com.my.bob.core.domain.member.service.LoginService;
 import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
+import com.my.bob.integration.util.IntegrationTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,26 +16,19 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.List;
 
 import static com.my.bob.integration.common.IntegrationTestResponseValidator.assertSuccessResponse;
-import static com.my.bob.integration.util.IntegrationTestUtils.getTokenFromTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)     // 테스트 클래스당 인스턴스 1개만 생성
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("재료 통합 테스트")
-class IngredientControllerIntegrationTest {
+class IngredientControllerIntegrationTest extends IntegrationTestUtils {
 
     @Autowired
     private WebTestClient webTestClient;
 
     @Autowired
     private IngredientRepository ingredientRepository;
-
-    @Autowired
-    private JoinService joinService;
-
-    @Autowired
-    private LoginService loginService;
 
     @Autowired
     private BobUserRepository bobUserRepository;
@@ -46,7 +38,7 @@ class IngredientControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        token = getTokenFromTestUser(joinService, loginService);
+        token = getTokenFromTestUser();
 
         // 기본 재료 저장
         ingredientRepository.save(new Ingredient("나_테스트 재료"));
@@ -56,8 +48,7 @@ class IngredientControllerIntegrationTest {
 
     @AfterEach
     void cleanUp(){
-        ingredientRepository.deleteAllInBatch();
-        bobUserRepository.deleteAllInBatch();
+        cleanUp(ingredientRepository, bobUserRepository);
     }
 
     @Test
