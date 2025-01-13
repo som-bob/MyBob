@@ -1,5 +1,6 @@
 package com.my.bob.v1.recipe.controller;
 
+import com.my.bob.core.domain.base.dto.PageResponse;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
@@ -24,10 +25,11 @@ public class RecipeController {
 
     // 레시피 리스트 조회
     @PostMapping
-    public ResponseEntity<ResponseDto<Page<RecipeListItemDto>>> getRecipe(Pageable pageable,
-                                                                          @RequestBody RecipeSearchDto dto) {
+    public ResponseEntity<ResponseDto<PageResponse<RecipeListItemDto>>> getRecipe(Pageable pageable,
+                                                                                  @RequestBody RecipeSearchDto dto) {
         Page<RecipeListItemDto> recipes = recipeService.getRecipes(pageable, dto);
+        PageResponse<RecipeListItemDto> pageResponse = PageResponse.fromPage(recipes);
 
-        return ResponseEntity.ok(new ResponseDto<>(recipes));
+        return ResponseEntity.ok(new ResponseDto<>(pageResponse));
     }
 }
