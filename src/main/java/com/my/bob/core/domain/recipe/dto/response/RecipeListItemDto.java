@@ -21,6 +21,7 @@ public class RecipeListItemDto {
 
     private int recipeId;
     private String recipeName;
+    private String recipeDescription;
     private String imageUrl;
 
     private String servings;
@@ -30,6 +31,7 @@ public class RecipeListItemDto {
     public RecipeListItemDto(Recipe recipe) {
         this.recipeId = recipe.getId();
         this.recipeName = recipe.getRecipeName();
+        this.recipeDescription = recipe.getRecipeDescription();
         this.imageUrl = recipe.getImageUrl();
         this.servings = recipe.getServings();
         this.difficulty = recipe.getDifficulty();
