@@ -4,6 +4,7 @@ import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorAddIngredientDto;
 import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorCreateDto;
 import com.my.bob.core.domain.refrigerator.dto.response.RefrigeratorDto;
+import com.my.bob.core.domain.refrigerator.dto.response.RefrigeratorInIngredientDto;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorIngredientService;
 import com.my.bob.core.domain.refrigerator.service.RefrigeratorService;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -94,6 +96,19 @@ public class RefrigeratorController {
             @PathVariable int refrigeratorId) {
         RefrigeratorDto refrigeratorDto = refrigeratorIngredientService.deleteAllIngredients(refrigeratorId);
         return ResponseEntity.ok(new ResponseDto<>(refrigeratorDto));
+    }
+
+    /**
+     * 로그인한 계정의 냉장고 리스트를 조회합니다.
+     * @param principal 사용자의 인증 세부 정보(예: 전자 메일)를 포함하는 보안 주체
+     * @return 사용자의 냉장고에 들어 있던 재료 리스트
+     */
+    @GetMapping("/ingredient")
+    public ResponseEntity<ResponseDto<List<RefrigeratorInIngredientDto>>> getIngredient(Principal principal) {
+        String email = principal.getName();
+
+        List<RefrigeratorInIngredientDto> allIngredients = refrigeratorIngredientService.getAllIngredients(email);
+        return ResponseEntity.ok(new ResponseDto<>(allIngredients));
     }
 
 }

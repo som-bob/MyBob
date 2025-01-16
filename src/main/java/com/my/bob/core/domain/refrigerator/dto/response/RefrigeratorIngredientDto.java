@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class RefrigeratorIngredientDto {
     // 조회용
 
-    private Integer ingredientId;
+    private Integer ingredientId;   // refrigerator_ingredient_id
 
     private String ingredientName;
 

@@ -4,8 +4,6 @@ import com.my.bob.account.WithAccount;
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
-import com.my.bob.core.domain.member.service.JoinService;
-import com.my.bob.core.domain.member.service.LoginService;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.refrigerator.dto.request.RefrigeratorAddIngredientDto;
@@ -418,6 +416,27 @@ class RefrigeratorControllerIntegrationTest extends IntegrationTestUtils {
                 });
     }
 
+    // TODO
+    @Test
+    @DisplayName("로그인한 계정의 냉장고 재료 리스트 조회 - 성공")
+    void getAllIngredients_success() {
+        // given
+
+        // when
+
+        // then
+    }
+
+    @Test
+    @DisplayName("로그인 한 계정의 냉장고가 없을 때 재료 리스트 조회 - 실패")
+    void getAllIngredient_fail_NotExistRefrigerator() {
+        // given
+
+        // when
+
+        // then
+    }
+
     /* 특정 단계에서 이미 생성된 데이터를 필요로 할경우 사용 */
     private int createRefrigeratorAndGetId() {
         RefrigeratorCreateDto refrigeratorCreateDto = new RefrigeratorCreateDto();
@@ -446,4 +465,5 @@ class RefrigeratorControllerIntegrationTest extends IntegrationTestUtils {
         refrigeratorIngredientService.addIngredient(refrigeratorId, addIngredientDto1);
         return refrigeratorIngredientService.addIngredient(refrigeratorId, addIngredientDto2);
     }
+
 }
