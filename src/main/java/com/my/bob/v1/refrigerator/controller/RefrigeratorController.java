@@ -103,7 +103,7 @@ public class RefrigeratorController {
      * @param principal 사용자의 인증 세부 정보(예: 전자 메일)를 포함하는 보안 주체
      * @return 사용자의 냉장고에 들어 있던 재료 리스트
      */
-    @GetMapping("/ingredient")
+    @GetMapping("/ingredients")
     public ResponseEntity<ResponseDto<List<RefrigeratorInIngredientDto>>> getIngredient(Principal principal) {
         String email = principal.getName();
 
