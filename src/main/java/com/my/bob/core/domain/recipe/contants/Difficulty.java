@@ -1,6 +1,8 @@
 package com.my.bob.core.domain.recipe.contants;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.my.bob.core.constants.interfaces.EnumPropertyType;
 import lombok.NoArgsConstructor;
 
@@ -29,5 +31,10 @@ public enum Difficulty implements EnumPropertyType {
 
     Difficulty(String title) {
         this.title = title;
+    }
+
+    @JsonCreator
+    public static Difficulty fromJson(@JsonProperty("code") String code) {
+        return valueOf(code);
     }
 }
