@@ -26,6 +26,10 @@ public class RecipeDetail extends BaseTimeEntity {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
+    // TODO 차후 실제 Object로 연결
+    @Column(name = "file_id")
+    private Long fileId;
+
     @Size(max = 255)
     @Column(name = "image_url")
     private String imageUrl;

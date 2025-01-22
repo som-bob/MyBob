@@ -66,6 +66,19 @@ CREATE TABLE IF NOT EXISTS `bob_ingredients` (
   PRIMARY KEY (`ingredient_id`)
 ) COMMENT='재료 테이블';
 
+-- bob_file definition
+CREATE TABLE IF NOT EXISTS `bob_file` (
+	`file_id` int(11) auto_increment NOT NULL COMMENT '파일 id(PK)',
+	`file_url` varchar(255) NOT NULL COMMENT '파일 url(S3)',
+	`file_name` varchar(255) NULL COMMENT '파일명',
+	`file_size` BIGINT NULL COMMENT '파일 크기',
+	`content_type` varchar(255) NULL COMMENT 'MIME 타입',
+	`reg_id` varchar(100) NOT NULL COMMENT '등록자 이메일',
+	`reg_date` datetime NULL COMMENT '등록 날짜',
+	PRIMARY KEY (`file_id`)
+)
+COMMENT='S3 파일 관련 테이블';
+
 -- bob_recipe definition
 CREATE TABLE IF NOT EXISTS `bob_recipe` (
   `recipe_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '레시피 ID',
@@ -75,6 +88,7 @@ CREATE TABLE IF NOT EXISTS `bob_recipe` (
   `difficulty` varchar(20) DEFAULT NULL COMMENT '난이도',
   `cooking_time` smallint(6) DEFAULT NULL COMMENT '소요시간',
   `source` varchar(255) DEFAULT NULL COMMENT '출처 URL 또는 출처 정보',
+  `file_id` int(11) DEFAULT NULL COMMENT '대표 사진 file id',
   `image_url` varchar(255) DEFAULT NULL COMMENT '대표 이미지 URL',
   `reg_id` varchar(100) NOT NULL COMMENT '글쓴이 이메일',
   `reg_date` datetime DEFAULT NULL COMMENT '등록 날짜',
@@ -87,7 +101,8 @@ CREATE TABLE IF NOT EXISTS `bob_recipe` (
 CREATE TABLE IF NOT EXISTS `bob_recipe_detail` (
   `recipe_detail_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '레시피 상세 ID',
   `recipe_id` int(11) NOT NULL COMMENT '레시피 ID (bob_recipe와 FK)',
-  `image_url` varchar(255) DEFAULT NULL COMMENT '레시피 상세 이미지 URL',
+  `file_id` int(11) DEFAULT NULL COMMENT '레시피 상세 이미지 file id',
+  `image_url` varchar(255) DEFAULT NULL COMMENT '레시피 상세 이미지 file id',
   `recipe_order` int(11) NOT NULL COMMENT '레시피 순서',
   `recipe_detail_text` varchar(3000) DEFAULT NULL COMMENT '레시피 상세 텍스트 (최대 3000자)',
   `reg_id` varchar(100) NOT NULL COMMENT '글쓴이 이메일',

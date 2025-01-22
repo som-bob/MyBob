@@ -66,7 +66,20 @@ CREATE TABLE IF NOT EXISTS bob_refrigerator_ingredient (
     REFERENCES bob_ingredients (ingredient_id) ON DELETE CASCADE
 );
 
--- 레시피 테이블
+-- bob_file definition
+CREATE TABLE IF NOT EXISTS bob_file (
+	file_id INTEGER NOT NULL AUTO_INCREMENT,
+	file_url varchar(255) NOT NULL,
+	file_name varchar(255) NULL,
+	file_size BIGINT NULL,
+	content_type varchar(255) NULL,
+	reg_id varchar(100) NOT NULL,
+	reg_date datetime NULL,
+	PRIMARY KEY (file_id)
+)
+COMMENT='S3 파일 관련 테이블';
+
+-- 레시피 테이블 (TODO image_url 삭제)
 CREATE TABLE IF NOT EXISTS bob_recipe (
     recipe_id INTEGER NOT NULL AUTO_INCREMENT,
     recipe_name VARCHAR(200) NOT NULL,
@@ -75,6 +88,7 @@ CREATE TABLE IF NOT EXISTS bob_recipe (
     servings VARCHAR(50),
     difficulty VARCHAR(20),
     source VARCHAR(255),
+    file_id INTEGER,
     image_url VARCHAR(255),
     reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -100,12 +114,13 @@ CREATE TABLE IF NOT EXISTS bob_recipe_ingredients (
     REFERENCES bob_ingredients (ingredient_id)
 );
 
--- 레시피 상세 테이블
+-- 레시피 상세 테이블 (TODO image_url 삭제)
 CREATE TABLE IF NOT EXISTS bob_recipe_detail (
     recipe_detail_id INTEGER NOT NULL AUTO_INCREMENT,
     recipe_id INTEGER NOT NULL,
     recipe_order INTEGER NOT NULL,
     recipe_detail_text VARCHAR(3000),
+    file_id INTEGER,
     image_url VARCHAR(255),
     reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
