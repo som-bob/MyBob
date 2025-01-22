@@ -38,3 +38,13 @@ spring:
     locations: classpath:db/migration/sql
   profiles:
     active: local # TODO 차후 active 설정을 외부 파일로 변경한다 (docker 등)
+
+cloud:
+  aws:
+    s3:
+      bucket: bob-static-server
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: your-access-key
+      secret-key: your-secret-key
