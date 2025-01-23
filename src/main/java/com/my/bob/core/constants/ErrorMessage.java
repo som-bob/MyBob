@@ -42,5 +42,6 @@ public class ErrorMessage {
 
     // 관리자 문의
     public static final String CONTACT_ADMINISTRATOR = "관리자에게 문의하세요.";
+    public static final String FILE_ERROR_CONTACT_ADMINISTRATOR = "파일 시스템에 문제가 있습니다. 관리자에게 문의하세요.";
 
 }
