@@ -1,5 +1,6 @@
 package com.my.bob.core.domain.recipe.dto.response;
 
+import com.my.bob.core.domain.file.entity.BobFile;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -32,7 +34,10 @@ public class RecipeListItemDto {
         this.recipeId = recipe.getId();
         this.recipeName = recipe.getRecipeName();
         this.recipeDescription = recipe.getRecipeDescription();
-        this.imageUrl = recipe.getImageUrl();
+
+        this.imageUrl = Optional.ofNullable(recipe.getFile())
+                .map(BobFile::getFileUrl)
+                .orElse(null);
         this.servings = recipe.getServings();
         this.difficulty = recipe.getDifficulty();
 

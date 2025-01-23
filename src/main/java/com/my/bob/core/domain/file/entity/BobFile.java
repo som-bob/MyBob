@@ -24,7 +24,7 @@ public class BobFile extends BaseRegEntity {
     private String fileName;
 
     @Column(name = "file_size")
-    private int fileSize;
+    private Long fileSize;
 
     @Column(name = "content_type")
     private String contentType;

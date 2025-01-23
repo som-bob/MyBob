@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static com.my.bob.core.domain.file.entity.QBobFile.bobFile;
 import static com.my.bob.core.domain.recipe.entity.QIngredient.ingredient;
 import static com.my.bob.core.domain.recipe.entity.QRecipe.recipe;
 import static com.my.bob.core.domain.recipe.entity.QRecipeIngredients.recipeIngredients;
@@ -59,6 +60,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 .selectFrom(recipe)
                 .leftJoin(recipe.recipeIngredients, recipeIngredients).fetchJoin()
                 .leftJoin(recipeIngredients.ingredient, ingredient).fetchJoin()
+                .leftJoin(recipe.file, bobFile).fetchJoin()
                 .where(recipe.id.in(recipeIds))
                 .fetch();
 

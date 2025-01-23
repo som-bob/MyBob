@@ -1,6 +1,7 @@
 package com.my.bob.core.domain.recipe.entity;
 
 import com.my.bob.core.domain.base.entity.BaseTimeEntity;
+import com.my.bob.core.domain.file.entity.BobFile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,13 +27,9 @@ public class RecipeDetail extends BaseTimeEntity {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
-    // TODO 차후 실제 Object로 연결
-    @Column(name = "file_id")
-    private Long fileId;
-
-    @Size(max = 255)
-    @Column(name = "image_url")
-    private String imageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id", insertable = false, updatable = false)
+    private BobFile file;
 
     @NotNull
     @Column(name = "recipe_order", nullable = false)
