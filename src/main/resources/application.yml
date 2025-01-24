@@ -48,3 +48,7 @@ cloud:
     credentials:
       access-key: your-access-key
       secret-key: your-secret-key
+
+s3:
+  folder:
+    recipe: "recipe/"

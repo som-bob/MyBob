@@ -1,6 +1,7 @@
 package com.my.bob.core.domain.recipe.entity;
 
 import com.my.bob.core.domain.base.entity.BaseEntity;
+import com.my.bob.core.domain.file.entity.BobFile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,13 +29,10 @@ public class Ingredient extends BaseEntity {
     @Column(name = "ingredient_description", length = 1000)
     private String ingredientDescription;
 
-    @Size(max = 255)
-    @Column(name = "image_url")
-    private String imageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id", insertable = false, updatable = false)
+    private BobFile file;
 
-    @Size(max = 255)
-    @Column(name = "icon_url")
-    private String iconUrl;
 
     @Size(max = 100)
     @Column(name = "storage_method", length = 100)
