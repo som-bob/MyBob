@@ -15,6 +15,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Slf4j
@@ -60,7 +62,7 @@ public class S3Service {
         }
     }
 
-    public void deleteObject(String s3FileName) {
+    public void deleteFile(String s3FileName) {
         try {
             s3Client.deleteObject(DeleteObjectRequest.builder()
                     .bucket(bucket)
@@ -74,10 +76,11 @@ public class S3Service {
 
 
     private String getFileUrl(String fileName) {
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", region, bucket, fileName);
+        return String.format("https://%s.s3.%s.amazonaws.com/%s%s", bucket, region, recipeFolder, fileName);
     }
 
     private String createFileName(String originalFileName) {
-        return String.format("%s_%s", UUID.randomUUID(), originalFileName);
+        String sanitizedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8);
+        return String.format("%s_%s", UUID.randomUUID(), sanitizedFileName);
     }
 }
