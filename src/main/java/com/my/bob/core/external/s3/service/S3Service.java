@@ -7,11 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -32,35 +33,43 @@ public class S3Service {
     @Value("${s3.folder.recipe}")
     private String recipeFolder;
 
-    public FileSaveResponseDto putRecipeObject(MultipartFile file) {
+    public FileSaveResponseDto uploadFile(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
-        String fileName = createFileName(originalFilename);
+        String s3FileName = createFileName(originalFilename);
         String contentType = file.getContentType();
 
         try {
             PutObjectResponse response = s3Client.putObject(PutObjectRequest.builder()
                     .bucket(bucket)
-                    .key(recipeFolder + fileName)
+                    .key(recipeFolder + s3FileName)
                     .contentType(contentType)
                     .build(), RequestBody.fromBytes(file.getBytes()));
 
-            if(response.sdkHttpResponse().isSuccessful()) {
-                String fileUrl = getFileUrl(fileName);
-                return new FileSaveResponseDto(originalFilename, contentType, fileName, fileUrl);
+            if (response.sdkHttpResponse().isSuccessful()) {
+                String fileUrl = getFileUrl(s3FileName);
+                return new FileSaveResponseDto(originalFilename, contentType, s3FileName, fileUrl);
             } else {
                 throw new IllegalArgumentException(ErrorMessage.FILE_ERROR_CONTACT_ADMINISTRATOR);
             }
         } catch (IOException e) {
             log.error("Fail to read file. error message: {}", e.getMessage(), e);
             throw new IllegalArgumentException(ErrorMessage.FILE_ERROR_CONTACT_ADMINISTRATOR);
-        } catch (AwsServiceException e) {
-            log.error("AWS service exception. error message: {}", e.getMessage(), e);
+        } catch (S3Exception e) {
+            log.error("AWS s3 service exception. error message: {}", e.getMessage(), e);
             throw new IllegalArgumentException(ErrorMessage.FILE_ERROR_CONTACT_ADMINISTRATOR);
         }
     }
 
-    public void deleteRecipeObject(String fileName) {
-
+    public void deleteObject(String s3FileName) {
+        try {
+            s3Client.deleteObject(DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(recipeFolder + s3FileName)
+                    .build());
+        } catch (S3Exception e) {
+            log.error("AWS s3 service exception. error message: {}", e.getMessage(), e);
+            throw new IllegalArgumentException(ErrorMessage.FILE_ERROR_CONTACT_ADMINISTRATOR);
+        }
     }
 
 
