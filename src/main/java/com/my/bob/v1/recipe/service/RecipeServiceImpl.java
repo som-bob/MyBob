@@ -1,6 +1,7 @@
 package com.my.bob.v1.recipe.service;
 
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
+import com.my.bob.core.domain.recipe.dto.response.RecipeDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
@@ -23,5 +24,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Page<RecipeListItemDto> getRecipes(Pageable pageable, RecipeSearchDto dto) {
         return recipeQueryRepository.getByParam(pageable, dto);
+    }
+
+    @Override
+    public RecipeDto getRecipe(Long id) {
+        return null;
     }
 }

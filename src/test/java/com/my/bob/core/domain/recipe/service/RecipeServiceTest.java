@@ -215,4 +215,15 @@ class RecipeServiceTest {
                                 .anyMatch(ingredientIdList::contains)
                 );
     }
+
+    @Test
+    @DisplayName("레시피 상세 조회 테스트")
+    void getRecipe_success() {
+        // TODO
+        // given
+
+        // when
+
+        // then
+    }
 }
