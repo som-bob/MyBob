@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.my.bob.core.domain.refrigerator.converter.RefrigeratorConverter.convertDto;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -35,7 +37,7 @@ public class RefrigeratorServiceImpl implements RefrigeratorService {
         Refrigerator refrigerator = new Refrigerator(dto.getNickName(), bobUser);
 
         Refrigerator savedRefrigerator = refrigeratorRepository.save(refrigerator);
-        return new RefrigeratorDto(savedRefrigerator);
+        return convertDto(savedRefrigerator);
     }
 
     @Override
@@ -47,6 +49,6 @@ public class RefrigeratorServiceImpl implements RefrigeratorService {
         }
 
         Refrigerator refrigerator = optionalRefrigerator.get();
-        return new RefrigeratorDto(refrigerator);
+        return convertDto(refrigerator);
     }
 }

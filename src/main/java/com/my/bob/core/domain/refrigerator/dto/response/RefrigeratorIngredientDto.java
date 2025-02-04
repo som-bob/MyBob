@@ -1,19 +1,15 @@
 package com.my.bob.core.domain.refrigerator.dto.response;
 
-import com.my.bob.core.domain.file.entity.BobFile;
-import com.my.bob.core.domain.refrigerator.entity.RefrigeratorIngredient;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
 public class RefrigeratorIngredientDto {
     // 조회용
 
-    private Integer ingredientId;   // refrigerator_ingredient_id
+    private long ingredientId;   // refrigerator_ingredient_id
 
     private String ingredientName;
 
@@ -21,12 +17,12 @@ public class RefrigeratorIngredientDto {
 
     private String addedDate;
 
-    public RefrigeratorIngredientDto(RefrigeratorIngredient ingredient, LocalDate addedDate) {
-        this.ingredientId = ingredient.getId();
-        this.ingredientName = ingredient.getIngredient().getIngredientName();
-        this.ingredientUrl = Optional.ofNullable(ingredient.getIngredient().getFile())
-                .map(BobFile::getFileUrl)
-                .orElse(null);
-        this.addedDate = addedDate.toString();
+    @Builder
+    public RefrigeratorIngredientDto(long ingredientId, String ingredientName, String ingredientUrl,
+                                     String addedDate) {
+        this.ingredientId = ingredientId;
+        this.ingredientName = ingredientName;
+        this.ingredientUrl = ingredientUrl;
+        this.addedDate = addedDate;
     }
 }

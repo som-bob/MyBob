@@ -1,10 +1,9 @@
 package com.my.bob.core.domain.refrigerator.dto.response;
 
-import com.my.bob.core.domain.refrigerator.entity.Refrigerator;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -18,13 +17,12 @@ public class RefrigeratorDto {
 
     private List<RefrigeratorIngredientDto> ingredients;
 
-    public RefrigeratorDto(Refrigerator refrigerator) {
-        this.refrigeratorId = refrigerator.getId();
-        this.nickName = refrigerator.getNickname();
-        this.ingredients = refrigerator.getBobRefrigeratorIngredients()
-                .stream()
-                .map(ingredient -> new RefrigeratorIngredientDto(ingredient, ingredient.getDateAdded()))
-                .sorted(Comparator.comparing(RefrigeratorIngredientDto::getIngredientName))
-                .toList();
+    @Builder
+    public RefrigeratorDto(int refrigeratorId,
+                           String nickName,
+                           List<RefrigeratorIngredientDto> ingredients) {
+        this.refrigeratorId = refrigeratorId;
+        this.nickName = nickName;
+        this.ingredients = ingredients;
     }
 }

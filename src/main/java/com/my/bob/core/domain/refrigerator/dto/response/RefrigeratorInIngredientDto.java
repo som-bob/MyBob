@@ -1,6 +1,6 @@
 package com.my.bob.core.domain.refrigerator.dto.response;
 
-import com.my.bob.core.domain.recipe.entity.Ingredient;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -10,8 +10,9 @@ public class RefrigeratorInIngredientDto {
 
     private String ingredientName;
 
-    public RefrigeratorInIngredientDto(Ingredient ingredient) {
-        this.ingredientId = ingredient.getId();
-        this.ingredientName = ingredient.getIngredientName();
+    @Builder
+    public RefrigeratorInIngredientDto(Integer ingredientId, String ingredientName) {
+        this.ingredientId = ingredientId;
+        this.ingredientName = ingredientName;
     }
 }

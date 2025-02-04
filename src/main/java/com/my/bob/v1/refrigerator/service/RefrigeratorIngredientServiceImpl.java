@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static com.my.bob.core.domain.refrigerator.converter.RefrigeratorConverter.convertDto;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -44,7 +46,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
 
         // 이미 저장된 데이터가 있는지 검사
         if (refrigeratorIngredientRepository.existsByRefrigeratorAndIngredient(refrigerator, ingredient)) {
-            return new RefrigeratorDto(refrigerator);
+            return convertDto(refrigerator);
         }
 
         String addedDateStr = dto.getAddedDate();
@@ -53,7 +55,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
         RefrigeratorIngredient refrigeratorIngredient = new RefrigeratorIngredient(refrigerator, ingredient, addedDate);
         refrigeratorIngredientRepository.save(refrigeratorIngredient);
 
-        return new RefrigeratorDto(refrigerator);
+        return convertDto(refrigerator);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
 
         refrigerator.removeIngredient(refrigeratorIngredient);
         refrigeratorIngredientRepository.delete(refrigeratorIngredient);
-        return new RefrigeratorDto(refrigerator);
+        return convertDto(refrigerator);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
         refrigeratorIngredientRepository.deleteByRefrigerator(refrigerator);
         refrigerator.removeAllIngredients();
 
-        return new RefrigeratorDto(refrigerator);
+        return convertDto(refrigerator);
     }
 
     @Override
@@ -93,10 +95,9 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
 
         return refrigerator.getBobRefrigeratorIngredients()
                 .stream()
-                .map(RefrigeratorIngredient::getIngredient)
-                .sorted(Comparator.comparing(Ingredient::getIngredientName))
-                .map(RefrigeratorInIngredientDto::new)
+                .map(refrigeratorIngredient ->
+                        convertDto(refrigeratorIngredient.getIngredient()))
+                .sorted(Comparator.comparing(RefrigeratorInIngredientDto::getIngredientName))
                 .toList();
     }
-
 }

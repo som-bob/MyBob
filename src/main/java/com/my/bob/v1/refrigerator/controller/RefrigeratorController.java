@@ -101,7 +101,7 @@ public class RefrigeratorController {
     /**
      * 로그인한 계정의 냉장고 리스트를 조회합니다.
      * @param principal 사용자의 인증 세부 정보(예: 전자 메일)를 포함하는 보안 주체
-     * @return 사용자의 냉장고에 들어 있던 재료 리스트
+     * @return 사용자의 냉장고에 들어 있던 재료(Ingredient) 리스트
      */
     @GetMapping("/ingredients")
     public ResponseEntity<ResponseDto<List<RefrigeratorInIngredientDto>>> getIngredient(Principal principal) {

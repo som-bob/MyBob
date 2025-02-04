@@ -5,6 +5,7 @@ import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
+import com.my.bob.core.domain.recipe.converter.RecipeConverter;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,6 +34,26 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
     // TODO check 쿼리 실행 속도가 느리다면 recipe_id, ingredient_id, difficulty, recipe_name에 인덱스 추가
     @Override
     public Page<RecipeListItemDto> getByParam(Pageable pageable, RecipeSearchDto dto) {
+        // 총 데이터 개수
+        long total = Optional.ofNullable(jpaQueryFactory
+                        .select(recipe.countDistinct())
+                        .from(recipe)
+                        .leftJoin(recipe.recipeIngredients, recipeIngredients)
+                        .leftJoin(recipeIngredients.ingredient, ingredient)
+                        .where(
+                                recipeNameContains(dto),
+                                recipeDescriptionContains(dto),
+                                ingredientIdsIn(dto),
+                                difficultyEquals(dto)
+                        )
+                        .fetchOne())
+                .orElse(0L);
+
+        // 결과가 없을 경우 빈 페이지 반환
+        if(total == 0){
+            return Page.empty(pageable);
+        }
+
         // 기본 Recipe Id 조회 쿼리
         List<Integer> recipeIds = jpaQueryFactory
                 .select(recipe.id)
@@ -50,11 +71,6 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // 결과가 없을 경우 빈 페이지 반환
-        if (recipeIds.isEmpty()) {
-            return Page.empty(pageable);
-        }
-
         // Recipe 데이터를 ID 기반으로 조회 (페이징된 결과)
         List<Recipe> results = jpaQueryFactory
                 .selectFrom(recipe)
@@ -64,22 +80,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 .where(recipe.id.in(recipeIds))
                 .fetch();
 
-        // 총 데이터 개수
-        long total = Optional.ofNullable(jpaQueryFactory
-                        .select(recipe.countDistinct())
-                        .from(recipe)
-                        .leftJoin(recipe.recipeIngredients, recipeIngredients)
-                        .leftJoin(recipeIngredients.ingredient, ingredient)
-                        .where(
-                                recipeNameContains(dto),
-                                recipeDescriptionContains(dto),
-                                ingredientIdsIn(dto),
-                                difficultyEquals(dto)
-                        )
-                        .fetchOne())
-                .orElse(0L);
-
-        return new PageImpl<>(results, pageable, total).map(RecipeListItemDto::new);
+        return new PageImpl<>(results, pageable, total).map(RecipeConverter::convertDto);
     }
 
     /* private conditions method */
