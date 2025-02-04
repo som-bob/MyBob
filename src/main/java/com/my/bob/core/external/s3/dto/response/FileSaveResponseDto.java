@@ -8,8 +8,9 @@ import lombok.Data;
 public class FileSaveResponseDto {
 
     private String originalFilename;
-    private String contentType;
     private String fileName;
     private String fileUrl;
+    private String contentType;
+    private long fileSize;
 
 }

@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS bob_refrigerator_ingredient (
 CREATE TABLE IF NOT EXISTS bob_file (
 	file_id INTEGER NOT NULL AUTO_INCREMENT,
 	file_url varchar(255) NOT NULL,
+	original_file_name varchar(255) NULL,
 	file_name varchar(255) NULL,
 	file_size BIGINT NULL,
 	content_type varchar(255) NULL,

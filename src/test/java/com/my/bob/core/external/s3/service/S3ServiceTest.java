@@ -55,6 +55,7 @@ class S3ServiceTest {
         assertThat(fileSaveResponseDto.getOriginalFilename()).isEqualTo("test.png");
         assertThat(fileSaveResponseDto.getFileName()).isNotBlank();
         assertThat(fileSaveResponseDto.getFileUrl()).isNotBlank();
+        assertThat(fileSaveResponseDto.getFileSize()).isPositive();
         assertThat(fileSaveResponseDto.getFileUrl()).contains(recipeFolder);
 
         this.uploadFileName = fileSaveResponseDto.getFileName();

@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `bob_ingredients` (
 CREATE TABLE IF NOT EXISTS `bob_file` (
 	`file_id` int(11) auto_increment NOT NULL COMMENT '파일 id(PK)',
 	`file_url` varchar(255) NOT NULL COMMENT '파일 url(S3)',
+	`original_file_name` varchar(255) NULL COMMENT '파일명',
 	`file_name` varchar(255) NULL COMMENT '파일명',
 	`file_size` BIGINT NULL COMMENT '파일 크기',
 	`content_type` varchar(255) NULL COMMENT 'MIME 타입',

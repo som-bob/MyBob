@@ -20,6 +20,9 @@ public class BobFile extends BaseRegEntity {
     @Column(name = "file_url", nullable = false)
     private String fileUrl;
 
+    @Column(name = "original_file_name")
+    private String originalFileName;
+
     @Column(name = "file_name")
     private String fileName;
 
@@ -29,4 +32,13 @@ public class BobFile extends BaseRegEntity {
     @Column(name = "content_type")
     private String contentType;
 
+    public BobFile(String fileUrl,
+                   String originalFileName, String fileName,
+                   Long fileSize, String contentType) {
+        this.fileUrl = fileUrl;
+        this.originalFileName = originalFileName;
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.contentType = contentType;
+    }
 }

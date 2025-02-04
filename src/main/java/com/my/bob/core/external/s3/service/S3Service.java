@@ -39,6 +39,7 @@ public class S3Service {
         String originalFilename = file.getOriginalFilename();
         String s3FileName = createFileName(originalFilename);
         String contentType = file.getContentType();
+        long size = file.getSize();
 
         try {
             PutObjectResponse response = s3Client.putObject(PutObjectRequest.builder()
@@ -49,7 +50,7 @@ public class S3Service {
 
             if (response.sdkHttpResponse().isSuccessful()) {
                 String fileUrl = getFileUrl(s3FileName);
-                return new FileSaveResponseDto(originalFilename, contentType, s3FileName, fileUrl);
+                return new FileSaveResponseDto(originalFilename, s3FileName, fileUrl, contentType, size);
             } else {
                 throw new IllegalArgumentException(ErrorMessage.FILE_ERROR_CONTACT_ADMINISTRATOR);
             }
