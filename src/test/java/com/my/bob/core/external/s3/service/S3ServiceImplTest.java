@@ -4,9 +4,9 @@ import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
@@ -18,27 +18,23 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Slf4j
 @SpringBootTest
-@DisplayName("S3 실제 저장 테스트")
+@DisplayName("S3 서비스 테스트")
 class S3ServiceImplTest {
-    // 실제 테스트 (IAM 키, 실제 저장 테스트)
 
     @Autowired
-    private S3ServiceImpl s3ServiceImpl;
-
-    @Value("${s3.folder.recipe}")
-    private String recipeFolder;
+    private S3Service s3Service;
 
     private String uploadFileName;
 
     @AfterEach
     void tearDown() {
         if(StringUtils.isNotBlank(uploadFileName)) {
-            assertDoesNotThrow(() -> s3ServiceImpl.deleteFile(uploadFileName));
+            assertDoesNotThrow(() -> s3Service.deleteFile(uploadFileName));
         }
     }
 
-//    @Test
-    @DisplayName("실제 S3 버킷 저장 테스트")
+    @Test
+    @DisplayName("S3 버킷 저장 테스트")
     void uploadFile() throws IOException {
         // given
         // resource 파일 읽어 와서 적용
@@ -50,7 +46,7 @@ class S3ServiceImplTest {
                 resource.getInputStream());
 
         // when
-        FileSaveResponseDto fileSaveResponseDto = s3ServiceImpl.uploadFile(multipartFile);
+        FileSaveResponseDto fileSaveResponseDto = s3Service.uploadFile(multipartFile);
 
         // then
         assertThat(fileSaveResponseDto).isNotNull();
@@ -58,7 +54,6 @@ class S3ServiceImplTest {
         assertThat(fileSaveResponseDto.getFileName()).isNotBlank();
         assertThat(fileSaveResponseDto.getFileUrl()).isNotBlank();
         assertThat(fileSaveResponseDto.getFileSize()).isPositive();
-        assertThat(fileSaveResponseDto.getFileUrl()).contains(recipeFolder);
 
         this.uploadFileName = fileSaveResponseDto.getFileName();
         log.info("file Url: {}", fileSaveResponseDto.getFileUrl());

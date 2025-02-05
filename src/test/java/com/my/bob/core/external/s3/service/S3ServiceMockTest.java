@@ -1,6 +1,7 @@
 package com.my.bob.core.external.s3.service;
 
 import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
+import com.my.bob.v1.s3.service.S3ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

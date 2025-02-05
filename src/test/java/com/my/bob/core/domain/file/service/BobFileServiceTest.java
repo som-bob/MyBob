@@ -6,6 +6,8 @@ import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
 import com.my.bob.core.external.s3.service.S3Service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -21,7 +23,7 @@ import static org.assertj.core.api.Assertions.fail;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-@DisplayName("파일 저장, 삭제 테스트(S3 저장 테스트 까지 함께 진행)")
+@DisplayName("파일 저장, 삭제 테스트(S3 저장, 삭제 테스트 까지 함께 진행)")
 class BobFileServiceTest {
 
     @Autowired
@@ -35,9 +37,9 @@ class BobFileServiceTest {
 
     private static Long saveFileId;
         
-//    @Test
-//    @Order(0)
-    @DisplayName("파일 저장 + 실제 S3 파일 저장 테스트")
+    @Test
+    @Order(0)
+    @DisplayName("파일 저장 + S3 파일 저장 테스트")
     void newFile_Success() throws IOException {
         // given
         // resource 파일 읽어 와서 S3에 저장
@@ -61,8 +63,8 @@ class BobFileServiceTest {
         assertThat(saveFileId).isPositive();
     }
 
-//    @Test
-//    @Order(1)
+    @Test
+    @Order(1)
     @DisplayName("파일 삭제 + 실제 S3 파일 삭제 테스트")
     void deleteFile_Success() {
         // given
@@ -81,7 +83,5 @@ class BobFileServiceTest {
         bobFileService.deleteFile(saveFileId);
         saveFileId = null;
     }
-
-    // TODO S3 부분은 Mock 테스트로 구현한다
 
 }

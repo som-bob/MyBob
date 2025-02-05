@@ -1,7 +1,8 @@
-package com.my.bob.core.external.s3.service;
+package com.my.bob.v1.s3.service;
 
 import com.my.bob.core.constants.ErrorMessage;
 import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
+import com.my.bob.core.external.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
