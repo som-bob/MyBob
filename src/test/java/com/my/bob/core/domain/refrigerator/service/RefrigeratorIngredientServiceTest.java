@@ -53,28 +53,28 @@ class RefrigeratorIngredientServiceTest {
     @Autowired
     private IngredientRepository ingredientRepository;
 
-    private String mockUserExistRefrigeratorEmail = "test_test@test.com";
-    private String mockUserNotExistRefrigeratorEmail = "test_fail@test.com";
-    private BobUser mockUserExistRefrigerator;
-    private BobUser mockUserByNotExistRefrigerator;
+    private final String mockUserExistRefrigeratorEmail = "test_test@test.com";
+    private final String mockUserNotExistRefrigeratorEmail = "test_fail@test.com";
     private Refrigerator refrigerator;
     private Ingredient ingredient1;
     private Ingredient ingredient2;
 
     @BeforeEach
     void setUp() {
+        // 유저 데이터 저장
+        bobUserRepository.save(new BobUser(mockUserNotExistRefrigeratorEmail, "<PASSWORD>", "냉장고 없는 유저"));
+        BobUser mockUserExistRefrigerator =
+                bobUserRepository.save(new BobUser(mockUserExistRefrigeratorEmail, "<PASSWORD>", "냉장고 있는 유저"));
+
         // 테스트 데이터 초기화
-        mockUserExistRefrigerator =
-                bobUserRepository.save(new BobUser(mockUserExistRefrigeratorEmail, "<PASSWORD>", "테스트 유저입니다"));
-        mockUserByNotExistRefrigerator =
-                bobUserRepository.save(new BobUser(mockUserNotExistRefrigeratorEmail, "<PASSWORD>", "테스트 유저입니다"));
         ingredient1 = ingredientRepository.save(new Ingredient("테스트 저장 재료"));
         ingredient2 = ingredientRepository.save(new Ingredient("테스트 저장 재료 2"));
+
         refrigerator = refrigeratorRepository.save(new Refrigerator("나의 냉장고", mockUserExistRefrigerator));
     }
 
     @AfterEach
-    void cleanUp(){
+    void cleanUp() {
         refrigeratorIngredientRepository.deleteAllInBatch();
         refrigeratorRepository.deleteAllInBatch();
         ingredientRepository.deleteAllInBatch();
