@@ -2,6 +2,7 @@ package com.my.bob.core.domain.recipe.converter;
 
 import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
+import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.entity.RecipeIngredients;
 
@@ -19,12 +20,7 @@ public class RecipeConverter {
         List<IngredientDto> ingredientList = recipe.getRecipeIngredients().stream()
                 .map(RecipeIngredients::getIngredient)
                 .distinct()
-                .map(ingredient -> IngredientDto.builder()
-                        .id(ingredient.getId())
-                        .ingredientName(ingredient.getIngredientName())
-                        .ingredientDescription(ingredient.getIngredientDescription())
-                        .imageUrl((ingredient.getFile() != null) ? ingredient.getFile().getFileUrl() : null)
-                        .build())
+                .map(RecipeConverter::convertIngredientDto)
                 .sorted(Comparator.comparing(IngredientDto::getIngredientName))
                 .toList();
 
@@ -35,6 +31,19 @@ public class RecipeConverter {
                 .difficulty(recipe.getDifficulty())
                 .imageUrl(recipe.getFile() == null? null : recipe.getFile().getFileUrl())
                 .ingredients(ingredientList)
+                .build();
+    }
+
+    public static IngredientDto convertDto(Ingredient ingredient) {
+        return convertIngredientDto(ingredient);
+    }
+
+    private static IngredientDto convertIngredientDto(Ingredient ingredient) {
+        return IngredientDto.builder()
+                .id(ingredient.getId())
+                .ingredientName(ingredient.getIngredientName())
+                .ingredientDescription(ingredient.getIngredientDescription())
+                .imageUrl((ingredient.getFile() != null) ? ingredient.getFile().getFileUrl() : null)
                 .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.my.bob.v1.recipe.service;
 
-import com.my.bob.core.domain.file.entity.BobFile;
+import com.my.bob.core.domain.recipe.converter.RecipeConverter;
 import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,18 +22,8 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public List<IngredientDto> getAllIngredients() {
         List<Ingredient> ingredients = ingredientRepository.findAll();
-        return ingredients.stream().map(ingredient -> {
-                    String imageUrl = Optional.ofNullable(ingredient.getFile())
-                            .map(BobFile::getFileUrl)
-                            .orElse(null);
-
-                    return IngredientDto.builder()
-                            .id(ingredient.getId())
-                            .ingredientName(ingredient.getIngredientName())
-                            .ingredientDescription(ingredient.getIngredientDescription())
-                            .imageUrl(imageUrl)
-                            .build();
-                })
+        return ingredients.stream()
+                .map(RecipeConverter::convertDto)
                 .sorted(Comparator.comparing(IngredientDto::getIngredientName))
                 .toList();
     }

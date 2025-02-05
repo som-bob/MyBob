@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class RefrigeratorIngredientDto {
     // 조회용
 
-    private long ingredientId;   // refrigerator_ingredient_id
+    private Integer ingredientId;   // refrigerator_ingredient_id
 
     private String ingredientName;
 
@@ -18,7 +18,7 @@ public class RefrigeratorIngredientDto {
     private String addedDate;
 
     @Builder
-    public RefrigeratorIngredientDto(long ingredientId, String ingredientName, String ingredientUrl,
+    public RefrigeratorIngredientDto(Integer ingredientId, String ingredientName, String ingredientUrl,
                                      String addedDate) {
         this.ingredientId = ingredientId;
         this.ingredientName = ingredientName;
