@@ -18,10 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Slf4j
 @SpringBootTest
-class S3ServiceTest {
+@DisplayName("S3 실제 저장 테스트")
+class S3ServiceImplTest {
+    // 실제 테스트 (IAM 키, 실제 저장 테스트)
 
     @Autowired
-    private S3Service s3Service;
+    private S3ServiceImpl s3ServiceImpl;
 
     @Value("${s3.folder.recipe}")
     private String recipeFolder;
@@ -31,7 +33,7 @@ class S3ServiceTest {
     @AfterEach
     void tearDown() {
         if(StringUtils.isNotBlank(uploadFileName)) {
-            assertDoesNotThrow(() -> s3Service.deleteFile(uploadFileName));
+            assertDoesNotThrow(() -> s3ServiceImpl.deleteFile(uploadFileName));
         }
     }
 
@@ -48,7 +50,7 @@ class S3ServiceTest {
                 resource.getInputStream());
 
         // when
-        FileSaveResponseDto fileSaveResponseDto = s3Service.uploadFile(multipartFile);
+        FileSaveResponseDto fileSaveResponseDto = s3ServiceImpl.uploadFile(multipartFile);
 
         // then
         assertThat(fileSaveResponseDto).isNotNull();
