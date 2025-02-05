@@ -53,11 +53,12 @@ class BobFileServiceTest {
         log.info("fileUrl: {}", saveResponseDto.getFileUrl());
 
         // when
-        saveFileId = bobFileService.newFile(saveResponseDto.getFileUrl(),
+        BobFile bobFile = bobFileService.newFile(saveResponseDto.getFileUrl(),
                 saveResponseDto.getOriginalFilename(),
                 saveResponseDto.getFileName(),
                 saveResponseDto.getFileSize(),
                 saveResponseDto.getContentType());
+        saveFileId = bobFile.getFileId();
 
         // then
         assertThat(saveFileId).isPositive();

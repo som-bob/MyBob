@@ -81,7 +81,7 @@ class RecipeServiceTest {
 
     private Recipe saveRecipe(String recipeName, String recipeDescription, Difficulty difficulty,
                               Ingredient... ingredients) {
-        Recipe recipe = new Recipe(recipeName, recipeDescription, difficulty, (short) 30);
+        Recipe recipe = new Recipe(recipeName, recipeDescription, difficulty, "인분", (short) 30);
         recipeRepository.save(recipe);
         for (Ingredient ingredient : ingredients) {
             saveRecipeIngredient(recipe, ingredient);

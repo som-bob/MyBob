@@ -1,11 +1,11 @@
 package com.my.bob.v1.recipe.repository;
 
 import com.my.bob.core.domain.recipe.contants.Difficulty;
+import com.my.bob.core.domain.recipe.converter.RecipeConverter;
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
-import com.my.bob.core.domain.recipe.converter.RecipeConverter;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;

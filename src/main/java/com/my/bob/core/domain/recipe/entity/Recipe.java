@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -57,11 +58,19 @@ public class Recipe extends BaseEntity {
     @OneToMany(mappedBy = "recipe", orphanRemoval = true)
     private List<RecipeIngredients> recipeIngredients = new ArrayList<>();
 
-    public Recipe(String recipeName, String recipeDescription, Difficulty difficulty, Short cookingTime) {
+    @Builder
+    public Recipe(String recipeName, String recipeDescription,
+                  Difficulty difficulty,
+                  String servings, Short cookingTime) {
         this.recipeName = recipeName;
         this.recipeDescription = recipeDescription;
         this.difficulty = difficulty;
+        this.servings = servings;
         this.cookingTime = cookingTime;
+    }
+
+    public void setRecipeFile(BobFile file) {
+        this.file = file;
     }
 
     protected void addIngredient(RecipeIngredients recipeIngredients) {

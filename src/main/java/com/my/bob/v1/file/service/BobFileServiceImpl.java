@@ -17,11 +17,10 @@ public class BobFileServiceImpl implements BobFileService {
     private final BobFileRepository bobFileRepository;
 
     @Override
-    public long newFile(String fileUrl, String originalFilename, String fileName, long fileSize, String contentType) {
+    public BobFile newFile(String fileUrl, String originalFilename, String fileName, long fileSize, String contentType) {
         BobFile bobFile = new BobFile(fileUrl, originalFilename, fileName, fileSize, contentType);
-        BobFile savedFile = bobFileRepository.save(bobFile);
 
-        return savedFile.getFileId();
+        return bobFileRepository.save(bobFile);
     }
 
     @Override
