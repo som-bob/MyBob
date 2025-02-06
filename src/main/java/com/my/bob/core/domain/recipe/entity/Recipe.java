@@ -46,14 +46,14 @@ public class Recipe extends BaseEntity {
     private String source;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id", insertable = false, updatable = false)
+    @JoinColumn(name = "file_id")
     private BobFile file;
 
     @Size(max = 50)
     private String servings;
 
     @OneToMany(mappedBy = "recipe")
-    private List<RecipeDetail> bobRecipeDetails = new ArrayList<>();
+    private List<RecipeDetail> recipeDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", orphanRemoval = true)
     private List<RecipeIngredients> recipeIngredients = new ArrayList<>();
@@ -78,6 +78,6 @@ public class Recipe extends BaseEntity {
     }
 
     protected void addRecipeDetail(RecipeDetail recipeDetail) {
-        this.bobRecipeDetails.add(recipeDetail);
+        this.recipeDetails.add(recipeDetail);
     }
 }

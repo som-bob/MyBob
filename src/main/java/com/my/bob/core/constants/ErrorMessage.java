@@ -40,7 +40,6 @@ public class ErrorMessage {
     public static final String EMPTY_RECIPE_NAME = "레시피 이름을 입력해주세요.";
     public static final String NEED_DIFFICULTY = "난이도를 선택해주세요.";
     public static final String NEED_SERVINGS = "몇인분인지 입력해주세요.";
-    public static final String NEED_INGREDIENTS = "재료를 입력해주세요.";
     public static final String NEED_RECIPE_DETAIL = "레시피 상세를 입력해주세요.";
 
 
@@ -49,7 +48,6 @@ public class ErrorMessage {
     public static final String DO_NOT_HAVE_PERMISSION = "권한이 없습니다.";
 
     // 관리자 문의
-    public static final String CONTACT_ADMINISTRATOR = "관리자에게 문의하세요.";
     public static final String FILE_ERROR_CONTACT_ADMINISTRATOR = "파일 시스템에 문제가 있습니다. 관리자에게 문의하세요.";
 
 }

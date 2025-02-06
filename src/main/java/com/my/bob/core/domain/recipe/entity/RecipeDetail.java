@@ -28,7 +28,7 @@ public class RecipeDetail extends BaseTimeEntity {
     private Recipe recipe;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id", insertable = false, updatable = false)
+    @JoinColumn(name = "file_id")
     private BobFile file;
 
     @NotNull

@@ -17,6 +17,8 @@ public enum FailCode {
     R_00001("냉장고 기능에 문제가 있습니다."),
 
     I_00002("재료 기능에 문제가 있습니다."),
+
+    R_00002("레시피 기능에 문제가 있습니다"),
     ;
 
     private final String failMessage;

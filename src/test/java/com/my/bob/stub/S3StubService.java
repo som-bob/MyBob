@@ -15,10 +15,10 @@ import java.util.UUID;
 public class S3StubService implements S3Service {
     @Override
     public FileSaveResponseDto uploadFile(MultipartFile file) {
-        log.info("[STUB] 파일 업로드: {}", file.getOriginalFilename());
 
         String stubFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         String stubUrl = "https://stub-s3.com/" + stubFileName;
+        log.info("[STUB] 파일 업로드: {}, url: {}", file.getOriginalFilename(), stubUrl);
 
         return new FileSaveResponseDto(
                 file.getOriginalFilename(),

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -44,8 +45,14 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
     @Override
     @Transactional
-    public long newRecipe(RecipeCreateDto dto) {
-        // 레시피 저장
+    public int newRecipe(RecipeCreateDto dto) {
+        Recipe savedRecipe = saveRecipe(dto);       // 레시피 저장
+        precessRecipeIngredients(savedRecipe, dto.getIngredients());    // 재료 저장
+        processRecipeDetails(savedRecipe, dto.getRecipeDetails());      // 레시피 디테일 상세 저장
+        return savedRecipe.getId();
+    }
+
+    private Recipe saveRecipe(RecipeCreateDto dto) {
         Recipe recipe = Recipe.builder()
                 .recipeName(dto.getRecipeName())
                 .recipeDescription(dto.getRecipeDescription())
@@ -58,45 +65,41 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
         // 레시피 파일 저장
         MultipartFile recipeFile = dto.getRecipeFile();
-        if(recipeFile != null) {
-            BobFile bobRecipeFile = getFileAfterSave(recipeFile);
+        if (recipeFile != null) {
+            BobFile bobRecipeFile = uploadAndSaveFile(recipeFile);
             savedRecipe.setRecipeFile(bobRecipeFile);
         }
 
-        // 예외처리 추가 필요 (재료 없을 경우 exception 등등..)
-        // 재료 저장
-        List<RecipeIngredientCreateDto> recipeIngredients = dto.getIngredients();
-        saveRecipeIngredients(recipe, recipeIngredients);
-
-        // 레시피 디테일 상세 저장
-        List<RecipeDetailCreateDto> recipeDetails = dto.getRecipeDetails();
-        saveRecipeDetails(recipe, recipeDetails);
-
-        return savedRecipe.getId();
+        return recipe;
     }
 
-    private void saveRecipeDetails(Recipe recipe, List<RecipeDetailCreateDto> recipeDetails) {
-        if(Collections.isEmpty(recipeDetails)) {
+    private void processRecipeDetails(Recipe recipe, List<RecipeDetailCreateDto> recipeDetails) {
+        if (Collections.isEmpty(recipeDetails)) {
             return;
         }
 
-        for (int order = 1; order <= recipeDetails.size(); order++) {
-            RecipeDetailCreateDto detailDto = recipeDetails.get(order - 1);
+        List<RecipeDetail> recipeDetailsList = IntStream.range(0, recipeDetails.size())
+                .mapToObj(index -> {
+                    RecipeDetailCreateDto detailDto = recipeDetails.get(index);
 
-            RecipeDetail recipeDetail = new RecipeDetail(recipe, order, detailDto.getRecipeDetailText());
-            recipeDetailRepository.save(recipeDetail);
+                    RecipeDetail recipeDetail = new RecipeDetail(recipe, index + 1, detailDto.getRecipeDetailText());
+                    recipeDetailRepository.save(recipeDetail);
 
-            // 디테일 파일 저장
-            MultipartFile recipeDetailFile = detailDto.getRecipeDetailFile();
-            if(recipeDetailFile != null) {
-                BobFile bobRecipeFile = getFileAfterSave(recipeDetailFile);
-                recipeDetail.setRecipeDetailFile(bobRecipeFile);
-            }
-        }
+                    // 디테일 파일 저장
+                    MultipartFile recipeDetailFile = detailDto.getRecipeDetailFile();
+                    if (recipeDetailFile != null) {
+                        BobFile bobRecipeFile = uploadAndSaveFile(recipeDetailFile);
+                        recipeDetail.setRecipeDetailFile(bobRecipeFile);
+                    }
+
+                    return recipeDetail;
+                }).toList();
+
+        recipeDetailRepository.saveAll(recipeDetailsList);
     }
 
-    private void saveRecipeIngredients(Recipe recipe, List<RecipeIngredientCreateDto> recipeIngredients) {
-        if(Collections.isEmpty(recipeIngredients)) {
+    private void precessRecipeIngredients(Recipe recipe, List<RecipeIngredientCreateDto> recipeIngredients) {
+        if (Collections.isEmpty(recipeIngredients)) {
             return;
         }
 
@@ -104,22 +107,19 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                 .map(RecipeIngredientCreateDto::getIngredientId)
                 .collect(Collectors.toSet());
 
-        List<Ingredient> findIngredients = ingredientRepository.findByIdIn(ingredientIds);
-        Map<Integer, Ingredient> ingredientMap = findIngredients
+        Map<Integer, Ingredient> ingredientMap = ingredientRepository.findByIdIn(ingredientIds)
                 .stream()
                 .collect(Collectors.toMap(Ingredient::getId, Function.identity()));
 
-        for (RecipeIngredientCreateDto recipeIngredientDto : recipeIngredients) {
-            Integer ingredientId = recipeIngredientDto.getIngredientId();
-            Ingredient ingredient = ingredientMap.get(ingredientId);
 
-            RecipeIngredients recipeIngredient =
-                    new RecipeIngredients(recipe, ingredient, recipeIngredientDto.getAmount());
-            recipeIngredientsRepository.save(recipeIngredient);
-        }
+        List<RecipeIngredients> recipeIngredientsList = recipeIngredients.stream()
+                .map(dto -> new RecipeIngredients(recipe, ingredientMap.get(dto.getIngredientId()), dto.getAmount()))
+                .toList();
+
+        recipeIngredientsRepository.saveAll(recipeIngredientsList);
     }
 
-    private BobFile getFileAfterSave(MultipartFile file) {
+    private BobFile uploadAndSaveFile(MultipartFile file) {
         FileSaveResponseDto recipeFileSave = s3Service.uploadFile(file);
         return bobFileService.newFile(recipeFileSave.getFileUrl(),
                 recipeFileSave.getOriginalFilename(),
@@ -127,7 +127,4 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                 recipeFileSave.getFileSize(),
                 recipeFileSave.getContentType());
     }
-
-
-
 }
