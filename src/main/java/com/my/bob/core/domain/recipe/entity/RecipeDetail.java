@@ -39,4 +39,15 @@ public class RecipeDetail extends BaseTimeEntity {
     @Column(name = "recipe_detail_text", length = 3000)
     private String recipeDetailText;
 
+    public RecipeDetail(Recipe recipe, Integer recipeOrder, String recipeDetailText) {
+        this.recipe = recipe;
+        this.recipe.addRecipeDetail(this);
+        this.recipeOrder = recipeOrder;
+        this.recipeDetailText = recipeDetailText;
+    }
+
+    public void setRecipeDetailFile(BobFile file) {
+        this.file = file;
+    }
+
 }

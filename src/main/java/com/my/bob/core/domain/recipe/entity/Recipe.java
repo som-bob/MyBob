@@ -75,6 +75,9 @@ public class Recipe extends BaseEntity {
 
     protected void addIngredient(RecipeIngredients recipeIngredients) {
         this.recipeIngredients.add(recipeIngredients);
+    }
 
+    protected void addRecipeDetail(RecipeDetail recipeDetail) {
+        this.bobRecipeDetails.add(recipeDetail);
     }
 }

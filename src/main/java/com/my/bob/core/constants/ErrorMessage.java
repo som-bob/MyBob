@@ -40,6 +40,9 @@ public class ErrorMessage {
     public static final String EMPTY_RECIPE_NAME = "레시피 이름을 입력해주세요.";
     public static final String NEED_DIFFICULTY = "난이도를 선택해주세요.";
     public static final String NEED_SERVINGS = "몇인분인지 입력해주세요.";
+    public static final String NEED_INGREDIENTS = "재료를 입력해주세요.";
+    public static final String NEED_RECIPE_DETAIL = "레시피 상세를 입력해주세요.";
+
 
 
     // 수정, 삭제 권한 관련
