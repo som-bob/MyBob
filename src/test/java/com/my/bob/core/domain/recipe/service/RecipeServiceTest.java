@@ -12,10 +12,7 @@ import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import jdk.jfr.Description;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -219,8 +216,8 @@ class RecipeServiceTest {
     @Test
     @DisplayName("레시피 상세 조회 테스트")
     void getRecipe_success() {
-        // TODO
         // given
+        Assertions.fail("TODO add");
 
         // when
 

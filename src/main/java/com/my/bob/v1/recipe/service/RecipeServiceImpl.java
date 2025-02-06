@@ -4,7 +4,6 @@ import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
-import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import com.my.bob.core.domain.recipe.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class RecipeServiceImpl implements RecipeService {
 
-    private final RecipeRepository recipeRepository;
     private final RecipeQueryRepository recipeQueryRepository;
 
 
@@ -28,6 +26,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeDto getRecipe(Long id) {
+        // TODO
         return null;
     }
 }
