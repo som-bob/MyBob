@@ -4,6 +4,7 @@ import com.my.bob.core.constants.FailCode;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.exception.UserLoginException;
 import com.my.bob.core.domain.recipe.exception.IngredientException;
+import com.my.bob.core.domain.recipe.exception.RecipeException;
 import com.my.bob.core.domain.refrigerator.exception.RefrigeratorException;
 import com.my.bob.core.exception.BadRequestException;
 import io.micrometer.common.util.StringUtils;
@@ -102,6 +103,16 @@ public class GlobalExceptionHandler {
         exceptionLogging(e, request);
 
         return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.I_00002, e.getMessage()));
+    }
+
+    // 레시피 관련 Exception
+    @ExceptionHandler(value = {
+            RecipeException.class
+    })
+    public ResponseEntity<ResponseDto<Void>> handle(RecipeException e, WebRequest request) {
+        exceptionLogging(e, request);
+
+        return ResponseEntity.badRequest().body(new ResponseDto<>(FailCode.R_00002, e.getMessage()));
     }
 
 

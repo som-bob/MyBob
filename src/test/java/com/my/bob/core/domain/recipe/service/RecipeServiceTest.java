@@ -3,16 +3,23 @@ package com.my.bob.core.domain.recipe.service;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
+import com.my.bob.core.domain.recipe.dto.response.RecipeDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
+import com.my.bob.core.domain.recipe.entity.RecipeDetail;
 import com.my.bob.core.domain.recipe.entity.RecipeIngredients;
+import com.my.bob.core.domain.recipe.exception.RecipeNotFoundException;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
+import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import jdk.jfr.Description;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -21,8 +28,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
@@ -41,6 +51,9 @@ class RecipeServiceTest {
 
     @Autowired
     private RecipeIngredientsRepository recipeIngredientsRepository;
+
+    @Autowired
+    private RecipeDetailRepository recipeDetailRepository;
 
     private Integer[] ingredientIds;
     private Integer[] ingredientPartIds;
@@ -80,8 +93,14 @@ class RecipeServiceTest {
                               Ingredient... ingredients) {
         Recipe recipe = new Recipe(recipeName, recipeDescription, difficulty, "인분", (short) 30);
         recipeRepository.save(recipe);
+
         for (Ingredient ingredient : ingredients) {
             saveRecipeIngredient(recipe, ingredient);
+        }
+
+        int recipeDetailOrder = new Random().nextInt(5);
+        for (int order = 1; order <= recipeDetailOrder; order++) {
+            saveRecipeDetail(recipe, order, "%d 순서 입니다.".formatted(order));
         }
 
         return recipe;
@@ -92,10 +111,16 @@ class RecipeServiceTest {
         recipeIngredientsRepository.save(recipeIngredients);
     }
 
+    private void saveRecipeDetail(Recipe recipe, int order, String text) {
+        RecipeDetail recipeDetail = new RecipeDetail(recipe, order, text);
+        recipeDetailRepository.save(recipeDetail);
+    }
+
 
     @AfterEach
     void cleanUp() {
         recipeIngredientsRepository.deleteAllInBatch();
+        recipeDetailRepository.deleteAllInBatch();
         recipeRepository.deleteAllInBatch();
         ingredientRepository.deleteAllInBatch();
     }
@@ -217,10 +242,24 @@ class RecipeServiceTest {
     @DisplayName("레시피 상세 조회 테스트")
     void getRecipe_success() {
         // given
-        Assertions.fail("TODO add");
+        Optional<Recipe> recipeOptional = recipeList.stream().findFirst();
+        assertThat(recipeOptional).isPresent();
+        int recipeId = recipeOptional.get().getId();
 
         // when
+        RecipeDto recipeDto = recipeService.getRecipe(recipeId);
 
         // then
+        assertThat(recipeDto).isNotNull();
+    }
+    
+    @Test
+    @DisplayName("레시피 상세 조회 - 실패 (존재 하지 않는 레시피 아이디)")
+    void getRecipe_fail_notExistentId() {
+        // given
+        int failRecipeId = Integer.MAX_VALUE;
+
+        // when & then
+        assertThatThrownBy(() -> recipeService.getRecipe(failRecipeId)).isInstanceOf(RecipeNotFoundException.class);
     }
 }

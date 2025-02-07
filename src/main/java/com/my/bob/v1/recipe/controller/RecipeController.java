@@ -30,7 +30,7 @@ public class RecipeController {
         return ResponseEntity.ok(new ResponseDto<>(Difficulty.values()));
     }
 
-    // 레시피 리스트 조회
+    // 레시피 리스트 조회 (TODO get 변경할 것)
     @PostMapping
     public ResponseEntity<ResponseDto<PageResponse<RecipeListItemDto>>> getRecipe(Pageable pageable,
                                                                                   @RequestBody RecipeSearchDto dto) {
@@ -41,7 +41,7 @@ public class RecipeController {
     }
 
     // 레시피 추가
-    @PostMapping
+    @PostMapping("/new")
     public ResponseEntity<ResponseDto<Integer>> createRecipe(@RequestBody RecipeCreateDto dto) {
         int savedId = recipeSaveService.newRecipe(dto);
 

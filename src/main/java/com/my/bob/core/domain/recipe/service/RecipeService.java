@@ -10,5 +10,6 @@ public interface RecipeService {
 
     Page<RecipeListItemDto> getRecipes(Pageable pageable, RecipeSearchDto dto);
 
-    RecipeDto getRecipe(Long id);
+    RecipeDto getRecipe(Integer id);
+
 }
