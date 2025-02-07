@@ -80,7 +80,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 .where(recipe.id.in(recipeIds))
                 .fetch();
 
-        return new PageImpl<>(results, pageable, total).map(RecipeConverter::convertDto);
+        return new PageImpl<>(results, pageable, total).map(RecipeConverter::convertListItemDto);
     }
 
     /* private conditions method */

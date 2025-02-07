@@ -107,7 +107,7 @@ class RecipeServiceTest {
     }
 
     private void saveRecipeIngredient(Recipe recipe, Ingredient ingredient) {
-        RecipeIngredients recipeIngredients = new RecipeIngredients(recipe, ingredient, "재료 양");
+        RecipeIngredients recipeIngredients = new RecipeIngredients(recipe, ingredient, "복잡한 재료", "재료 양");
         recipeIngredientsRepository.save(recipeIngredients);
     }
 

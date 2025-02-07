@@ -4,8 +4,6 @@ import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.entity.Recipe;
-import com.my.bob.core.domain.recipe.entity.RecipeDetail;
-import com.my.bob.core.domain.recipe.entity.RecipeIngredients;
 import com.my.bob.core.domain.recipe.repository.RecipeQueryRepository;
 import com.my.bob.core.domain.recipe.service.RecipeService;
 import com.my.bob.core.domain.recipe.service.RecipeServiceHelper;
@@ -15,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import static com.my.bob.core.domain.recipe.converter.RecipeConverter.convertDto;
 
 @Service
 @RequiredArgsConstructor
@@ -35,11 +33,6 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeDto getRecipe(Integer id) {
         Recipe recipe = recipeServiceHelper.getRecipe(id);
 
-        List<RecipeIngredients> recipeIngredients = recipe.getRecipeIngredients();
-        List<RecipeDetail> recipeDetails = recipe.getRecipeDetails();
-
-        return RecipeDto.builder()
-                .recipeId(recipe.getId())
-                .build();
+        return convertDto(recipe);
     }
 }

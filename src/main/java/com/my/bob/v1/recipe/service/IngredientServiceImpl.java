@@ -23,7 +23,7 @@ public class IngredientServiceImpl implements IngredientService {
     public List<IngredientDto> getAllIngredients() {
         List<Ingredient> ingredients = ingredientRepository.findAll();
         return ingredients.stream()
-                .map(RecipeConverter::convertDto)
+                .map(RecipeConverter::convertIngredientDto)
                 .sorted(Comparator.comparing(IngredientDto::getIngredientName))
                 .toList();
     }

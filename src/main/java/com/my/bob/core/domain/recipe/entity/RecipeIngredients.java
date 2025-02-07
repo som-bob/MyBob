@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Entity
@@ -29,14 +30,20 @@ public class RecipeIngredients extends BaseEntity {
     @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
+    @Column(name = "ingredient_detail_name")
+    private String ingredientDetailName;
+
     @Size(max = 100)
     @Column(name = "amount", length = 100)
     private String amount;
 
-    public RecipeIngredients(Recipe recipe, Ingredient ingredient, String amount) {
+    public RecipeIngredients(Recipe recipe, Ingredient ingredient,
+                             String ingredientDetailName, String amount) {
         this.recipe = recipe;
         this.recipe.addIngredient(this);
         this.ingredient = ingredient;
+        this.ingredientDetailName = StringUtils.isBlank(ingredientDetailName) ?
+                ingredient.getIngredientName() : ingredientDetailName;
         this.amount = amount;
     }
 }

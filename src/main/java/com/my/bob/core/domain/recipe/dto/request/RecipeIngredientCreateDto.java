@@ -9,5 +9,7 @@ public class RecipeIngredientCreateDto {
     @NotNull(message = ErrorMessage.INVALID_REQUEST)
     private Integer ingredientId;
 
+    private String ingredientDetailName;
+
     private String amount;
 }

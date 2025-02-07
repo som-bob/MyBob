@@ -113,7 +113,9 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
 
         List<RecipeIngredients> recipeIngredientsList = recipeIngredients.stream()
-                .map(dto -> new RecipeIngredients(recipe, ingredientMap.get(dto.getIngredientId()), dto.getAmount()))
+                .map(dto ->
+                        new RecipeIngredients(recipe, ingredientMap.get(dto.getIngredientId()),
+                                dto.getIngredientDetailName(), dto.getAmount()))
                 .toList();
 
         recipeIngredientsRepository.saveAll(recipeIngredientsList);
