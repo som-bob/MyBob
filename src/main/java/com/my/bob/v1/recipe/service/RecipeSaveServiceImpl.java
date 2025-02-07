@@ -1,7 +1,7 @@
 package com.my.bob.v1.recipe.service;
 
 import com.my.bob.core.domain.file.entity.BobFile;
-import com.my.bob.core.domain.file.service.BobFileService;
+import com.my.bob.core.domain.file.service.FileSaveService;
 import com.my.bob.core.domain.recipe.dto.request.RecipeCreateDto;
 import com.my.bob.core.domain.recipe.dto.request.RecipeDetailCreateDto;
 import com.my.bob.core.domain.recipe.dto.request.RecipeIngredientCreateDto;
@@ -14,8 +14,6 @@ import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import com.my.bob.core.domain.recipe.service.RecipeSaveService;
-import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
-import com.my.bob.core.external.s3.service.S3Service;
 import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +33,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class RecipeSaveServiceImpl implements RecipeSaveService {
 
-    private final BobFileService bobFileService;
-    private final S3Service s3Service;
+    private final FileSaveService fileSaveService;
 
     private final RecipeRepository recipeRepository;
     private final IngredientRepository ingredientRepository;
@@ -66,7 +63,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
         // 레시피 파일 저장
         MultipartFile recipeFile = dto.getRecipeFile();
         if (recipeFile != null) {
-            BobFile bobRecipeFile = uploadAndSaveFile(recipeFile);
+            BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile);
             savedRecipe.setRecipeFile(bobRecipeFile);
         }
 
@@ -88,7 +85,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                     // 디테일 파일 저장
                     MultipartFile recipeDetailFile = detailDto.getRecipeDetailFile();
                     if (recipeDetailFile != null) {
-                        BobFile bobRecipeFile = uploadAndSaveFile(recipeDetailFile);
+                        BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeDetailFile);
                         recipeDetail.setRecipeDetailFile(bobRecipeFile);
                     }
 
@@ -121,12 +118,4 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
         recipeIngredientsRepository.saveAll(recipeIngredientsList);
     }
 
-    private BobFile uploadAndSaveFile(MultipartFile file) {
-        FileSaveResponseDto recipeFileSave = s3Service.uploadFile(file);
-        return bobFileService.newFile(recipeFileSave.getFileUrl(),
-                recipeFileSave.getOriginalFilename(),
-                recipeFileSave.getFileName(),
-                recipeFileSave.getFileSize(),
-                recipeFileSave.getContentType());
-    }
 }

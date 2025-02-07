@@ -1,7 +1,7 @@
 package com.my.bob.core.domain.recipe.service;
 
 import com.my.bob.core.domain.file.entity.BobFile;
-import com.my.bob.core.domain.file.service.BobFileService;
+import com.my.bob.core.domain.file.service.FileSaveService;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.*;
@@ -14,8 +14,6 @@ import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
-import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
-import com.my.bob.core.external.s3.service.S3Service;
 import com.my.bob.util.ResourceUtil;
 import jdk.jfr.Description;
 import lombok.extern.slf4j.Slf4j;
@@ -49,10 +47,7 @@ class RecipeServiceTest {
     private RecipeService recipeService;
 
     @Autowired
-    private S3Service s3Service;    // stub Service
-
-    @Autowired
-    private BobFileService bobFileService;
+    private FileSaveService fileSaveService;
 
     @Autowired
     private IngredientRepository ingredientRepository;
@@ -122,12 +117,7 @@ class RecipeServiceTest {
 
     private BobFile uploadAndSaveFile(String resourceFileName) throws IOException {
         MultipartFile file = ResourceUtil.getFileFromResource(resourceFileName);
-        FileSaveResponseDto recipeFileSave = s3Service.uploadFile(file);
-        return bobFileService.newFile(recipeFileSave.getFileUrl(),
-                recipeFileSave.getOriginalFilename(),
-                recipeFileSave.getFileName(),
-                recipeFileSave.getFileSize(),
-                recipeFileSave.getContentType());
+        return fileSaveService.uploadAndSaveFile(file);
     }
 
     private void saveRecipeIngredient(Recipe recipe, Ingredient ingredient) {
