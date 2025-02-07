@@ -17,17 +17,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.my.bob.util.ResourceUtil.getFileFromResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -131,15 +129,6 @@ class RecipeSaveServiceTest {
         dto.setRecipeDetails(details);
 
         return dto;
-    }
-
-    private MultipartFile getFileFromResource(String fileName) throws IOException {
-        ClassPathResource resource = new ClassPathResource("file/" + fileName);
-        return new MockMultipartFile(
-                "file",
-                fileName,
-                "image/png",
-                resource.getInputStream());
     }
 
 }

@@ -1,10 +1,10 @@
 package com.my.bob.core.domain.recipe.service;
 
+import com.my.bob.core.domain.file.entity.BobFile;
+import com.my.bob.core.domain.file.service.BobFileService;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
-import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
-import com.my.bob.core.domain.recipe.dto.response.RecipeDto;
-import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
+import com.my.bob.core.domain.recipe.dto.response.*;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.entity.RecipeDetail;
@@ -14,6 +14,9 @@ import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
+import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
+import com.my.bob.core.external.s3.service.S3Service;
+import com.my.bob.util.ResourceUtil;
 import jdk.jfr.Description;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -25,7 +28,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +49,12 @@ class RecipeServiceTest {
     private RecipeService recipeService;
 
     @Autowired
+    private S3Service s3Service;    // stub Service
+
+    @Autowired
+    private BobFileService bobFileService;
+
+    @Autowired
     private IngredientRepository ingredientRepository;
 
     @Autowired
@@ -60,7 +71,7 @@ class RecipeServiceTest {
     private final List<Recipe> recipeList = new ArrayList<>();
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         // 기본 재료 3개 이상 저장
         Ingredient i1 = saveIngredient("나_테스트 재료");
         Ingredient i2 = saveIngredient("가_테스트 재료");
@@ -90,15 +101,18 @@ class RecipeServiceTest {
     }
 
     private Recipe saveRecipe(String recipeName, String recipeDescription, Difficulty difficulty,
-                              Ingredient... ingredients) {
+                              Ingredient... ingredients) throws IOException {
         Recipe recipe = new Recipe(recipeName, recipeDescription, difficulty, "인분", (short) 30);
+        BobFile bobFile = uploadAndSaveFile("test.png");
+        recipe.setRecipeFile(bobFile);
+
         recipeRepository.save(recipe);
 
         for (Ingredient ingredient : ingredients) {
             saveRecipeIngredient(recipe, ingredient);
         }
 
-        int recipeDetailOrder = new Random().nextInt(5);
+        int recipeDetailOrder = new Random().nextInt(1, 4);
         for (int order = 1; order <= recipeDetailOrder; order++) {
             saveRecipeDetail(recipe, order, "%d 순서 입니다.".formatted(order));
         }
@@ -106,16 +120,29 @@ class RecipeServiceTest {
         return recipe;
     }
 
+    private BobFile uploadAndSaveFile(String resourceFileName) throws IOException {
+        MultipartFile file = ResourceUtil.getFileFromResource(resourceFileName);
+        FileSaveResponseDto recipeFileSave = s3Service.uploadFile(file);
+        return bobFileService.newFile(recipeFileSave.getFileUrl(),
+                recipeFileSave.getOriginalFilename(),
+                recipeFileSave.getFileName(),
+                recipeFileSave.getFileSize(),
+                recipeFileSave.getContentType());
+    }
+
     private void saveRecipeIngredient(Recipe recipe, Ingredient ingredient) {
-        RecipeIngredients recipeIngredients = new RecipeIngredients(recipe, ingredient, "복잡한 재료", "재료 양");
+        RecipeIngredients recipeIngredients = new RecipeIngredients(recipe, ingredient, ingredient.getIngredientName(), "재료 양");
         recipeIngredientsRepository.save(recipeIngredients);
     }
 
-    private void saveRecipeDetail(Recipe recipe, int order, String text) {
+    private void saveRecipeDetail(Recipe recipe, int order, String text) throws IOException {
         RecipeDetail recipeDetail = new RecipeDetail(recipe, order, text);
+
+        BobFile bobFile = uploadAndSaveFile("test%d.png".formatted(order));
+        recipeDetail.setRecipeDetailFile(bobFile);
+
         recipeDetailRepository.save(recipeDetail);
     }
-
 
     @AfterEach
     void cleanUp() {
@@ -239,20 +266,64 @@ class RecipeServiceTest {
     }
 
     @Test
-    @DisplayName("레시피 상세 조회 테스트")
+    @DisplayName("레시피 상세 조회 테스트 - success")
     void getRecipe_success() {
         // given
         Optional<Recipe> recipeOptional = recipeList.stream().findFirst();
         assertThat(recipeOptional).isPresent();
-        int recipeId = recipeOptional.get().getId();
+        Recipe sourceRecipe = recipeOptional.get();
+        int recipeId = sourceRecipe.getId();
 
         // when
         RecipeDto recipeDto = recipeService.getRecipe(recipeId);
 
-        // then
+        // then (원본 레시피와 조회된 레시피의 비교)
+        // 레시피 검증
         assertThat(recipeDto).isNotNull();
+        assertThat(recipeDto.getRecipeId()).isEqualTo(recipeId);
+        assertThat(recipeDto.getRecipeName()).isEqualTo(sourceRecipe.getRecipeName());
+        assertThat(recipeDto.getRecipeDescription()).isEqualTo(sourceRecipe.getRecipeDescription());
+        assertThat(recipeDto.getDifficulty()).isEqualTo(sourceRecipe.getDifficulty());
+        assertThat(recipeDto.getCookingTime()).isEqualTo(sourceRecipe.getCookingTime());
+        assertThat(recipeDto.getRecipeFileUrl())
+                .isNotBlank()
+                .isEqualTo(sourceRecipe.getFile().getFileUrl());
+
+        // 재료 검증
+        List<RecipeIngredientDto> recipeIngredients = recipeDto.getIngredients();
+        List<RecipeIngredients> sourceRecipeIngredients = sourceRecipe.getRecipeIngredients();
+        assertThat(recipeIngredients)
+                .isNotEmpty()
+                .hasSize(sourceRecipeIngredients.size());
+        assertThat(recipeIngredients)
+                .extracting(RecipeIngredientDto::getRecipeIngredientId)
+                .containsExactlyElementsOf(getRecipeIngredientIds(sourceRecipeIngredients));
+        assertThat(recipeIngredients)
+                .extracting(RecipeIngredientDto::getIngredientDetailName)
+                .containsExactlyElementsOf(getRecipeIngredientsDetailNames(sourceRecipeIngredients));
+        assertThat(recipeIngredients)
+                .extracting(RecipeIngredientDto::getAmount)
+                .containsExactlyElementsOf(getRecipeIngredientsAmounts(sourceRecipeIngredients));
+
+        // detail 검증
+        List<RecipeDetailDto> recipeDetails = recipeDto.getDetails();
+        List<RecipeDetail> sourceRecipeDetails = sourceRecipe.getRecipeDetails();
+        assertThat(recipeDetails)
+                .isNotEmpty()
+                .hasSize(sourceRecipeDetails.size());
+        assertThat(recipeDetails)
+                .extracting(RecipeDetailDto::getRecipeDetailId)
+                .containsExactlyElementsOf(getRecipeDetailsIds(sourceRecipeDetails));
+        assertThat(recipeDetails)
+                .extracting(RecipeDetailDto::getRecipeDetailText)
+                .containsExactlyElementsOf(getRecipeDetailsDetailTexts(sourceRecipeDetails));
+        assertThat(recipeDetails)
+                .extracting(RecipeDetailDto::getRecipeDetailFileUrl)
+                .containsExactlyElementsOf(getRecipeDetailsFileUrls(sourceRecipeDetails));
     }
-    
+
+
+
     @Test
     @DisplayName("레시피 상세 조회 - 실패 (존재 하지 않는 레시피 아이디)")
     void getRecipe_fail_notExistentId() {
@@ -261,5 +332,38 @@ class RecipeServiceTest {
 
         // when & then
         assertThatThrownBy(() -> recipeService.getRecipe(failRecipeId)).isInstanceOf(RecipeNotFoundException.class);
+    }
+
+    private static List<Long> getRecipeIngredientIds(List<RecipeIngredients> sourceRecipeIngredients) {
+        return sourceRecipeIngredients
+                .stream()
+                .map(recipeIngredients -> recipeIngredients.getId().longValue())
+                .toList();
+    }
+
+    private static List<String> getRecipeIngredientsDetailNames(List<RecipeIngredients> sourceRecipeIngredients) {
+        return sourceRecipeIngredients
+                .stream()
+                .map(RecipeIngredients::getIngredientDetailName)
+                .toList();
+    }
+
+    private static List<String> getRecipeIngredientsAmounts(List<RecipeIngredients> sourceRecipeIngredients) {
+        return sourceRecipeIngredients
+                .stream()
+                .map(RecipeIngredients::getAmount)
+                .toList();
+    }
+
+    private static List<Long> getRecipeDetailsIds(List<RecipeDetail> sourceRecipeDetails) {
+        return sourceRecipeDetails.stream().map(recipeDetail -> recipeDetail.getId().longValue()).toList();
+    }
+
+    private static List<String> getRecipeDetailsDetailTexts(List<RecipeDetail> sourceRecipeDetails) {
+        return sourceRecipeDetails.stream().map(RecipeDetail::getRecipeDetailText).toList();
+    }
+
+    private static List<String> getRecipeDetailsFileUrls(List<RecipeDetail> sourceRecipeDetails) {
+        return sourceRecipeDetails.stream().map(recipeDetail -> recipeDetail.getFile().getFileUrl()).toList();
     }
 }
