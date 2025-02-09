@@ -96,6 +96,7 @@ public class RecipeConverter {
     private static RecipeDetailDto convertDetailDto(RecipeDetail recipeDetail) {
         return RecipeDetailDto.builder()
                 .recipeDetailId(recipeDetail.getId())
+                .recipeOrder(recipeDetail.getRecipeOrder())
                 .recipeDetailText(recipeDetail.getRecipeDetailText())
                 .recipeDetailFileUrl(convertFileUrl(recipeDetail.getFile()))
 

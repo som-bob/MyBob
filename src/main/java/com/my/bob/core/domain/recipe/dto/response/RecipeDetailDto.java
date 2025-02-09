@@ -8,6 +8,7 @@ import lombok.Data;
 public class RecipeDetailDto {
 
     private long recipeDetailId;
+    private int recipeOrder;
     private String recipeDetailFileUrl;
     private String recipeDetailText;
 
