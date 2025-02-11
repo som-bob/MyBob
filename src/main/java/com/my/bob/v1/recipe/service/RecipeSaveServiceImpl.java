@@ -42,11 +42,32 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
     @Override
     @Transactional
-    public int newRecipe(RecipeCreateDto dto) {
+    public int newRecipe(RecipeCreateDto dto, MultipartFile recipeFile, Map<String, MultipartFile> recipeDetailsFiles) {
+        mapFilesToDto(dto, recipeFile, recipeDetailsFiles);   // 파일 세팅
+
         Recipe savedRecipe = saveRecipe(dto);       // 레시피 저장
-        precessRecipeIngredients(savedRecipe, dto.getIngredients());    // 재료 저장
+        processRecipeIngredients(savedRecipe, dto.getIngredients());    // 재료 저장
         processRecipeDetails(savedRecipe, dto.getRecipeDetails());      // 레시피 디테일 상세 저장
         return savedRecipe.getId();
+    }
+
+    private void mapFilesToDto(RecipeCreateDto dto,
+                               MultipartFile recipeFile, Map<String, MultipartFile> recipeDetailsFiles) {
+        dto.setRecipeFile(recipeFile);
+
+        if (Collections.isEmpty(dto.getRecipeDetails()) || recipeDetailsFiles == null) {
+            return;
+        }
+
+        List<RecipeDetailCreateDto> recipeDetails = dto.getRecipeDetails();
+        if (!Collections.isEmpty(recipeDetails)) {
+            for (Map.Entry<String, MultipartFile> entry : recipeDetailsFiles.entrySet()) {
+                if (entry.getKey().matches("\\d+")) {
+                    int index = Integer.parseInt(entry.getKey());
+                    recipeDetails.get(index).setRecipeDetailFile(entry.getValue());
+                }
+            }
+        }
     }
 
     private Recipe saveRecipe(RecipeCreateDto dto) {
@@ -58,16 +79,14 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                 .servings(dto.getServings())
                 .build();
 
-        Recipe savedRecipe = recipeRepository.save(recipe);
-
         // 레시피 파일 저장
         MultipartFile recipeFile = dto.getRecipeFile();
         if (recipeFile != null) {
             BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile);
-            savedRecipe.setRecipeFile(bobRecipeFile);
+            recipe.setRecipeFile(bobRecipeFile);
         }
 
-        return recipe;
+        return recipeRepository.save(recipe);
     }
 
     private void processRecipeDetails(Recipe recipe, List<RecipeDetailCreateDto> recipeDetails) {
@@ -80,7 +99,6 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                     RecipeDetailCreateDto detailDto = recipeDetails.get(index);
 
                     RecipeDetail recipeDetail = new RecipeDetail(recipe, index + 1, detailDto.getRecipeDetailText());
-                    recipeDetailRepository.save(recipeDetail);
 
                     // 디테일 파일 저장
                     MultipartFile recipeDetailFile = detailDto.getRecipeDetailFile();
@@ -95,7 +113,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
         recipeDetailRepository.saveAll(recipeDetailsList);
     }
 
-    private void precessRecipeIngredients(Recipe recipe, List<RecipeIngredientCreateDto> recipeIngredients) {
+    private void processRecipeIngredients(Recipe recipe, List<RecipeIngredientCreateDto> recipeIngredients) {
         if (Collections.isEmpty(recipeIngredients)) {
             return;
         }

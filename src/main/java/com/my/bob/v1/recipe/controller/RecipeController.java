@@ -13,8 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -42,9 +46,13 @@ public class RecipeController {
     }
 
     // 레시피 추가
-    @PostMapping("/new")
-    public ResponseEntity<ResponseDto<Integer>> createRecipe(@RequestBody RecipeCreateDto dto) {
-        int savedId = recipeSaveService.newRecipe(dto);
+    @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto<Integer>> createRecipe(
+            @RequestPart("data") RecipeCreateDto dto,
+            @RequestPart(value = "recipeFile", required = false) MultipartFile recipeFile,
+            @RequestPart(value = "recipeDetailsFiles", required = false) Map<String, MultipartFile> recipeDetailsFiles) {
+
+        int savedId = recipeSaveService.newRecipe(dto, recipeFile, recipeDetailsFiles);
 
         return ResponseEntity.ok(new ResponseDto<>(savedId));
     }

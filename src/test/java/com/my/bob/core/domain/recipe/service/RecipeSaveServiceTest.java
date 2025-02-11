@@ -19,11 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.my.bob.util.ResourceUtil.getFileFromResource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,9 +61,15 @@ class RecipeSaveServiceTest {
     void saveRecipe() throws IOException {
         // given
         RecipeCreateDto dto = createRecipeData();
+        MultipartFile recipeFile = getFileFromResource("test.png");
+        Map<String, MultipartFile> recipeDetailsFiles = new HashMap<>();
+        for (int i = 1; i <= 3; i++) {
+            MultipartFile recipeDetail = getFileFromResource(String.format("test%d.png", i));
+            recipeDetailsFiles.put(String.valueOf(i - 1), recipeDetail);
+        }
 
         // when
-        int recipeId = recipeSaveService.newRecipe(dto);
+        int recipeId = recipeSaveService.newRecipe(dto, recipeFile, recipeDetailsFiles);
         Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
 
         /* then */
@@ -99,13 +104,12 @@ class RecipeSaveServiceTest {
         }
     }
 
-    private RecipeCreateDto createRecipeData() throws IOException {
+    private RecipeCreateDto createRecipeData() {
         RecipeCreateDto dto = new RecipeCreateDto();
         dto.setRecipeName("레시피");
         dto.setDifficulty(Difficulty.ANYONE);
         dto.setRecipeDescription("레시피 설명입니다요.");
         dto.setCookingTime((short) 30);
-        dto.setRecipeFile(getFileFromResource("test.png"));
 
         // 재료 준비
         List<RecipeIngredientCreateDto> recipeIngredientCreateDtos = ingredientList
@@ -122,7 +126,6 @@ class RecipeSaveServiceTest {
         List<RecipeDetailCreateDto> details = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
             RecipeDetailCreateDto detailDto = new RecipeDetailCreateDto();
-            detailDto.setRecipeDetailFile(getFileFromResource(String.format("test%d.png", i)));
             detailDto.setRecipeDetailText(String.format("%d순서 입니다.", i));
             details.add(detailDto);
         }
