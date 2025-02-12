@@ -18,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -50,7 +48,7 @@ public class RecipeController {
     public ResponseEntity<ResponseDto<Integer>> createRecipe(
             @RequestPart("data") RecipeCreateDto dto,
             @RequestPart(value = "recipeFile", required = false) MultipartFile recipeFile,
-            @RequestPart(value = "recipeDetailsFiles", required = false) Map<String, MultipartFile> recipeDetailsFiles) {
+            @RequestPart(value = "recipeDetailsFiles", required = false) MultipartFile[] recipeDetailsFiles) {
 
         int savedId = recipeSaveService.newRecipe(dto, recipeFile, recipeDetailsFiles);
 

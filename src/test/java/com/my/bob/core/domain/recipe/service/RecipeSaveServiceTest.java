@@ -62,11 +62,12 @@ class RecipeSaveServiceTest {
         // given
         RecipeCreateDto dto = createRecipeData();
         MultipartFile recipeFile = getFileFromResource("test.png");
-        Map<String, MultipartFile> recipeDetailsFiles = new HashMap<>();
+        List<MultipartFile> recipeDetailsFilesList = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
             MultipartFile recipeDetail = getFileFromResource(String.format("test%d.png", i));
-            recipeDetailsFiles.put(String.valueOf(i - 1), recipeDetail);
+            recipeDetailsFilesList.add(recipeDetail);
         }
+        MultipartFile[] recipeDetailsFiles = recipeDetailsFilesList.toArray(new MultipartFile[0]);
 
         // when
         int recipeId = recipeSaveService.newRecipe(dto, recipeFile, recipeDetailsFiles);

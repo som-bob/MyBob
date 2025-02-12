@@ -42,7 +42,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
     @Override
     @Transactional
-    public int newRecipe(RecipeCreateDto dto, MultipartFile recipeFile, Map<String, MultipartFile> recipeDetailsFiles) {
+    public int newRecipe(RecipeCreateDto dto, MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
         mapFilesToDto(dto, recipeFile, recipeDetailsFiles);   // 파일 세팅
 
         Recipe savedRecipe = saveRecipe(dto);       // 레시피 저장
@@ -52,7 +52,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
     }
 
     private void mapFilesToDto(RecipeCreateDto dto,
-                               MultipartFile recipeFile, Map<String, MultipartFile> recipeDetailsFiles) {
+                               MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
         dto.setRecipeFile(recipeFile);
 
         if (Collections.isEmpty(dto.getRecipeDetails()) || recipeDetailsFiles == null) {
@@ -61,10 +61,10 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
         List<RecipeDetailCreateDto> recipeDetails = dto.getRecipeDetails();
         if (!Collections.isEmpty(recipeDetails)) {
-            for (Map.Entry<String, MultipartFile> entry : recipeDetailsFiles.entrySet()) {
-                if (entry.getKey().matches("\\d+")) {
-                    int index = Integer.parseInt(entry.getKey());
-                    recipeDetails.get(index).setRecipeDetailFile(entry.getValue());
+            for (int index = 0; index < recipeDetailsFiles.length; index++) {
+                MultipartFile recipeDetailsFile = recipeDetailsFiles[index];
+                if(! recipeDetailsFile.isEmpty()){
+                    recipeDetails.get(index).setRecipeDetailFile(recipeDetailsFile);
                 }
             }
         }
