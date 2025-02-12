@@ -1,6 +1,6 @@
 package com.my.bob.core.domain.recipe.entity;
 
-import com.my.bob.core.domain.base.entity.BaseTimeEntity;
+import com.my.bob.core.domain.base.entity.BaseEntity;
 import com.my.bob.core.domain.file.entity.BobFile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "bob_recipe_detail")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecipeDetail extends BaseTimeEntity {
+public class RecipeDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_detail_id", nullable = false)
