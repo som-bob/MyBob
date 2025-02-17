@@ -197,7 +197,7 @@ class RecipeServiceTest {
     void getAllRecipeByDifficulty() {
         // given
         RecipeSearchDto dto = new RecipeSearchDto();
-        dto.setDifficulty(Difficulty.BEGINNER);
+        dto.setDifficulty(Difficulty.BEGINNER.getCode());
         PageRequest pageRequest = PageRequest.of(0, recipeList.size());
 
         // when

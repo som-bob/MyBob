@@ -33,10 +33,10 @@ public class RecipeController {
         return ResponseEntity.ok(new ResponseDto<>(Difficulty.values()));
     }
 
-    // 레시피 리스트 조회 (TODO get 변경할 것)
-    @PostMapping
+    // 레시피 리스트 조회
+    @GetMapping
     public ResponseEntity<ResponseDto<PageResponse<RecipeListItemDto>>> getRecipe(Pageable pageable,
-                                                                                  @RequestBody RecipeSearchDto dto) {
+                                                                                  @ModelAttribute RecipeSearchDto dto) {
         Page<RecipeListItemDto> recipes = recipeService.getRecipes(pageable, dto);
         PageResponse<RecipeListItemDto> pageResponse = PageResponse.fromPage(recipes);
 

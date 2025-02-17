@@ -1,6 +1,5 @@
 package com.my.bob.core.domain.recipe.dto.request;
 
-import com.my.bob.core.domain.recipe.contants.Difficulty;
 import lombok.Data;
 
 import java.util.List;
@@ -12,5 +11,5 @@ public class RecipeSearchDto {
     private String recipeDescription;
 
     private List<Integer> ingredientIds;
-    private Difficulty difficulty;      // 난이도
+    private String difficulty;      // 난이도
 }

@@ -5,7 +5,6 @@ import com.my.bob.core.domain.base.dto.PageResponse;
 import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.member.repository.BobUserRepository;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
-import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
 import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
@@ -79,13 +78,10 @@ class RecipeControllerIntegrationTest extends IntegrationTestUtils {
         saveRecipe("2번 레시피", "2번 테스트 레시피", Difficulty.BEGINNER, i1, i5);    // 2번 레시피, 재료 1, 5
         saveRecipe("3번 레시피", "3번 테스트 레시피", Difficulty.BEGINNER, i2, i4);    // 3번 레피시, 재료 2, 4
 
-        RecipeSearchDto dto = new RecipeSearchDto();
-
         // when & then
-        webTestClient.post()
-                .uri(baseUrl)
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path(baseUrl).build())
                 .header("Authorization", "Bearer " + token)
-                .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<ResponseDto<PageResponse<RecipeListItemDto>>>() {
@@ -103,8 +99,6 @@ class RecipeControllerIntegrationTest extends IntegrationTestUtils {
     void getAllRecipe_success_recipeNameSearch() {
         // given
         String recipeName = "1번 레시피";
-        RecipeSearchDto dto = new RecipeSearchDto();
-        dto.setRecipeName("1번 레시피");
 
         // 기본 재료 3개 이상 저장
         Ingredient i1 = saveIngredient("나_테스트 재료");
@@ -119,10 +113,10 @@ class RecipeControllerIntegrationTest extends IntegrationTestUtils {
         saveRecipe("3번 레시피", "3번 테스트 레시피", Difficulty.BEGINNER, i2, i4);    // 3번 레피시, 재료 2, 4
 
         // when & then
-        webTestClient.post()
-                .uri(baseUrl)
+        webTestClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder.path(baseUrl).queryParam("recipeName", recipeName).build())
                 .header("Authorization", "Bearer " + token)
-                .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<ResponseDto<PageResponse<RecipeListItemDto>>>() {
@@ -154,14 +148,12 @@ class RecipeControllerIntegrationTest extends IntegrationTestUtils {
 
         /* 모든 재료로 검색 - 모든 레시피가 조회되어야 함 */
         List<Integer> allIngredientIds = List.of(i1.getId(), i2.getId(), i3.getId(), i4.getId(), i5.getId());
-        RecipeSearchDto recipeSearchDto = new RecipeSearchDto();
-        recipeSearchDto.setIngredientIds(allIngredientIds);
 
         // when & then
-        webTestClient.post()
-                .uri(baseUrl)
+        webTestClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder.path(baseUrl).queryParam("ingredientIds", allIngredientIds).build())
                 .header("Authorization", "Bearer " + token)
-                .bodyValue(recipeSearchDto)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<ResponseDto<PageResponse<RecipeListItemDto>>>() {
@@ -186,14 +178,12 @@ class RecipeControllerIntegrationTest extends IntegrationTestUtils {
 
         /* 일부 재료로 검색 - 한 개 레시피가 조회 되어야 함 */
         List<Integer> partIngredientIds = List.of(i1.getId(), i5.getId());
-        RecipeSearchDto recipeSearchDto2 = new RecipeSearchDto();
-        recipeSearchDto2.setIngredientIds(partIngredientIds);
 
         // when & then
-        webTestClient.post()
-                .uri(baseUrl)
+        webTestClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder.path(baseUrl).queryParam("ingredientIds", partIngredientIds).build())
                 .header("Authorization", "Bearer " + token)
-                .bodyValue(recipeSearchDto2)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<ResponseDto<PageResponse<RecipeListItemDto>>>() {
@@ -235,14 +225,11 @@ class RecipeControllerIntegrationTest extends IntegrationTestUtils {
         saveRecipe("2번 레시피", "2번 테스트 레시피", difficulty, i1, i5);    // 2번 레시피, 재료 1, 5
         saveRecipe("3번 레시피", "3번 테스트 레시피", difficulty, i2, i4);    // 3번 레피시, 재료 2, 4
 
-        RecipeSearchDto dto = new RecipeSearchDto();
-        dto.setDifficulty(difficulty);
-
         // when & then
-        webTestClient.post()
-                .uri(baseUrl)
+        webTestClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder.path(baseUrl).queryParam("difficulty", difficulty.getCode()).build())
                 .header("Authorization", "Bearer " + token)
-                .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<ResponseDto<PageResponse<RecipeListItemDto>>>() {

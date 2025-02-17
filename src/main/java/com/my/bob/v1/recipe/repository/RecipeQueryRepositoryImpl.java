@@ -31,7 +31,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    // TODO check 쿼리 실행 속도가 느리다면 recipe_id, ingredient_id, difficulty, recipe_name에 인덱스 추가
+    // check 쿼리 실행 속도가 느리다면 recipe_id, ingredient_id, difficulty, recipe_name에 인덱스 추가
     @Override
     public Page<RecipeListItemDto> getByParam(Pageable pageable, RecipeSearchDto dto) {
         // 총 데이터 개수
@@ -127,7 +127,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
 
     // 난이도 조건
     private BooleanExpression difficultyEquals(RecipeSearchDto dto) {
-        Difficulty difficulty = dto.getDifficulty();
-        return difficulty != null ? recipe.difficulty.eq(difficulty) : null;
+        Optional<Difficulty> optionalDifficulty = Difficulty.fromString(dto.getDifficulty());
+        return optionalDifficulty.map(recipe.difficulty::eq).orElse(null);
     }
 }

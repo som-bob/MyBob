@@ -2,11 +2,13 @@ package com.my.bob.core.domain.recipe.contants;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.my.bob.core.constants.interfaces.EnumPropertyType;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import java.util.Arrays;
+import java.util.Optional;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Difficulty implements EnumPropertyType {
     ANYONE("아무나"),
@@ -17,7 +19,7 @@ public enum Difficulty implements EnumPropertyType {
 
     ;
 
-    private String title;
+    private final String title;
 
     @Override
     public String getCode() {
@@ -35,6 +37,17 @@ public enum Difficulty implements EnumPropertyType {
 
     @JsonCreator
     public static Difficulty fromJson(@JsonProperty("code") String code) {
-        return valueOf(code);
+        try {
+            return Difficulty.valueOf(code.toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return null;
+        }
+    }
+
+    @JsonIgnore
+    public static Optional<Difficulty> fromString(String code) {
+        return Arrays.stream(Difficulty.values())
+                .filter(difficulty -> difficulty.getCode().equalsIgnoreCase(code))
+                .findFirst();
     }
 }
