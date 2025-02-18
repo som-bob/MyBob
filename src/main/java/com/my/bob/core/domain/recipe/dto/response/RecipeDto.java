@@ -23,6 +23,8 @@ public class RecipeDto {
 
     private String recipeFileUrl;
 
+    private String source;
+
     private List<RecipeIngredientDto> ingredients;
 
     private List<RecipeDetailDto> details;

@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS bob_recipe (
     servings VARCHAR(50),
     difficulty VARCHAR(20),
     source VARCHAR(255),
+    is_deleted tinyint(1) NOT NULL DEFAULT 0,
     file_id INTEGER,
     reg_id varchar(100) NOT NULL,
     reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

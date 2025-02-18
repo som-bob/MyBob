@@ -58,6 +58,7 @@ public class RecipeConverter {
                 .difficulty(recipe.getDifficulty())
                 .cookingTime(recipe.getCookingTime())
                 .servings(recipe.getServings())
+                .source(recipe.getSource())
                 .recipeFileUrl(convertFileUrl(recipe.getFile()))
 
                 .ingredients(recipeIngredientDtoList)

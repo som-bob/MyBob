@@ -41,6 +41,10 @@ public class Recipe extends BaseEntity {
     @Column(name = "cooking_time")
     private Short cookingTime;
 
+    @NotNull
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
     @Size(max = 255)
     @Column(name = "source")
     private String source;
@@ -79,5 +83,9 @@ public class Recipe extends BaseEntity {
 
     protected void addRecipeDetail(RecipeDetail recipeDetail) {
         this.recipeDetails.add(recipeDetail);
+    }
+
+    public void delete(){
+        this.isDeleted = true;
     }
 }

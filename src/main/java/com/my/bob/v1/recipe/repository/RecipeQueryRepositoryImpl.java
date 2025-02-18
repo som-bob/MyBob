@@ -41,6 +41,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                         .leftJoin(recipe.recipeIngredients, recipeIngredients)
                         .leftJoin(recipeIngredients.ingredient, ingredient)
                         .where(
+                                isNotDeleted(),
                                 recipeNameContains(dto),
                                 recipeDescriptionContains(dto),
                                 ingredientIdsIn(dto),
@@ -61,6 +62,7 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
                 .leftJoin(recipe.recipeIngredients, recipeIngredients)
                 .leftJoin(recipeIngredients.ingredient, ingredient)
                 .where(
+                        isNotDeleted(),
                         recipeNameContains(dto),
                         recipeDescriptionContains(dto),
                         ingredientIdsIn(dto),
@@ -84,6 +86,12 @@ public class RecipeQueryRepositoryImpl implements RecipeQueryRepository {
     }
 
     /* private conditions method */
+    // default - 삭제 되지 않은 레시피만 조회
+    private BooleanExpression isNotDeleted(){
+        return recipe.isDeleted.eq(Boolean.FALSE);
+    }
+
+
     // 레시피 이름 조건
     private BooleanExpression recipeNameContains(RecipeSearchDto dto) {
         String recipeName = dto.getRecipeName();

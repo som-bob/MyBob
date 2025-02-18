@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS `bob_recipe` (
   `difficulty` varchar(20) DEFAULT NULL COMMENT '난이도',
   `cooking_time` smallint(6) DEFAULT NULL COMMENT '소요시간',
   `source` varchar(255) DEFAULT NULL COMMENT '출처 URL 또는 출처 정보',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '삭제 여부',
   `file_id` int(11) DEFAULT NULL COMMENT '대표 사진 file id',
   `reg_id` varchar(100) NOT NULL COMMENT '글쓴이 이메일',
   `reg_date` datetime DEFAULT NULL COMMENT '등록 날짜',

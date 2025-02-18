@@ -3,6 +3,7 @@ package com.my.bob.core.domain.recipe.service;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.exception.IngredientNotFoundException;
+import com.my.bob.core.domain.recipe.exception.RecipeDeletedException;
 import com.my.bob.core.domain.recipe.exception.RecipeNotFoundException;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
@@ -32,7 +33,11 @@ public class RecipeServiceHelper {
         if(recipeOptional.isEmpty()) {
             throw new RecipeNotFoundException();
         }
+        Recipe recipe = recipeOptional.get();
+        if(recipe.getIsDeleted().equals(Boolean.TRUE)) {
+            throw new RecipeDeletedException();
+        }
 
-        return recipeOptional.get();
+        return recipe;
     }
 }
