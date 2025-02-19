@@ -1,10 +1,9 @@
 package com.my.bob.v1.recipe.service;
 
 import com.my.bob.core.domain.file.entity.BobFile;
+import com.my.bob.core.domain.file.repsitory.BobFileRepository;
 import com.my.bob.core.domain.file.service.FileSaveService;
-import com.my.bob.core.domain.recipe.dto.request.RecipeCreateDto;
-import com.my.bob.core.domain.recipe.dto.request.RecipeDetailCreateDto;
-import com.my.bob.core.domain.recipe.dto.request.RecipeIngredientCreateDto;
+import com.my.bob.core.domain.recipe.dto.request.*;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.entity.RecipeDetail;
@@ -14,6 +13,8 @@ import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import com.my.bob.core.domain.recipe.service.RecipeSaveService;
+import com.my.bob.core.domain.recipe.service.RecipeServiceHelper;
+import com.my.bob.core.external.s3.service.S3Service;
 import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +36,14 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
     private final FileSaveService fileSaveService;
 
+    private final RecipeServiceHelper recipeServiceHelper;
+
     private final RecipeRepository recipeRepository;
     private final IngredientRepository ingredientRepository;
     private final RecipeIngredientsRepository recipeIngredientsRepository;
     private final RecipeDetailRepository recipeDetailRepository;
+    private final S3Service s3Service;
+    private final BobFileRepository bobFileRepository;
 
     @Override
     @Transactional
@@ -51,6 +56,28 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
         return savedRecipe.getId();
     }
 
+    @Override
+    @Transactional
+    public void updateRecipe(int recipeId, RecipeUpdateDto dto,
+                             MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
+        Recipe recipe = recipeServiceHelper.getRecipe(recipeId);
+        if(! recipeFile.isEmpty()) {
+            // 삭제
+            BobFile file = recipe.getFile();
+            s3Service.deleteFile(file.getFileName());
+            bobFileRepository.delete(file);
+
+            // 저장
+            BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile);
+            recipe.setRecipeFile(bobRecipeFile);
+        }
+
+        // 재료 모두 삭제
+        recipe.cleanUpIngredients();
+    }
+
+
+    /* private method */
     private void mapFilesToDto(RecipeCreateDto dto,
                                MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
         dto.setRecipeFile(recipeFile);

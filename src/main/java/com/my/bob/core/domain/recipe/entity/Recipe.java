@@ -56,11 +56,11 @@ public class Recipe extends BaseEntity {
     @Size(max = 50)
     private String servings;
 
-    @OneToMany(mappedBy = "recipe")
-    private List<RecipeDetail> recipeDetails = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<RecipeDetail> recipeDetails = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", orphanRemoval = true)
-    private List<RecipeIngredients> recipeIngredients = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<RecipeIngredients> recipeIngredients = new ArrayList<>();
 
     @Builder
     public Recipe(String recipeName, String recipeDescription,
@@ -87,5 +87,9 @@ public class Recipe extends BaseEntity {
 
     public void delete(){
         this.isDeleted = true;
+    }
+
+    public void cleanUpIngredients(){
+        this.recipeIngredients.clear();
     }
 }

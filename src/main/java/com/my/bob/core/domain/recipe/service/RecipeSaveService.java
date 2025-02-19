@@ -1,6 +1,7 @@
 package com.my.bob.core.domain.recipe.service;
 
 import com.my.bob.core.domain.recipe.dto.request.RecipeCreateDto;
+import com.my.bob.core.domain.recipe.dto.request.RecipeUpdateDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface RecipeSaveService {
@@ -12,4 +13,7 @@ public interface RecipeSaveService {
      * @return 저장된 레시피의 id 값입니다.
      */
     int newRecipe(RecipeCreateDto dto, MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles);
+
+    void updateRecipe(int recipeId, RecipeUpdateDto dto,
+                      MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles);
 }

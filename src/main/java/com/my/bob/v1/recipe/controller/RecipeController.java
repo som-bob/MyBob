@@ -5,6 +5,7 @@ import com.my.bob.core.domain.base.dto.ResponseDto;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.recipe.dto.request.RecipeCreateDto;
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
+import com.my.bob.core.domain.recipe.dto.request.RecipeUpdateDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.service.RecipeSaveService;
@@ -56,8 +57,14 @@ public class RecipeController {
     }
 
     // 레시피 조회
-    @GetMapping("/{recipeId}")
-    public ResponseEntity<ResponseDto<RecipeDto>> getRecipe(@PathVariable int recipeId) {
+    @GetMapping(value = "/{recipeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto<RecipeDto>> getRecipe(
+            @PathVariable int recipeId,
+            @RequestPart("data") RecipeUpdateDto dto,
+            @RequestPart(value = "recipeFile", required = false) MultipartFile recipeFile,
+            @RequestPart(value = "recipeDetailsFiles", required = false) MultipartFile[] recipeDetailsFiles) {
+        recipeSaveService.updateRecipe(recipeId, dto, recipeFile, recipeDetailsFiles);
+
         return ResponseEntity.ok(new ResponseDto<>(recipeService.getRecipe(recipeId)));
     }
 
