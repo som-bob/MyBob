@@ -6,7 +6,6 @@ import com.my.bob.core.domain.file.repsitory.BobFileRepository;
 import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
 import com.my.bob.core.external.s3.service.S3Service;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -93,7 +91,7 @@ class BobFileServiceTest {
         if(bobFileOptional.isEmpty()) {
             fail("fail to find bob file");
         }
-        return bobFileOptional.get();
+        return bobFileOptional.orElse(null);
     }
 
 }
