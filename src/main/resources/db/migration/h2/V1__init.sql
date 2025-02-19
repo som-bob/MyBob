@@ -73,6 +73,8 @@ CREATE TABLE IF NOT EXISTS bob_file (
 	file_name varchar(255) NULL,
 	file_size BIGINT NULL,
 	content_type varchar(255) NULL,
+    is_deleted tinyint(1) NOT NULL DEFAULT 0,
+    route varchar(255) NOT NULL,
 	reg_id varchar(100) NOT NULL,
 	reg_date datetime NULL,
 	PRIMARY KEY (file_id)

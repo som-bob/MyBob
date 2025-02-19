@@ -1,5 +1,6 @@
 package com.my.bob.core.domain.recipe.service;
 
+import com.my.bob.core.domain.file.constant.FileRoute;
 import com.my.bob.core.domain.file.entity.BobFile;
 import com.my.bob.core.domain.file.service.FileSaveService;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
@@ -98,7 +99,7 @@ class RecipeServiceTest {
     private Recipe saveRecipe(String recipeName, String recipeDescription, Difficulty difficulty,
                               Ingredient... ingredients) throws IOException {
         Recipe recipe = new Recipe(recipeName, recipeDescription, difficulty, "인분", (short) 30);
-        BobFile bobFile = uploadAndSaveFile("test.png");
+        BobFile bobFile = uploadAndSaveFile("test.png", FileRoute.RECIPE);
         recipe.setRecipeFile(bobFile);
 
         recipeRepository.save(recipe);
@@ -115,9 +116,9 @@ class RecipeServiceTest {
         return recipe;
     }
 
-    private BobFile uploadAndSaveFile(String resourceFileName) throws IOException {
+    private BobFile uploadAndSaveFile(String resourceFileName, FileRoute fileRoute) throws IOException {
         MultipartFile file = ResourceUtil.getFileFromResource(resourceFileName);
-        return fileSaveService.uploadAndSaveFile(file);
+        return fileSaveService.uploadAndSaveFile(file, fileRoute);
     }
 
     private void saveRecipeIngredient(Recipe recipe, Ingredient ingredient) {
@@ -128,7 +129,7 @@ class RecipeServiceTest {
     private void saveRecipeDetail(Recipe recipe, int order, String text) throws IOException {
         RecipeDetail recipeDetail = new RecipeDetail(recipe, order, text);
 
-        BobFile bobFile = uploadAndSaveFile("test%d.png".formatted(order));
+        BobFile bobFile = uploadAndSaveFile("test%d.png".formatted(order), FileRoute.RECIPE_DETAIL);
         recipeDetail.setRecipeDetailFile(bobFile);
 
         recipeDetailRepository.save(recipeDetail);

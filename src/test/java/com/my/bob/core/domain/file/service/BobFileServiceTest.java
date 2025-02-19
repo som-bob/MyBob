@@ -1,10 +1,12 @@
 package com.my.bob.core.domain.file.service;
 
+import com.my.bob.core.domain.file.constant.FileRoute;
 import com.my.bob.core.domain.file.entity.BobFile;
 import com.my.bob.core.domain.file.repsitory.BobFileRepository;
 import com.my.bob.core.external.s3.dto.response.FileSaveResponseDto;
 import com.my.bob.core.external.s3.service.S3Service;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -57,11 +60,14 @@ class BobFileServiceTest {
                 saveResponseDto.getOriginalFilename(),
                 saveResponseDto.getFileName(),
                 saveResponseDto.getFileSize(),
-                saveResponseDto.getContentType());
+                saveResponseDto.getContentType(),
+                FileRoute.TEST);
         saveFileId = bobFile.getFileId();
 
         // then
         assertThat(saveFileId).isPositive();
+        assertThat(bobFile.getIsDeleted()).isFalse();
+        assertThat(bobFile.getRoute()).isEqualTo(FileRoute.TEST);
     }
 
     @Test
@@ -70,11 +76,7 @@ class BobFileServiceTest {
     void deleteFile_Success() {
         // given
         assertThat(saveFileId).isNotNull();
-        Optional<BobFile> bobFileOptional = bobFileRepository.findById(saveFileId);
-        if(bobFileOptional.isEmpty()) {
-            fail("fail to find bob file");
-        }
-        BobFile bobFile = bobFileOptional.get();
+        BobFile bobFile = getBobFile();
         String fileName = bobFile.getFileName();
 
         // when
@@ -82,7 +84,16 @@ class BobFileServiceTest {
 
         // then
         bobFileService.deleteFile(saveFileId);
-        saveFileId = null;
+        BobFile refindFile = getBobFile();
+        assertThat(refindFile.getIsDeleted()).isTrue();
+    }
+
+    private BobFile getBobFile() {
+        Optional<BobFile> bobFileOptional = bobFileRepository.findById(saveFileId);
+        if(bobFileOptional.isEmpty()) {
+            fail("fail to find bob file");
+        }
+        return bobFileOptional.get();
     }
 
 }

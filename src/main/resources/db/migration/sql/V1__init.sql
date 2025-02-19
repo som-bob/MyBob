@@ -74,6 +74,8 @@ CREATE TABLE IF NOT EXISTS `bob_file` (
 	`file_name` varchar(255) NULL COMMENT '파일명',
 	`file_size` BIGINT NULL COMMENT '파일 크기',
 	`content_type` varchar(255) NULL COMMENT 'MIME 타입',
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '파일 삭제 여부',
+    `route` varchar(255) NOT NULL COMMENT '파일 저장 경로 (레시피, 레시피 detail...)',
 	`reg_id` varchar(100) NOT NULL COMMENT '등록자 이메일',
 	`reg_date` datetime NULL COMMENT '등록 날짜',
 	PRIMARY KEY (`file_id`)

@@ -1,5 +1,6 @@
 package com.my.bob.v1.file.service;
 
+import com.my.bob.core.domain.file.constant.FileRoute;
 import com.my.bob.core.domain.file.entity.BobFile;
 import com.my.bob.core.domain.file.service.BobFileService;
 import com.my.bob.core.domain.file.service.FileSaveService;
@@ -19,12 +20,13 @@ public class FileSaveServiceImpl implements FileSaveService {
     private final BobFileService bobFileService;
 
     @Override
-    public BobFile uploadAndSaveFile(MultipartFile file) {
+    public BobFile uploadAndSaveFile(MultipartFile file, FileRoute route) {
         FileSaveResponseDto recipeFileSave = s3Service.uploadFile(file);
         return bobFileService.newFile(recipeFileSave.getFileUrl(),
                 recipeFileSave.getOriginalFilename(),
                 recipeFileSave.getFileName(),
                 recipeFileSave.getFileSize(),
-                recipeFileSave.getContentType());
+                recipeFileSave.getContentType(),
+                route);
     }
 }

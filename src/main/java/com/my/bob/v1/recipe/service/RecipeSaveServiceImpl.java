@@ -1,9 +1,13 @@
 package com.my.bob.v1.recipe.service;
 
+import com.my.bob.core.domain.file.constant.FileRoute;
 import com.my.bob.core.domain.file.entity.BobFile;
 import com.my.bob.core.domain.file.repsitory.BobFileRepository;
 import com.my.bob.core.domain.file.service.FileSaveService;
-import com.my.bob.core.domain.recipe.dto.request.*;
+import com.my.bob.core.domain.recipe.dto.request.RecipeCreateDto;
+import com.my.bob.core.domain.recipe.dto.request.RecipeDetailCreateDto;
+import com.my.bob.core.domain.recipe.dto.request.RecipeIngredientCreateDto;
+import com.my.bob.core.domain.recipe.dto.request.RecipeUpdateDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.entity.RecipeDetail;
@@ -68,7 +72,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
             bobFileRepository.delete(file);
 
             // 저장
-            BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile);
+            BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile, FileRoute.RECIPE);
             recipe.setRecipeFile(bobRecipeFile);
         }
 
@@ -109,7 +113,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
         // 레시피 파일 저장
         MultipartFile recipeFile = dto.getRecipeFile();
         if (recipeFile != null) {
-            BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile);
+            BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile, FileRoute.RECIPE);
             recipe.setRecipeFile(bobRecipeFile);
         }
 
@@ -130,7 +134,8 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                     // 디테일 파일 저장
                     MultipartFile recipeDetailFile = detailDto.getRecipeDetailFile();
                     if (recipeDetailFile != null) {
-                        BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeDetailFile);
+                        BobFile bobRecipeFile =
+                                fileSaveService.uploadAndSaveFile(recipeDetailFile, FileRoute.RECIPE_DETAIL);
                         recipeDetail.setRecipeDetailFile(bobRecipeFile);
                     }
 

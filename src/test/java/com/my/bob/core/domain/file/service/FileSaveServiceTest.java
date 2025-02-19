@@ -1,6 +1,7 @@
 package com.my.bob.core.domain.file.service;
 
 import com.my.bob.account.WithAccount;
+import com.my.bob.core.domain.file.constant.FileRoute;
 import com.my.bob.core.domain.file.entity.BobFile;
 import com.my.bob.util.ResourceUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ class FileSaveServiceTest {
         MultipartFile file = ResourceUtil.getFileFromResource("test.png");
 
         // when
-        BobFile bobFile = fileSaveService.uploadAndSaveFile(file);
+        BobFile bobFile = fileSaveService.uploadAndSaveFile(file, FileRoute.TEST);
 
         // then
         assertThat(bobFile).isNotNull();
