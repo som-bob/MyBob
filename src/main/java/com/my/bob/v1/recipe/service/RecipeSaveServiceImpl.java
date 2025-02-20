@@ -2,12 +2,9 @@ package com.my.bob.v1.recipe.service;
 
 import com.my.bob.core.domain.file.constant.FileRoute;
 import com.my.bob.core.domain.file.entity.BobFile;
-import com.my.bob.core.domain.file.repsitory.BobFileRepository;
+import com.my.bob.core.domain.file.service.BobFileService;
 import com.my.bob.core.domain.file.service.FileSaveService;
-import com.my.bob.core.domain.recipe.dto.request.RecipeCreateDto;
-import com.my.bob.core.domain.recipe.dto.request.RecipeDetailCreateDto;
-import com.my.bob.core.domain.recipe.dto.request.RecipeIngredientCreateDto;
-import com.my.bob.core.domain.recipe.dto.request.RecipeUpdateDto;
+import com.my.bob.core.domain.recipe.dto.request.*;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.entity.RecipeDetail;
@@ -39,6 +36,8 @@ import java.util.stream.IntStream;
 public class RecipeSaveServiceImpl implements RecipeSaveService {
 
     private final FileSaveService fileSaveService;
+    private final BobFileService bobFileService;
+    private final S3Service s3Service;
 
     private final RecipeServiceHelper recipeServiceHelper;
 
@@ -46,8 +45,6 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
     private final IngredientRepository ingredientRepository;
     private final RecipeIngredientsRepository recipeIngredientsRepository;
     private final RecipeDetailRepository recipeDetailRepository;
-    private final S3Service s3Service;
-    private final BobFileRepository bobFileRepository;
 
     @Override
     @Transactional
@@ -65,19 +62,37 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
     public void updateRecipe(int recipeId, RecipeUpdateDto dto,
                              MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
         Recipe recipe = recipeServiceHelper.getRecipe(recipeId);
-        if(! recipeFile.isEmpty()) {
+
+        // 레시피 업데이트
+        recipe.update(dto.getRecipeName(),
+                dto.getRecipeDescription(),
+                dto.getDifficulty(),
+                dto.getServings(),
+                dto.getCookingTime());
+
+        // 레시피 파일 변경
+        if(dto.isFileChange()) {
             // 삭제
             BobFile file = recipe.getFile();
             s3Service.deleteFile(file.getFileName());
-            bobFileRepository.delete(file);
-
+            bobFileService.deleteFile(file.getFileId());
+        }
+        if(! recipeFile.isEmpty()) {
             // 저장
             BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile, FileRoute.RECIPE);
             recipe.setRecipeFile(bobRecipeFile);
         }
 
-        // 재료 모두 삭제
+        // 재료 모두 삭제 후 새롭게 저장
         recipe.cleanUpIngredients();
+        processRecipeIngredients(recipe, dto.getIngredients());
+
+        // 레시피 디테일 업데이트
+        List<RecipeDetailUpdateDto> updateDetails = dto.getDetails();
+        for (RecipeDetailUpdateDto updateDetail : updateDetails) {
+
+        }
+
     }
 
 

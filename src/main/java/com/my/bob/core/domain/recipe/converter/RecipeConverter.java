@@ -49,6 +49,7 @@ public class RecipeConverter {
         List<RecipeDetailDto> recipeDetailDtoList = recipe.getRecipeDetails()
                 .stream()
                 .map(RecipeConverter::convertDetailDto)
+                .sorted(Comparator.comparingInt(RecipeDetailDto::getRecipeOrder))
                 .toList();
 
         return RecipeDto.builder()

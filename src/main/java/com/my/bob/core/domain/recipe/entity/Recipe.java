@@ -92,4 +92,14 @@ public class Recipe extends BaseEntity {
     public void cleanUpIngredients(){
         this.recipeIngredients.clear();
     }
+
+    public void update(String recipeName, String recipeDescription,
+                       Difficulty difficulty,
+                       String servings, Short cookingTime) {
+        this.recipeName = recipeName;
+        this.recipeDescription = recipeDescription;
+        this.difficulty = difficulty;
+        this.servings = servings;
+        this.cookingTime = cookingTime;
+    }
 }

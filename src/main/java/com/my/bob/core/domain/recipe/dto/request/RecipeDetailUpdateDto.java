@@ -12,6 +12,8 @@ public class RecipeDetailUpdateDto {
 
     private int order;      // 순서
 
+    private boolean isFileChange = false;
+
     @NotBlank(message = ErrorMessage.NEED_RECIPE_DETAIL)
     private String recipeDetailText;
 
