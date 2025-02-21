@@ -15,7 +15,6 @@ import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import com.my.bob.core.domain.recipe.service.RecipeSaveService;
 import com.my.bob.core.domain.recipe.service.RecipeServiceHelper;
-import com.my.bob.core.external.s3.service.S3Service;
 import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +36,6 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
     private final FileSaveService fileSaveService;
     private final BobFileService bobFileService;
-    private final S3Service s3Service;
 
     private final RecipeServiceHelper recipeServiceHelper;
 
@@ -74,11 +72,10 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
         if(dto.isFileChange()) {
             // 삭제
             BobFile file = recipe.getFile();
-            s3Service.deleteFile(file.getFileName());
             bobFileService.deleteFile(file.getFileId());
         }
+        // 레시피 파일 저장
         if(! recipeFile.isEmpty()) {
-            // 저장
             BobFile bobRecipeFile = fileSaveService.uploadAndSaveFile(recipeFile, FileRoute.RECIPE);
             recipe.setRecipeFile(bobRecipeFile);
         }
@@ -88,11 +85,40 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
         processRecipeIngredients(recipe, dto.getIngredients());
 
         // 레시피 디테일 업데이트
+        Map<Integer, RecipeDetail> recipeDetailMap = recipe.getRecipeDetails()
+                .stream()
+                .collect(Collectors.toMap(RecipeDetail::getId, Function.identity()));
         List<RecipeDetailUpdateDto> updateDetails = dto.getDetails();
         for (RecipeDetailUpdateDto updateDetail : updateDetails) {
+            Integer recipeDetailId = updateDetail.getRecipeDetailId();
 
+            RecipeDetail recipeDetail;
+            if(recipeDetailMap.containsKey(recipeDetailId)) {
+                // update
+                recipeDetail = recipeDetailMap.get(recipeDetailId);
+                recipeDetail.update(updateDetail.getOrder(), updateDetail.getRecipeDetailText());
+            }
+            else {
+                // new insert
+                recipeDetail = new RecipeDetail(recipe, updateDetail.getOrder(), updateDetail.getRecipeDetailText());
+                recipeDetailRepository.save(recipeDetail);
+            }
+
+            // file 업데이트
+            if(updateDetail.isFileChange()) {
+                BobFile file = recipeDetail.getFile();
+                if(file != null) {
+                    file.delete();
+                }
+
+                MultipartFile recipeDetailFile = updateDetail.getRecipeDetailFile();
+                if(! recipeDetailFile.isEmpty()) {
+                    BobFile bobRecipeFile =
+                            fileSaveService.uploadAndSaveFile(recipeDetailFile, FileRoute.RECIPE_DETAIL);
+                    recipeDetail.setRecipeDetailFile(bobRecipeFile);
+                }
+            }
         }
-
     }
 
 

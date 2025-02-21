@@ -50,4 +50,8 @@ public class RecipeDetail extends BaseEntity {
         this.file = file;
     }
 
+    public void update(Integer recipeOrder, String recipeDetailText) {
+        this.recipeOrder = recipeOrder;
+        this.recipeDetailText = recipeDetailText;
+    }
 }

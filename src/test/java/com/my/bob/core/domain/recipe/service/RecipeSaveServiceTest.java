@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static com.my.bob.util.ResourceUtil.getFileFromResource;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Slf4j
 @SpringBootTest
@@ -106,6 +107,20 @@ class RecipeSaveServiceTest {
                     .extracting(BobFile::getOriginalFileName).isEqualTo("test%d.png".formatted(order));
         }
     }
+
+
+    @Test
+    @DisplayName("레시피 업데이트 테스트")
+    void updateRecipe() {
+        // given
+
+        // when
+
+        // then
+        fail("need to write code");
+    }
+
+
 
     private RecipeCreateDto createRecipeData() {
         RecipeCreateDto dto = new RecipeCreateDto();
