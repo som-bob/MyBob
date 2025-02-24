@@ -2,21 +2,24 @@ package com.my.bob.core.domain.recipe.service;
 
 import com.my.bob.account.WithAccount;
 import com.my.bob.core.domain.file.entity.BobFile;
+import com.my.bob.core.domain.file.repsitory.BobFileRepository;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
-import com.my.bob.core.domain.recipe.dto.request.RecipeCreateDto;
-import com.my.bob.core.domain.recipe.dto.request.RecipeDetailCreateDto;
-import com.my.bob.core.domain.recipe.dto.request.RecipeIngredientCreateDto;
+import com.my.bob.core.domain.recipe.dto.request.*;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.entity.RecipeDetail;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
+import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
+import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +31,6 @@ import java.util.Optional;
 
 import static com.my.bob.util.ResourceUtil.getFileFromResource;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @Slf4j
 @SpringBootTest
@@ -44,9 +46,19 @@ class RecipeSaveServiceTest {
     RecipeRepository recipeRepository;
 
     @Autowired
+    RecipeDetailRepository recipeDetailRepository;
+
+    @Autowired
+    RecipeIngredientsRepository recipeIngredientsRepository;
+
+    @Autowired
+    BobFileRepository bobFileRepository;
+
+    @Autowired
     private IngredientRepository ingredientRepository;
 
     private List<Ingredient> ingredientList;
+    private List<Ingredient> updateIngredientList;
 
     @BeforeEach
     void setUp() {
@@ -56,6 +68,16 @@ class RecipeSaveServiceTest {
         Ingredient ingredient3 = ingredientRepository.save(new Ingredient("다_테스트 재료"));
 
         ingredientList = List.of(ingredient1, ingredient2, ingredient3);
+        updateIngredientList = List.of(ingredient1, ingredient2);
+    }
+
+    @AfterEach
+    void tearDown() {
+        recipeDetailRepository.deleteAllInBatch();
+        recipeIngredientsRepository.deleteAllInBatch();
+        recipeRepository.deleteAllInBatch();
+        bobFileRepository.deleteAllInBatch();
+        ingredientRepository.deleteAllInBatch();
     }
 
     @Test
@@ -66,7 +88,7 @@ class RecipeSaveServiceTest {
         RecipeCreateDto dto = createRecipeData();
         MultipartFile recipeFile = getFileFromResource("test.png");
         List<MultipartFile> recipeDetailsFilesList = new ArrayList<>();
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= dto.getRecipeDetails().size(); i++) {
             MultipartFile recipeDetail = getFileFromResource(String.format("test%d.png", i));
             recipeDetailsFilesList.add(recipeDetail);
         }
@@ -84,6 +106,8 @@ class RecipeSaveServiceTest {
         assertThat(recipe.getFile())
                 .isNotNull()
                 .extracting(BobFile::getOriginalFileName).isEqualTo("test.png");
+        assertThat(recipe.getRecipeName()).contains("레시피");
+        assertThat(recipe.getRecipeDescription()).contains("레시피");
 
         // 재료 검증
         assertThat(recipe.getRecipeIngredients())
@@ -110,18 +134,80 @@ class RecipeSaveServiceTest {
 
 
     @Test
+    @Transactional
     @DisplayName("레시피 업데이트 테스트")
-    void updateRecipe() {
+    void updateRecipe() throws IOException {
         // given
+        // 기존 저장 데이터
+        int recipeId = saveRecipeData();
+        Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
+        assertThat(recipeOptional).isPresent();
+        // 업데이트 데이터
+        RecipeUpdateDto dto = updateRecipeData(recipeOptional.get());
+        MultipartFile updateRecipeFile = getFileFromResource("updateTest.png");
+        // 파일들
+        List<MultipartFile> recipeDetailsFilesList = new ArrayList<>();
+        List<RecipeDetailUpdateDto> details = dto.getDetails();
+        for (int i = 1; i <= details.size(); i++) {
+            MultipartFile recipeDetail = getFileFromResource(String.format("updateTest%d.png", i));
+            recipeDetailsFilesList.add(recipeDetail);
+        }
+        MultipartFile[] recipeDetailsFiles = recipeDetailsFilesList.toArray(new MultipartFile[0]);
+        // 첫번째 사진은 없는 것으로 업데이트 (사진 비우기)
+        recipeDetailsFiles[0] = new MockMultipartFile("emptyFile", new byte[0]); // 빈 파일
 
         // when
+        recipeSaveService.updateRecipe(recipeId, dto, updateRecipeFile, recipeDetailsFiles);
 
         // then
-        fail("need to write code");
+        Optional<Recipe> refindRecipeOptional = recipeRepository.findById(recipeId);
+        assertThat(refindRecipeOptional).isPresent();
+        Recipe refindRecipe = refindRecipeOptional.get();
+        assertThat(refindRecipe.getFile())
+                .isNotNull()
+                .extracting(BobFile::getOriginalFileName).isEqualTo("updateTest.png");
+        assertThat(refindRecipe.getRecipeName()).contains("업데이트");
+        assertThat(refindRecipe.getRecipeDescription()).contains("업데이트");
+
+        // 재료 검증
+        assertThat(refindRecipe.getRecipeIngredients())
+                .isNotEmpty()
+                .hasSize(updateIngredientList.size())
+                .extracting(recipeIngredient -> recipeIngredient.getIngredient().getId())
+                .containsExactlyElementsOf(updateIngredientList.stream().map(Ingredient::getId).toList());
+
+        // 디테일 검증
+        List<RecipeDetail> recipeDetails = refindRecipe.getRecipeDetails();
+        assertThat(recipeDetails).isNotEmpty();
+        for (int order = 1; order <= recipeDetails.size(); order++) {
+            RecipeDetailUpdateDto detailUpdateDto = details.get(order - 1);
+            RecipeDetail recipeDetail = recipeDetails.get(order - 1);
+
+            assertThat(recipeDetail.getId()).isPositive();
+            assertThat(recipeDetail.getRecipeOrder()).isEqualTo(order);
+            assertThat(recipeDetail.getRecipeDetailText()).isEqualTo(detailUpdateDto.getRecipeDetailText());
+
+            boolean fileChange = detailUpdateDto.isFileChange();
+            if (fileChange) {
+                MultipartFile recipeDetailsFile = recipeDetailsFiles[order - 1];
+                if (recipeDetailsFile.isEmpty()) {
+                    // 파일이 비었는지도 검증
+                    assertThat(recipeDetail.getFile()).isNull();
+                } else {
+
+                    BobFile file = recipeDetail.getFile();
+                    if (file != null) {
+                        assertThat(file)
+                                .isNotNull()
+                                .extracting(BobFile::getOriginalFileName).isEqualTo("updateTest%d.png".formatted(order));
+                    }
+                }
+            }
+        }
     }
 
 
-
+    /* private method */
     private RecipeCreateDto createRecipeData() {
         RecipeCreateDto dto = new RecipeCreateDto();
         dto.setRecipeName("레시피");
@@ -150,6 +236,67 @@ class RecipeSaveServiceTest {
         dto.setRecipeDetails(details);
 
         return dto;
+    }
+
+    private RecipeUpdateDto updateRecipeData(Recipe recipe) {
+        RecipeUpdateDto dto = new RecipeUpdateDto();
+        dto.setRecipeName("업데이트 레시피");
+        dto.setDifficulty(Difficulty.MIDRANGE);
+        dto.setRecipeDescription("업데이트 레시피 설명입니다요.");
+        dto.setCookingTime((short) 60);
+        dto.setFileChange(true);    // 파일 변경
+
+        // 재료 준비 (기존 재료와 동일)
+        List<RecipeIngredientCreateDto> recipeIngredientCreateDtos = updateIngredientList
+                .stream()
+                .map(ingredient -> {
+                    RecipeIngredientCreateDto ingredientCreateDto = new RecipeIngredientCreateDto();
+                    ingredientCreateDto.setIngredientId(ingredient.getId());
+                    ingredientCreateDto.setAmount("업데이트 적당히");
+                    return ingredientCreateDto;
+                }).toList();
+        dto.setIngredients(recipeIngredientCreateDtos);
+
+        // 레시피 순서 준비
+        // 모든 순서 업데이트 (사진들도)
+        List<RecipeDetailUpdateDto> details = new ArrayList<>();
+        dto.setDetails(details);
+
+        List<RecipeDetail> recipeDetails = recipe.getRecipeDetails();
+        int detailSize = recipeDetails.size();
+        for (int num = 1; num <= detailSize; num++) {
+            RecipeDetail recipeDetail = recipeDetails.get(num - 1);
+            details.add(getRecipeDetailUpdate(recipeDetail.getId(), num, true));
+        }
+
+        // 새로운 순서 두개 추가
+        details.add(getRecipeDetailUpdate(null, detailSize + 1, true));
+        details.add(getRecipeDetailUpdate(null, detailSize + 2, false));
+
+        return dto;
+    }
+
+    private static RecipeDetailUpdateDto getRecipeDetailUpdate(Integer recipeDetailId,
+                                                               int order, boolean isFileChange) {
+        RecipeDetailUpdateDto detailUpdateDto = new RecipeDetailUpdateDto();
+        detailUpdateDto.setRecipeDetailId(recipeDetailId);
+        detailUpdateDto.setFileChange(isFileChange);
+        detailUpdateDto.setOrder(order);
+        detailUpdateDto.setRecipeDetailText(String.format("업데이트 %d순서 입니다.", order));
+        return detailUpdateDto;
+    }
+
+    private int saveRecipeData() throws IOException {
+        RecipeCreateDto dto = createRecipeData();
+        MultipartFile recipeFile = getFileFromResource("test.png");
+        List<MultipartFile> recipeDetailsFilesList = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            MultipartFile recipeDetail = getFileFromResource(String.format("test%d.png", i));
+            recipeDetailsFilesList.add(recipeDetail);
+        }
+        MultipartFile[] recipeDetailsFiles = recipeDetailsFilesList.toArray(new MultipartFile[0]);
+
+        return recipeSaveService.newRecipe(dto, recipeFile, recipeDetailsFiles);
     }
 
 }

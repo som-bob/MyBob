@@ -59,6 +59,8 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
     @Transactional
     public void updateRecipe(int recipeId, RecipeUpdateDto dto,
                              MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
+        mapFileToDto(dto, recipeFile, recipeDetailsFiles);
+
         Recipe recipe = recipeServiceHelper.getRecipe(recipeId);
 
         // 레시피 업데이트
@@ -110,9 +112,10 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                 if(file != null) {
                     file.delete();
                 }
+                recipeDetail.setRecipeDetailFile(null);
 
                 MultipartFile recipeDetailFile = updateDetail.getRecipeDetailFile();
-                if(! recipeDetailFile.isEmpty()) {
+                if(recipeDetailFile != null) {
                     BobFile bobRecipeFile =
                             fileSaveService.uploadAndSaveFile(recipeDetailFile, FileRoute.RECIPE_DETAIL);
                     recipeDetail.setRecipeDetailFile(bobRecipeFile);
@@ -123,6 +126,7 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
 
 
     /* private method */
+    // create Dto
     private void mapFilesToDto(RecipeCreateDto dto,
                                MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
         dto.setRecipeFile(recipeFile);
@@ -140,6 +144,29 @@ public class RecipeSaveServiceImpl implements RecipeSaveService {
                 }
             }
         }
+    }
+
+    // updateDto
+    private void mapFileToDto(RecipeUpdateDto dto,
+                              MultipartFile recipeFile, MultipartFile[] recipeDetailsFiles) {
+        dto.setRecipeFile(recipeFile);
+
+        if (Collections.isEmpty(dto.getDetails()) || recipeDetailsFiles == null) {
+            return;
+        }
+
+        List<RecipeDetailUpdateDto> recipeDetails = dto.getDetails();
+        if (!Collections.isEmpty(recipeDetails)) {
+            for (int index = 0; index < recipeDetailsFiles.length; index++) {
+                RecipeDetailUpdateDto detailUpdateDto = recipeDetails.get(index);
+
+                MultipartFile recipeDetailsFile = recipeDetailsFiles[index];
+                if(! recipeDetailsFile.isEmpty() && detailUpdateDto.isFileChange()){
+                    detailUpdateDto.setRecipeDetailFile(recipeDetailsFile);
+                }
+            }
+        }
+
     }
 
     private Recipe saveRecipe(RecipeCreateDto dto) {

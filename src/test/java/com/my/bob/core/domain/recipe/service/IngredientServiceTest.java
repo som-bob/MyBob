@@ -3,6 +3,7 @@ package com.my.bob.core.domain.recipe.service;
 import com.my.bob.core.domain.recipe.dto.response.IngredientDto;
 import com.my.bob.core.domain.recipe.entity.Ingredient;
 import com.my.bob.core.domain.recipe.repository.IngredientRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,11 @@ class IngredientServiceTest {
         ingredientRepository.save(new Ingredient("나_테스트 재료"));
         ingredientRepository.save(new Ingredient("다_테스트 재료"));
         ingredientRepository.save(new Ingredient("가_테스트 재료"));
+    }
+
+    @AfterEach
+    void tearDown() {
+        ingredientRepository.deleteAllInBatch();
     }
 
     @Test
