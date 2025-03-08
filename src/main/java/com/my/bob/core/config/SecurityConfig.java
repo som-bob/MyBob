@@ -39,8 +39,8 @@ public class SecurityConfig {
     private static final String[] PERMIT_ALL = {
             "/api/*/member/join",
             "/api/*/member/login",
-            "/api/*/member/reissue"
-            ,"manage/actuator/**" // actuator 기능 우선 권한 없이 실행
+            "/api/*/member/reissue",
+            "/manage/actuator/**" // actuator 기능 우선 권한 없이 실행
     };
 
     @Bean
