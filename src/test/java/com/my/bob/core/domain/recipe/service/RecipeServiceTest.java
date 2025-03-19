@@ -1,7 +1,5 @@
 package com.my.bob.core.domain.recipe.service;
 
-import com.my.bob.core.domain.file.constant.FileRoute;
-import com.my.bob.core.domain.file.entity.BobFile;
 import com.my.bob.core.domain.file.service.FileSaveService;
 import com.my.bob.core.domain.recipe.contants.Difficulty;
 import com.my.bob.core.domain.recipe.dto.request.RecipeSearchDto;
@@ -15,7 +13,6 @@ import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
-import com.my.bob.util.ResourceUtil;
 import jdk.jfr.Description;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -27,14 +24,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
+import static com.my.bob.core.domain.recipe.service.helper.RecipeSaveHelper.saveIngredient;
+import static com.my.bob.core.domain.recipe.service.helper.RecipeSaveHelper.saveRecipe;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -69,70 +66,32 @@ class RecipeServiceTest {
     @BeforeEach
     void setUp() throws IOException {
         // 기본 재료 3개 이상 저장
-        Ingredient i1 = saveIngredient("나_테스트 재료");
-        Ingredient i2 = saveIngredient("가_테스트 재료");
-        Ingredient i3 = saveIngredient("다_테스트 재료");
-        Ingredient i4 = saveIngredient("라_테스트 재료");
-        Ingredient i5 = saveIngredient("마_테스트 재료");
+        Ingredient i1 = saveIngredient(ingredientRepository, "나_테스트 재료");
+        Ingredient i2 = saveIngredient(ingredientRepository, "가_테스트 재료");
+        Ingredient i3 = saveIngredient(ingredientRepository, "다_테스트 재료");
+        Ingredient i4 = saveIngredient(ingredientRepository, "라_테스트 재료");
+        Ingredient i5 = saveIngredient(ingredientRepository, "마_테스트 재료");
         ingredientIds = new Integer[]{i1.getId(), i2.getId(), i3.getId(), i4.getId(), i5.getId()};
 
         // 레시피 저장
         // 1번 레시피, 재료 1, 2, 3, 4, 5
-        Recipe r1 = saveRecipe("1번 레시피", "1번 테스트 레시피", Difficulty.ANYONE, i1, i2, i3, i4, i5);
+        Recipe r1 = saveRecipe(recipeRepository, recipeDetailRepository, recipeIngredientsRepository,
+                fileSaveService,
+                "1번 레시피", "1번 테스트 레시피", Difficulty.ANYONE, i1, i2, i3, i4, i5);
         recipeList.add(r1);
         // 2번 레시피, 재료 1, 5
-        Recipe r2 = saveRecipe("2번 레시피", "2번 테스트 레시피", Difficulty.BEGINNER, i1, i5);
+        Recipe r2 = saveRecipe(recipeRepository, recipeDetailRepository, recipeIngredientsRepository,
+                fileSaveService,
+                "2번 레시피", "2번 테스트 레시피", Difficulty.BEGINNER, i1, i5);
         recipeList.add(r2);
         // 3번 레피시, 재료 2, 4
-        Recipe r3 = saveRecipe("3번 레시피", "3번 테스트 레시피", Difficulty.BEGINNER, i2, i4);
+        Recipe r3 = saveRecipe(recipeRepository, recipeDetailRepository, recipeIngredientsRepository,
+                fileSaveService,
+                "3번 레시피", "3번 테스트 레시피", Difficulty.BEGINNER, i2, i4);
         recipeList.add(r3);
 
         // 조회 테스트를 위한 id list
         ingredientPartIds = new Integer[]{i2.getId(), i4.getId()};
-    }
-
-    private Ingredient saveIngredient(String ingredientName) {
-        Ingredient ingredient = new Ingredient(ingredientName);
-        return ingredientRepository.save(ingredient);
-    }
-
-    private Recipe saveRecipe(String recipeName, String recipeDescription, Difficulty difficulty,
-                              Ingredient... ingredients) throws IOException {
-        Recipe recipe = new Recipe(recipeName, recipeDescription, difficulty, "인분", (short) 30);
-        BobFile bobFile = uploadAndSaveFile("test.png", FileRoute.RECIPE);
-        recipe.setRecipeFile(bobFile);
-
-        recipeRepository.save(recipe);
-
-        for (Ingredient ingredient : ingredients) {
-            saveRecipeIngredient(recipe, ingredient);
-        }
-
-        int recipeDetailOrder = new Random().nextInt(1, 4);
-        for (int order = 1; order <= recipeDetailOrder; order++) {
-            saveRecipeDetail(recipe, order, "%d 순서 입니다.".formatted(order));
-        }
-
-        return recipe;
-    }
-
-    private BobFile uploadAndSaveFile(String resourceFileName, FileRoute fileRoute) throws IOException {
-        MultipartFile file = ResourceUtil.getFileFromResource(resourceFileName);
-        return fileSaveService.uploadAndSaveFile(file, fileRoute);
-    }
-
-    private void saveRecipeIngredient(Recipe recipe, Ingredient ingredient) {
-        RecipeIngredients recipeIngredients = new RecipeIngredients(recipe, ingredient, ingredient.getIngredientName(), "재료 양");
-        recipeIngredientsRepository.save(recipeIngredients);
-    }
-
-    private void saveRecipeDetail(Recipe recipe, int order, String text) throws IOException {
-        RecipeDetail recipeDetail = new RecipeDetail(recipe, order, text);
-
-        BobFile bobFile = uploadAndSaveFile("test%d.png".formatted(order), FileRoute.RECIPE_DETAIL);
-        recipeDetail.setRecipeDetailFile(bobFile);
-
-        recipeDetailRepository.save(recipeDetail);
     }
 
     @AfterEach

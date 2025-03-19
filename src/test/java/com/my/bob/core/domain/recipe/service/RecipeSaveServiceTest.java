@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.my.bob.core.domain.recipe.service.helper.RecipeSaveHelper.saveIngredient;
 import static com.my.bob.util.ResourceUtil.getFileFromResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,9 +64,9 @@ class RecipeSaveServiceTest {
     @BeforeEach
     void setUp() {
         // 기본 재료 저장
-        Ingredient ingredient1 = ingredientRepository.save(new Ingredient("가_테스트 재료"));
-        Ingredient ingredient2 = ingredientRepository.save(new Ingredient("나_테스트 재료"));
-        Ingredient ingredient3 = ingredientRepository.save(new Ingredient("다_테스트 재료"));
+        Ingredient ingredient1 = saveIngredient(ingredientRepository, "가_테스트 재료");
+        Ingredient ingredient2 = saveIngredient(ingredientRepository, "나_테스트 재료");
+        Ingredient ingredient3 = saveIngredient(ingredientRepository, "다_테스트 재료");
 
         ingredientList = List.of(ingredient1, ingredient2, ingredient3);
         updateIngredientList = List.of(ingredient1, ingredient2);
