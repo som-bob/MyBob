@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("S3 서비스 테스트")
 class S3ServiceImplTest {
 

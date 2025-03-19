@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.*;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 class BobApplicationTests {
 
 	@Test
