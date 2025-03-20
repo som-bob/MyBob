@@ -1,11 +1,14 @@
 package com.my.bob.core.domain.recipe.service;
 
+import com.my.bob.core.external.redis.service.RecentRecipeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.Assertions.fail;
 
 @Transactional
 @SpringBootTest
@@ -25,6 +28,7 @@ class RecentRecipeServiceTest {
         // when
         
         // then
+        fail("fail");
     }
 
 }
