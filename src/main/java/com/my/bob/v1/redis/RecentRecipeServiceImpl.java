@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +55,14 @@ public class RecentRecipeServiceImpl implements RecentRecipeService {
             return Collections.emptyList();
         }
 
-        return recipeJsons.stream().map(recipeJson -> gson.fromJson(recipeJson, RecipeDto.class)).toList();
+        return recipeJsons.stream().map(recipeJson -> {
+            String onlyRecipeData = getOnlyRecipeData(recipeJson);  // 키와 json 분리
+            if(! StringUtils.hasText(onlyRecipeData)) {
+                return null;    // 빈 data 반환
+            }
+
+            return gson.fromJson(onlyRecipeData, RecipeDto.class);
+        }).toList();
     }
 
     @Override
@@ -74,5 +82,14 @@ public class RecentRecipeServiceImpl implements RecentRecipeService {
 
     private boolean isSameRecipeId(String recipeJson, RecipeDto recipe) {
         return recipeJson.startsWith(recipe.getRecipeId() + ":");
+    }
+
+    private String getOnlyRecipeData(String recipeJson) {
+        if(recipeJson.contains(":")) {
+            String[] part = recipeJson.split(":", 2);
+            return part[1];
+        }
+
+        return null;
     }
 }

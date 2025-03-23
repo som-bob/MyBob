@@ -74,11 +74,9 @@ class RecentRecipeServiceTest {
         ingredientRepository.deleteAllInBatch();
     }
 
-    // redis 는 Mock 테스트를 해야겠는데
     @Test
-    @DisplayName("최신 레시피 저장 테스트(단일 저장)")
-    void saveRecentRecipe_success() {
-        // TODO fail refactor
+    @DisplayName("최신 레시피 저장 테스트_단일 저장")
+    void saveOneRecentRecipe_success() {
         // given
         List<Recipe> recipes = recipeRepository.findAll();
         Optional<Recipe> recipeOptional = recipes.stream().findFirst();
@@ -92,6 +90,7 @@ class RecentRecipeServiceTest {
         // when
         recentRecipeService.saveRecentRecipe(systemUser, recipeDto);
         List<RecipeDto> getAllRecipe = recentRecipeService.getRecentRecipes(systemUser);
+        recentRecipeService.clearRecipe(systemUser);
 
         // then
         assertThat(getAllRecipe).isNotEmpty().hasSize(1);
