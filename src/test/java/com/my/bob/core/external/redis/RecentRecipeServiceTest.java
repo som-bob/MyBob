@@ -20,10 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.my.bob.core.domain.recipe.service.helper.RecipeSaveHelper.saveAllRecipeData;
@@ -126,6 +123,33 @@ class RecentRecipeServiceTest {
         }
     }
 
+    @Test
+    @DisplayName("최신 레시피 저장 테스트_동일 상품 저장시")
+    void saveSameRecentRecipe_success() {
+        // given
+        List<Recipe> recipes = recipeRepository.findAll();
+        int saveCount = 2;
+        List<RecipeDto> saveRecipe = new ArrayList<>();
+        for (int i = 0; i < saveCount ; i++) {
+            Recipe recipe = recipes.get(i);
+            RecipeDto recipeDto = RecipeConverter.convertDto(recipe);
+            saveRecipe.add(recipeDto);
+        }
+        Integer[] saveRecipeIds = saveRecipe.stream().map(RecipeDto::getRecipeId).toArray(Integer[]::new);
 
+        // when
+        for (int i = 0; i < MAX_RECIPES; i++) {
+            int getRecipeNum = i % saveCount;
+            RecipeDto recipeDto = saveRecipe.get(getRecipeNum);
+            recentRecipeService.saveRecentRecipe(randomUser, recipeDto);
+        }
+        List<RecipeDto> getAllRecipe = recentRecipeService.getRecentRecipes(randomUser);
+
+        // then
+        assertThat(getAllRecipe).isNotEmpty().hasSize(saveCount);
+        assertThat(getAllRecipe)
+                .extracting(RecipeDto::getRecipeId)
+                .contains(saveRecipeIds);
+    }
 
 }
