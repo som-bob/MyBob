@@ -20,10 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.my.bob.core.domain.recipe.service.helper.RecipeSaveHelper.saveAllRecipeData;
+import static com.my.bob.core.external.redis.service.RecentRecipeService.MAX_RECIPES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -53,7 +57,7 @@ class RecentRecipeServiceTest {
     @Autowired
     private RecipeDetailRepository recipeDetailRepository;
 
-    private final String systemUser = "system@system.com";
+    private static String randomUser;
 
     // 테스트 데이터 셋업 (재료 11개, 레시피 11개)
     @BeforeEach
@@ -63,6 +67,7 @@ class RecentRecipeServiceTest {
                 recipeRepository, recipeDetailRepository, recipeIngredientsRepository,
                 fileSaveService,
                 5, 11);
+        randomUser = String.format("%s@system.com", UUID.randomUUID());
     }
 
     // 테스트 후 모두 삭제
@@ -72,6 +77,7 @@ class RecentRecipeServiceTest {
         recipeDetailRepository.deleteAllInBatch();
         recipeRepository.deleteAllInBatch();
         ingredientRepository.deleteAllInBatch();
+        recentRecipeService.clearRecipe(randomUser);    // redis 데이터도 모두 삭제
     }
 
     @Test
@@ -88,14 +94,38 @@ class RecentRecipeServiceTest {
         RecipeDto recipeDto = RecipeConverter.convertDto(recipe);
 
         // when
-        recentRecipeService.saveRecentRecipe(systemUser, recipeDto);
-        List<RecipeDto> getAllRecipe = recentRecipeService.getRecentRecipes(systemUser);
-        recentRecipeService.clearRecipe(systemUser);
+        recentRecipeService.saveRecentRecipe(randomUser, recipeDto);
+        List<RecipeDto> getAllRecipe = recentRecipeService.getRecentRecipes(randomUser);
 
         // then
         assertThat(getAllRecipe).isNotEmpty().hasSize(1);
         RecipeDto findRecipe = getAllRecipe.stream().findFirst().get();
         assertThat(findRecipe.getRecipeId()).isEqualTo(recipe.getId());
     }
+
+    @Test
+    @DisplayName("최신 레시피 저장 테스트_11개 저장")
+    void saveManyRecentRecipe_success() {
+        // given
+        List<Recipe> recipes = recipeRepository.findAll();
+        List<RecipeDto> recipeList = recipes.stream().map(RecipeConverter::convertDto).toList();
+        List<Integer> idList = recipeList.stream().map(RecipeDto::getRecipeId).collect(Collectors.toList());
+        Collections.reverse(idList);
+
+        // when
+        for (RecipeDto recipeDto : recipeList) {
+            recentRecipeService.saveRecentRecipe(randomUser, recipeDto);
+        }
+        List<RecipeDto> getAllRecipe = recentRecipeService.getRecentRecipes(randomUser);
+
+        // then
+        // 최대 개수까지만 저장되어야 하며, 아이디가 후순부터 들어가 있는지 확인
+        assertThat(getAllRecipe).isNotEmpty().hasSize(MAX_RECIPES);
+        for (int i = 0; i < MAX_RECIPES; i++) {
+            assertThat(getAllRecipe.get(i).getRecipeId()).isEqualTo(idList.get(i));
+        }
+    }
+
+
 
 }
