@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RedisTest {
 
     @Autowired
+    @Qualifier("redisStubService")  // test 환경 redis stub
     RedisService redisService;
 
     // 실제 redis 테스트 후에 stub로 변경했다

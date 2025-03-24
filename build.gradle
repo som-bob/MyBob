@@ -48,6 +48,10 @@ dependencies {
 
 	// WebTestClient (if applicable)
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+	// test embedded redis
+	testImplementation('it.ozimov:embedded-redis:0.7.3') {
+		exclude group: 'org.slf4j', module: 'slf4j-simple'
+	}
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

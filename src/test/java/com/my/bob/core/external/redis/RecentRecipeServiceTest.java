@@ -64,7 +64,7 @@ class RecentRecipeServiceTest {
                 recipeRepository, recipeDetailRepository, recipeIngredientsRepository,
                 fileSaveService,
                 5, 11);
-        randomUser = String.format("%s@system.com", UUID.randomUUID());
+        randomUser = String.format("%s@systemTest.com", UUID.randomUUID());
     }
 
     // 테스트 후 모두 삭제
