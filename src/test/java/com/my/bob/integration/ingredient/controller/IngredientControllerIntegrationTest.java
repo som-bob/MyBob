@@ -38,7 +38,7 @@ class IngredientControllerIntegrationTest extends IntegrationTestUtils {
 
     @BeforeEach
     void setUp() {
-        token = getTokenFromTestUser();
+        token = registerAndGetTokenFromTestUser();
 
         // 기본 재료 저장
         ingredientRepository.save(new Ingredient("나_테스트 재료"));

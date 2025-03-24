@@ -69,7 +69,7 @@ class RefrigeratorControllerIntegrationTest extends IntegrationTestUtils {
     @BeforeEach
     @WithAccount("system")
     void setUpDatabase() {
-        token = getTokenFromTestUser();
+        token = registerAndGetTokenFromTestUser();
 
         // 기본 재료 2개 이상 저장
         Ingredient save1 = ingredientRepository.save(new Ingredient("나_테스트 재료"));

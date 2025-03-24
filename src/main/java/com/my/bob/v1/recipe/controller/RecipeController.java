@@ -10,14 +10,18 @@ import com.my.bob.core.domain.recipe.dto.response.RecipeDto;
 import com.my.bob.core.domain.recipe.dto.response.RecipeListItemDto;
 import com.my.bob.core.domain.recipe.service.RecipeSaveService;
 import com.my.bob.core.domain.recipe.service.RecipeService;
+import com.my.bob.core.external.redis.dto.RecentRecipeViewedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -27,6 +31,8 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final RecipeSaveService recipeSaveService;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     // 난이도 enum 조회
     @GetMapping("/difficulty")
@@ -58,8 +64,14 @@ public class RecipeController {
 
     // 레시피 조회
     @GetMapping("/{recipeId}")
-    public ResponseEntity<ResponseDto<RecipeDto>> getRecipe(@PathVariable int recipeId) {
-        return ResponseEntity.ok(new ResponseDto<>(recipeService.getRecipe(recipeId)));
+    public ResponseEntity<ResponseDto<RecipeDto>> getRecipe(@PathVariable int recipeId,
+                                                            Principal principal) {
+        String email = principal.getName();
+        RecipeDto recipeDto = recipeService.getRecipe(recipeId);
+
+        applicationEventPublisher.publishEvent(new RecentRecipeViewedEvent(email, recipeDto));
+
+        return ResponseEntity.ok(new ResponseDto<>(recipeDto));
     }
 
     // 레시피 조회

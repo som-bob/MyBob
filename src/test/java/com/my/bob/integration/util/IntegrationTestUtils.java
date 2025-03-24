@@ -10,6 +10,7 @@ import com.my.bob.core.domain.member.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public abstract class IntegrationTestUtils {
@@ -20,10 +21,10 @@ public abstract class IntegrationTestUtils {
     @Autowired
     private LoginService loginService;
 
-    private static final String TEST_USER_EMAIL = "test__user@test.com";
+    private static final String TEST_USER_EMAIL = "test__user@system.test.com";
     private static final String TEST_USER_PASSWORD = "<PASSWORD1234>!";
 
-    public String getTokenFromTestUser() {
+    public String registerAndGetTokenFromTestUser() {
         // 회원 가입 유저 세팅 + token 발급
         JoinUserDto dto = new JoinUserDto();
         dto.setEmail(TEST_USER_EMAIL);
@@ -44,6 +45,8 @@ public abstract class IntegrationTestUtils {
         } catch (NonExistentUserException e) {
             fail("fail to login.");
         }
+
+        assertThat(tokenDto).isNotNull();
         return tokenDto.getAccessToken();
     }
 
