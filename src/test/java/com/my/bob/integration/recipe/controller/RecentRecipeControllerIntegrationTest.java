@@ -116,4 +116,32 @@ class RecentRecipeControllerIntegrationTest extends IntegrationTestUtils {
                         }));
     }
 
+    @Test
+    @DisplayName("다양한 레시피 상세 조회 후 최신 레시피 리스트 삭제")
+    void deleteAllRecentRecipes() {
+        // given
+        List<Recipe> recipes = recipeRepository.findAll();
+        List<Integer> recipeIds = recipes.stream().map(Recipe::getId).toList();
+        // 총 11개의 recipe 조회
+        for (Integer recipeId : recipeIds) {
+            String url = String.format("%s/%s", recipeBaseUrl, recipeId);
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder.path(url).build())
+                    .header("Authorization", "Bearer " + token)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(new ParameterizedTypeReference<ResponseDto<RecipeDto>>() {
+                    })
+                    .value(IntegrationTestResponseValidator::assertSuccessResponse);
+        }
+
+        // when & then
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
+                webTestClient.delete()
+                        .uri(recentRecipeBaseUrl)
+                        .header("Authorization", "Bearer " + token)
+                        .exchange()
+                        .expectStatus()
+                        .isNoContent());
+    }
 }
