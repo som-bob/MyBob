@@ -10,6 +10,7 @@ import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import com.my.bob.core.external.redis.service.RecentRecipeService;
+import com.my.bob.integration.util.IntegrationTestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.fail;
 @ActiveProfiles("test")
 @DisplayName("레시피 테스트")
 @WithAccount("system@system.com")
-class RecentRecipeServiceTest {
+class RecentRecipeServiceTest extends IntegrationTestUtils {
 
     @Autowired
     RecentRecipeService recentRecipeService;
@@ -70,10 +71,7 @@ class RecentRecipeServiceTest {
     // 테스트 후 모두 삭제
     @AfterEach
     void cleanUp() {
-        recipeIngredientsRepository.deleteAllInBatch();
-        recipeDetailRepository.deleteAllInBatch();
-        recipeRepository.deleteAllInBatch();
-        ingredientRepository.deleteAllInBatch();
+        cleanUp(recipeIngredientsRepository, recipeDetailRepository, recipeRepository, ingredientRepository);
         recentRecipeService.clearRecipe(randomUser);    // redis 데이터도 모두 삭제
     }
 

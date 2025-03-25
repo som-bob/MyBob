@@ -18,6 +18,7 @@ public class RecentRecipeEventListener {
     @Async
     @EventListener
     public void handleRecipeView(RecentRecipeViewedEvent event) {
+        log.info("Recent recipe event - email: {}, recipeId: {}", event.getEmail(), event.getRecipe().getRecipeId());
         recentRecipeService.saveRecentRecipe(event.getEmail(), event.getRecipe());
     }
 }

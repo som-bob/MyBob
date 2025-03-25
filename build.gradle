@@ -67,6 +67,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework:spring-webflux'
+	testImplementation 'org.awaitility:awaitility:4.2.0'	// 테스트 환경 비동기 대기 라이브러리
 
 	// test code lombok
 	testCompileOnly 'org.projectlombok:lombok'

@@ -74,7 +74,7 @@ public class RecipeController {
         return ResponseEntity.ok(new ResponseDto<>(recipeDto));
     }
 
-    // 레시피 조회
+    // 레시피 업데이트
     @PutMapping(value = "/{recipeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDto<RecipeDto>> getRecipe(
             @PathVariable int recipeId,

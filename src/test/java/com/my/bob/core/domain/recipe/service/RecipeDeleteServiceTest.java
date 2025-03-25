@@ -6,6 +6,7 @@ import com.my.bob.core.domain.recipe.entity.Recipe;
 import com.my.bob.core.domain.recipe.exception.RecipeDeletedException;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,11 @@ class RecipeDeleteServiceTest {
         recipeRepository.save(recipe);
 
         recipeId = recipe.getId();
+    }
+
+    @AfterEach
+    void tearDown() {
+        recipeRepository.deleteAllInBatch();
     }
 
     @Test

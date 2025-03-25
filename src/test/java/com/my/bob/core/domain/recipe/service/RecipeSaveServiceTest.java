@@ -12,6 +12,7 @@ import com.my.bob.core.domain.recipe.repository.IngredientRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeDetailRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeIngredientsRepository;
 import com.my.bob.core.domain.recipe.repository.RecipeRepository;
+import com.my.bob.integration.util.IntegrationTestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @DisplayName("레시피 저장, 업데이트 테스트")
 @WithAccount("system@system.com")   // 자동으로 해당 계정으로 들어가도록 세팅
-class RecipeSaveServiceTest {
+class RecipeSaveServiceTest extends IntegrationTestUtils {
 
     @Autowired
     RecipeSaveService recipeSaveService;
@@ -74,11 +75,7 @@ class RecipeSaveServiceTest {
 
     @AfterEach
     void tearDown() {
-        recipeDetailRepository.deleteAllInBatch();
-        recipeIngredientsRepository.deleteAllInBatch();
-        recipeRepository.deleteAllInBatch();
-        bobFileRepository.deleteAllInBatch();
-        ingredientRepository.deleteAllInBatch();
+        cleanUp(recipeIngredientsRepository, recipeDetailRepository, recipeRepository, bobFileRepository, ingredientRepository);
     }
 
     @Test
