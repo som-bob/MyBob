@@ -82,7 +82,7 @@ class RecentRecipeServiceTest extends IntegrationTestUtils {
         List<Recipe> recipes = recipeRepository.findAll();
         Optional<Recipe> recipeOptional = recipes.stream().findFirst();
         if (recipeOptional.isEmpty()) {
-            fail("fail to find recipe.");
+            fail("fail to find recipe, return.");
             return;
         }
         Recipe recipe = recipeOptional.get();
