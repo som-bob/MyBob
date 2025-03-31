@@ -52,10 +52,11 @@ jobs:
             echo "1. 이동: ${DOCKER_COMPOSE_DIR}"
             cd ${{ secrets.DOCKER_COMPOSE_DIR }}
             
-            echo "2. 최신 코드 fetch"
-            git fetch origin master
+            echo "2. 변경사항 초기화"
+            git reset --hard
+            git clean -fd
           
-            echo "3. 최신 코드 pull"
+            echo "3. 최신 코드 pull(rebase)"
             git pull --rebase origin master
           
             echo "4. 기존 컨테이너 중단"
