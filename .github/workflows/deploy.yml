@@ -49,22 +49,22 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
             
-            echo "1. 이동: ${DOCKER_COMPOSE_DIR}"
+            echo "1) 이동: ${DOCKER_COMPOSE_DIR}"
             cd ${{ secrets.DOCKER_COMPOSE_DIR }}
             
-            echo "2. 변경사항 초기화"
+            echo "2) 변경사항 초기화"
             git fetch origin master
             git reset --hard origin/master
             git clean -fd
           
-            echo "3. 최신 코드 pull"
+            echo "3) 최신 코드 pull"
             git pull origin master
           
-            echo "4. 기존 컨테이너 중단"
+            echo "4) 기존 컨테이너 중단"
             docker-compose down
           
-            echo "5. 컨테이너 재빌드 및 재실행"
+            echo "5) 컨테이너 재빌드 및 재실행"
             docker-compose up -d --build
           
-            echo "6. 완료"
+            echo "6) 완료"
           EOF
