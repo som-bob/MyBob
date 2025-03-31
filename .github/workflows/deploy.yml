@@ -53,11 +53,12 @@ jobs:
             cd ${{ secrets.DOCKER_COMPOSE_DIR }}
             
             echo "2. 변경사항 초기화"
-            git reset --hard
+            git fetch origin master
+            git reset --hard origin/master
             git clean -fd
           
-            echo "3. 최신 코드 pull(rebase)"
-            git pull --rebase origin master
+            echo "3. 최신 코드 pull"
+            git pull origin master
           
             echo "4. 기존 컨테이너 중단"
             docker-compose down
