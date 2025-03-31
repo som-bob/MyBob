@@ -1,0 +1,62 @@
+name: Deploy to EC2 on master merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Build, Test and Deploy
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build and Test
+        run: ./gradlew build
+
+      - name: Set up SSH and Deploy
+        if: success()
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -e
+            
+            echo "1. 이동: ${DOCKER_COMPOSE_DIR}"
+            cd ${{ secrets.DOCKER_COMPOSE_DIR }}
+            
+            echo "2. 최신 코드 pull"
+            git pull origin master
+          
+            echo "3. 기존 컨테이너 중단"
+            docker-compose down
+          
+            echo "4. 컨테이너 재빌드 및 재실행"
+            docker-compose up -d --build
+          
+            echo "5. 완료"
+          EOF
