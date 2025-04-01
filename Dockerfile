@@ -23,8 +23,8 @@ FROM openjdk:17-jdk
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# 빌드된 JAR 파일을 복사
-COPY --from=builder /app/build/libs/*.jar app.jar
+# 외부에서 JAR 복사됨 (build/libs/app.jar)
+COPY app.jar app.jar
 
 ENV GRADLE_USER_HOME=/gradle
 

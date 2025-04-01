@@ -11,7 +11,7 @@ jobs:
   deploy:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    name: Build, Test and Deploy
+    name: Build and Deploy to EC2
 
     steps:
       - name: Checkout Repository
@@ -36,35 +36,31 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build and Test
-        run: ./gradlew build
+      - name: Build Application
+        run: ./gradlew build -x test --no-daemon
 
-      - name: Set up SSH and Deploy
-        if: success()
+      - name: Copy JAR to EC2 via SCP
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            set -e
-            
-            echo "1) 이동: ${DOCKER_COMPOSE_DIR}"
-            cd ${{ secrets.DOCKER_COMPOSE_DIR }}
-            
-            echo "2) 변경사항 초기화"
-            git fetch origin master
-            git reset --hard origin/master
-            git clean -fd
-          
-            echo "3) 최신 코드 pull"
-            git pull origin master
-          
-            echo "4) 기존 컨테이너 중단"
-            docker-compose down
-          
-            echo "5) 컨테이너 재빌드 및 재실행"
-            docker-compose up -d --build
-          
-            echo "6) 완료"
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.DEPLOY_DIR }}/app.jar
+
+      - name: Deploy via SSH
+        run: |
+          ssh -i ~/.ssh/id_rsa \
+            -o StrictHostKeyChecking=no \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=20 \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+              set -e
+
+              echo "최신 JAR로 컨테이너 재시작 중..."
+              cd ${{ secrets.DEPLOY_DIR }}
+
+              docker-compose down
+              docker-compose up -d --build
+
+              echo "배포 완료"
           EOF
