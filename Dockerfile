@@ -14,8 +14,8 @@ RUN ./gradlew dependencies --no-daemon
 # 전체 프로젝트 복사 (이 단계에서 캐시 무효화 방지)
 COPY . .
 
-# Gradle 빌드 수행 (테스트 제외 + 빌드 캐시 활성화)
-RUN ./gradlew clean build -x test --no-daemon --parallel --build-cache
+RUN ./gradlew build -x test --no-daemon --parallel --build-cache --console=plain
+
 
 # 실행할 JDK 17 이미지를 불러옴 (최적화된 실행 환경)
 FROM openjdk:17-jdk
@@ -25,6 +25,11 @@ WORKDIR /app
 
 # 빌드된 JAR 파일을 복사
 COPY --from=builder /app/build/libs/*.jar app.jar
+
+ENV GRADLE_USER_HOME=/gradle
+
+# 볼륨 캐시처럼 활용 가능
+VOLUME /gradle
 
 # 애플리케이션 실행
 CMD ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
