@@ -79,10 +79,9 @@
 
 
 ### 👋 Author
-SM N (som-bob)
-Backend Developer / Interested in Distributed Systems, Observability, and Clean Architecture
+[SM N](https://github.com/Sumsan38)
+
 📧 Email: ndanl4647@gmail.com
-📌 GitHub: [https://github.com/som-bob](https://github.com/Sumsan38)
 
 
 
